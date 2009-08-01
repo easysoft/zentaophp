@@ -1,0 +1,11 @@
+Source: zentaophp
+Section: www
+Priority: extra
+Maintainer: chunsheng.wang <wwccss@gmail.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: zentaophp
+Architecture: any
+Depends: php5
+Description: ZenTaoPHP is a php framework.

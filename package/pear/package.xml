@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>ZenTaoPHP</name>
+ <channel>pear.php.net</channel>
+ <summary>ZenTaoPHP is a lite, flexible MVC framework with high performance.</summary>
+ <description>
+   ZenTaoPHP is a lite, flexible MVC framework with high performance.
+ </description>
+ <lead>
+  <name>chunsheng.wang</name>
+  <user>chunsheng.wang</user>
+  <email>wwccss@gmail.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2009-06-20</date>
+ <time>09:00:00</time>
+ <version>
+  <release>1.0</release>
+  <api>1.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+ <notes>This is the first release.
+ </notes>
+ <contents>
+  <dir name="/">
+   <file baseinstalldir="/" name="ztphp" role="script">
+     <tasks:replace from="@php_dir@" to="php_dir" type="pear-config" />
+   </file>  
+   <file baseinstalldir="/" name="ztphp.bat" role="script">
+     <tasks:replace from="@php_dir@" to="php_dir" type="pear-config" />
+   </file>  
+
+   <dir name="framework">
+    <file baseinstalldir="zentao" name="router.class.php"  role="php" />
+    <file baseinstalldir="zentao" name="control.class.php" role="php" />
+    <file baseinstalldir="zentao" name="model.class.php"   role="php" />
+    <file baseinstalldir="zentao" name="helper.class.php"  role="php" />
+   </dir>
+
+   <dir name="app/cli/">
+     <file baseinstalldir="zentao" name="ztphp" role="php" />
+   </dir>
+
+   <dir name="app/cli/config">
+     <file baseinstalldir="zentao" name="config.php" role="php" />
+   </dir>
+
+   <dir name="app/cli/module/common/lang" role='php'>
+     <file baseinstalldir="zentao" name="en.php" role="php" />
+   </dir>
+
+   <dir name="app/cli/module/compress" role='php'>
+     <file baseinstalldir="zentao" name="control.php" role="php" />
+     <file baseinstalldir="zentao" name="model.php" role="php" />
+   </dir>
+
+   <dir name="app/cli/module/generator" role='php'>
+     <file baseinstalldir="zentao" name="control.php" role="php" />
+     <file baseinstalldir="zentao" name="model.php" role="php" />
+   </dir>
+
+   <dir name="app/cli/module/generator/view" role='php'>
+     <file baseinstalldir="zentao" name="createclaim.html.php"   role="php" />
+     <file baseinstalldir="zentao" name="createconfig.html.php"  role="php" />
+     <file baseinstalldir="zentao" name="createcontrol.html.php" role="php" />
+     <file baseinstalldir="zentao" name="createcreate.html.php"  role="php" />
+     <file baseinstalldir="zentao" name="createdelete.html.php"  role="php" />
+     <file baseinstalldir="zentao" name="createindex.html.php"   role="php" />
+     <file baseinstalldir="zentao" name="createlang.html.php"    role="php" />
+     <file baseinstalldir="zentao" name="createmodel.html.php"   role="php" />
+     <file baseinstalldir="zentao" name="createread.html.php"    role="php" />
+     <file baseinstalldir="zentao" name="createupdate.html.php"  role="php" />
+     <file baseinstalldir="zentao" name="createrouter.html.php"  role="php" />
+   </dir>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease>
+   <installconditions>
+     <os>
+       <name>windows</name>
+     </os>
+   </installconditions>
+   <filelist>
+     <install as="ztphp.bat" name="ztphp.bat" />
+     <ignore name="ztphp" />
+   </filelist>
+ </phprelease>
+ <phprelease>
+   <filelist>
+     <install as="ztphp" name="ztphp" />
+     <ignore name="ztphp.bat" />
+   </filelist>
+ </phprelease>
+
+</package>

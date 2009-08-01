@@ -1,0 +1,8 @@
+setAppRoot: 将appRouter参数改为appRoot，由外面的router负责传递真实的appRoot参数过来。
+
+  几个应用的router要修改一下。
+
+  解析参数的时候，几个count函数调用重复。
+  item参数explode用了两次。可以通过变量节省下来。
+  增加zentao网站的链接。
+  加载control文件和model文件的时候，优先加载带有my的。

@@ -1,0 +1,230 @@
+<?php
+/**
+ * The model class file of ZenTaoPHP.
+ *
+ * ZenTaoPHP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * ZenTaoPHP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @copyright   Copyright 2009, Chunsheng Wang
+ * @author      Chunsheng Wang <wwccss@gmail.com>
+ * @package     ZenTaoPHP
+ * @version     $Id: model.class.php 1225 2009-07-27 13:36:15Z wwccss $
+ * @link        http://www.zentao.cn
+ */
+/**
+ * 模型基类。
+ * 
+ * @package ZenTaoPHP
+ */
+class model
+{
+    /**
+     * 全局的$app对象。
+     * 
+     * @var object
+     * @access protected
+     */
+    protected $app;
+
+    /**
+     * 全局的$config对象。 
+     * 
+     * @var object
+     * @access protected
+     */
+    protected $config;
+
+    /**
+     * 全局的$lang对象。
+     * 
+     * @var object
+     * @access protected
+     */
+    protected $lang;
+
+    /**
+     * 全局的$dbh（数据库访问句柄）对象。
+     * 
+     * @var object
+     * @access protected
+     */
+    protected $dbh;
+
+    /**
+     * 此model所属模块的名字。
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $moduleName;
+
+    /**
+     * 此model所属模块所在的路径。
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $modulePath;
+
+    /**
+     * 模块对应的配置文件。
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $moduleConfig;
+
+    /**
+     * 模块的语言文件。
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $moduleLang;
+
+    /**
+     * 消息变量，用来记录某一个方法的返回消息。
+     * 
+     * @var string
+     * @access protected
+     */
+    protected $message;
+
+    /**
+     * 构造函数：
+     *
+     * 1. 引用全局变量，使之可以通过成员属性访问。
+     * 2. 设置当前模块的路径、配置、语言等信息，并加载相应的文件。
+     * 
+     * @access public
+     * @return void
+     */
+    public function __construct()
+    {
+        global $app, $config, $lang, $dbh;
+        $this->app    = $app;
+        $this->config = $config;
+        $this->lang   = $lang;
+        $this->dbh    = $dbh;
+
+        $this->setModuleName();
+        $this->setModulePath();
+        $this->setModuleConfig();
+        $this->loadModuleConfig();
+        $this->setModuleLang();
+        $this->loadModuleLang();
+    }
+
+    /**
+     * 设置模块名：将类名中的model替换掉即为模块名。
+     * 没有使用$app->getModule()方法，因为它返回的是当前调用的模块。
+     * 而在一次请求中，当前模块的control文件很有可能会调用其他模块的model。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setModuleName()
+    {
+        $this->moduleName = strtolower(str_ireplace('Model', '', get_class($this)));
+    }
+
+    /**
+     * 设置模块所处的路径。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setModulePath()
+    {
+        $this->modulePath = $this->app->getModuleRoot() . $this->moduleName . $this->app->getPathFix();
+    }
+
+    /**
+     * 设置模块的配置文件。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setModuleConfig()
+    {
+        $this->moduleConfig = $this->modulePath. 'config.php';
+    }
+
+    /**
+     * 加载模块的配置文件。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function loadModuleConfig()
+    {
+        if(file_exists($this->moduleConfig)) $this->app->loadConfig($this->moduleName);
+    }
+
+    /**
+     * 设置模块的语言文件。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setModuleLang()
+    {
+        $this->moduleLang = $this->modulePath. 'lang' . $this->app->getPathFix() . $this->app->getClientLang() . '.php';
+    }
+
+    /**
+     * 加载模块的语言文件。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function loadModuleLang()
+    {
+        if(file_exists($this->moduleLang)) $this->app->loadLang($this->moduleName);
+    }
+
+    /**
+     * 获取最新的消息记录。
+     * 
+     * @access public
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * 设置消息记录。
+     * 
+     * @param string $message 
+     * @access protected
+     * @return void
+     */
+    protected function setMessage($message)
+    {
+        $this->message = $message;
+    }
+    
+    /**
+     * 追加消息记录。
+     * 
+     * @param string $message 
+     * @access protected
+     * @return void
+     */
+    protected function appendMessage($message)
+    {
+        $this->message .= $message;
+    }
+}    

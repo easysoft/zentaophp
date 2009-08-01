@@ -1,0 +1,80 @@
+#!/usr/bin/env php
+<?php
+/**
+ * The command router file of ZenTaoPHP.
+ *
+ * 这是命令行的router文件，就像web方式的router文件一样，区别在于REQUEST是通过手工来赋值的。
+ *
+ * ZenTaoPHP is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * ZenTaoPHP is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @copyright   Copyright: 2009 Chunsheng Wang
+ * @author      Chunsheng Wang <wwccss@263.net>
+ * @package     ZenTaoPHP
+ * @version     $Id$
+ * @link        http://www.zentao.cn
+ */
+define('IN_SHELL', true);
+
+/* 获取命令参数。 */
+if($argc != 2)
+{
+    echo 'Usage: ' . basename(__FILE__) . " <request>\n";
+    echo <<<EOT
+possiable requests:
+
+compress framwork class files to one file: 
+将框架类文件压缩为一个文件，以提升性能。
+
+$> ztphp compress/compressFramework
+
+init a app. (You can set the ZT_APP_ROOT env variable if the application in other directory.)
+for example: export ZT_APP_ROOT=/home/wwccss/app (under linux)
+note: If you set ZT_APP_ROOT, it should be absolute path.
+
+初始化一个应用。(你可以设置ZT_APP_ROOT这个环境变量来指定应用所在的根目录，如果应用和框架的目录是分离的话。)
+linux下面： export ZT_APP_ROOT=/home/wwccss/app
+注意：如果你设置了ZT_APP_ROOT变量，应当是绝对路径。
+
+$> ztphp generator/createApp/\$appName/
+
+create a module for a app. need appName, moduleName and tableanme.
+创建一个模块，需要指定appName, moduleName以及这个模块所对应的tableName.
+
+$> ztphp generator/createModule/\$appName/\$moduleName/\$tableName
+
+EOT;
+die();
+}
+
+/* 包含必须的类文件。*/
+chdir(dirname(__FILE__));
+include '../../framework/router.class.php';
+include '../../framework/control.class.php';
+include '../../framework/model.class.php';
+include '../../framework/helper.class.php';
+
+/* 实例化路由对象，并加载配置，连接到数据库。*/
+$app = router::createApp('cli');
+$config = $app->loadConfig('common');
+
+/* 设置终端使用的语言。*/
+$app->setClientLang('en');
+$lang = $app->loadLang('common');
+
+/* 手工设置请求的格式，并将命令行传递的参数赋值到_SERVER['PATH_INFO']。*/
+putenv('PATH_INFO=' . trim($argv[1]));
+$config->set('requestType', 'PATH_INFO');
+$app->parseRequest();
+$app->loadModule();
+?>
