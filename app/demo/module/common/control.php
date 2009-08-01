@@ -18,7 +18,7 @@
  * @copyright   Copyright 2009, Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: control.php 1214 2009-06-20 01:07:37Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 class common extends control

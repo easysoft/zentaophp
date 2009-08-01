@@ -18,7 +18,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: config.php 1181 2009-05-25 00:55:32Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 $config['requestType'] = 'PATH_INFO';                           // «Î«Û∑Ω Ω°£

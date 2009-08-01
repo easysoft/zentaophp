@@ -20,7 +20,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: en.php 1179 2009-05-24 15:47:00Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 $lang['afterAppNote'] = "The application has been successfully created, it's directory is %s. \nOpen the config file %s to set params.\n";

@@ -6,7 +6,7 @@
  * @copyright   Copyright 2009, Chunsheng Wang
  * @author      chunsheng.wang <wwccss@gmail.com>
  * @package     Testing
- * @version     $Id: case001.php 1208 2009-06-19 08:56:20Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  * @license     http://opensource.org/licenses/lgpl-3.0.html LGPL
  */

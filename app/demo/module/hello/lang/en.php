@@ -18,7 +18,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: en.php 1087 2009-02-28 03:33:49Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 $lang['page']    = 'ZenTaoPHP Hello World';

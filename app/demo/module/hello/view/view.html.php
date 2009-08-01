@@ -18,7 +18,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: view.html.php 1160 2009-04-26 13:56:41Z wwccss $
+ * @version     $Id$
  */
 ?>
 <?php include '../../common/header.html.php';?>

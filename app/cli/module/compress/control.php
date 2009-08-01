@@ -19,7 +19,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: control.php 1143 2009-03-30 14:55:39Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 class compress extends control

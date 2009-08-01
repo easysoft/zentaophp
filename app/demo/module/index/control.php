@@ -20,7 +20,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: control.php 1115 2009-03-18 12:21:33Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 class index extends control

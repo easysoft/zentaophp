@@ -20,7 +20,7 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: config.devel.php 1218 2009-06-20 02:58:09Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 $config['version']     = '1.0.STABLE.090620'; // °æ±¾ºÅ£¬ÇÐÎðÐÞ¸Ä¡£
