@@ -23,13 +23,13 @@
  * @version     $Id$
  * @link        http://www.zentao.cn
  */
-$lang['page']    = 'ZenTaoPHP演示';
-$lang['id']      = '编号';
-$lang['title']   = '标题';
-$lang['date']    = '日期';
-$lang['content'] = '内容';
-$lang['action']  = '操作';
-$lang['view']    = '查看';
-$lang['add']     = '添加';
-$lang['edit']    = '编辑';
-$lang['del']     = '删除';
+$lang->page    = 'ZenTaoPHP演示';
+$lang->id      = '编号';
+$lang->title   = '标题';
+$lang->date    = '日期';
+$lang->content = '内容';
+$lang->action  = '操作';
+$lang->view    = '查看';
+$lang->add     = '添加';
+$lang->edit    = '编辑';
+$lang->del     = '删除';

@@ -67,14 +67,16 @@ class helper
      * @param string    $moduleName     模块名。
      * @param string    $methodName     方法名。
      * @param mixed     $vars           要传递给method方法的各个参数，可以是数组，也可以是var1=value2&var2=value2的形式。
+     * @param string    $viewType       扩展名方式。
      * @static
      * @access public
      * @return string
      */
-    static public function createLink($moduleName, $methodName = 'index', $vars = '')
+    static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '')
     {
         global $app, $config;
         $link = $config->webRoot;
+        if(empty($viewType)) $viewType = $app->getViewType();
 
         /* 如果传递进来的vars不是数组，尝试将其解析成数组格式。*/
         if(!is_array($vars)) parse_str($vars, $vars);
@@ -89,11 +91,13 @@ class helper
             {
                 foreach($vars as $value) $link .= "{$config->requestFix}$value";
             }    
-            $link .= '.' . $app->getViewType();
+            /* 如果访问的是/index/index.html，简化为/index.html。*/
+            if($moduleName == $config->default->module and $methodName == $config->default->method) $link = $config->webRoot . 'index';
+            $link .= '.' . $viewType;
         }
         elseif($config->requestType == 'GET')
         {
-            $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName&{$config->viewVar}=" . $app->getViewType();
+            $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName&{$config->viewVar}=" . $viewType;
             foreach($vars as $key => $value) $link .= "&$key=$value";
         }
         return $link;
@@ -155,10 +159,50 @@ class helper
     {
         if(!file_exists($file)) return false;
         static $includedFiles = array();
-        if(!in_array($file, $includedFiles))
+        if(!isset($includedFiles[$file]))
         {
             include $file;
-            $includedFiles[] = $file;
+            $includedFiles[$file] = true;
         }
+    }
+
+    /**
+     * 生成SQL查询中的IN(a,b,c)部分代码。
+     * 
+     * @param   misc    $ids   id列表，可以是数组，也可以是使用逗号隔开的字符串。 
+     * @static
+     * @access  public
+     * @return  string
+     */
+    static function dbIN($ids)
+    {
+        if(is_array($ids)) return "IN ('" . join("','", $ids) . "')";
+        return "IN ('" . str_replace(',', "','", $ids) . "')";
+    }
+
+    /**
+     * 生成对框架安全的base64encode串。
+     * 
+     * @param   string  $string   要编码的字符串列表。
+     * @static
+     * @access  public
+     * @return  string
+     */
+    static function safe64Encode($string)
+    {
+        return strtr(base64_encode($string), '+/=', '');
+    }
+
+    /**
+     * 解码。
+     * 
+     * @param   string  $string   要解码的字符串列表。
+     * @static
+     * @access  public
+     * @return  string
+     */
+    static function safe64Decode($string)
+    {
+        return base64_decode(strtr($string, '', '+/='));
     }
 }

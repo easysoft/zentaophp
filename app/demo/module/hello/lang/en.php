@@ -21,13 +21,13 @@
  * @version     $Id$
  * @link        http://www.zentao.cn
  */
-$lang['page']    = 'ZenTaoPHP Hello World';
-$lang['id']      = 'id';
-$lang['title']   = 'title';
-$lang['date']    = 'date';
-$lang['content'] = 'content';
-$lang['action']  = 'action';
-$lang['view']    = 'view';
-$lang['add']     = 'add';
-$lang['edit']    = 'edit';
-$lang['del']     = 'del';
+$lang->page    = 'ZenTaoPHP Hello World';
+$lang->id      = 'id';
+$lang->title   = 'title';
+$lang->date    = 'date';
+$lang->content = 'content';
+$lang->action  = 'action';
+$lang->view    = 'view';
+$lang->add     = 'add';
+$lang->edit    = 'edit';
+$lang->del     = 'del';

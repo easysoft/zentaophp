@@ -1,8 +1,6 @@
 <?php
 /**
- * The common english language file of ZenTaoPHP.
- *
- * All items used commonly should be defined here.
+ * The child user control extends from hello module of ZenTaoPHP.
  *
  * ZenTaoPHP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,9 +18,13 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id$
+ * @version     $Id: mycontrol.php 1324 2009-09-16 07:37:47Z wwccss $
  * @link        http://www.zentao.cn
  */
-$lang->module = 'module';
-$lang->hasno  = 'has no';
-$lang->method = 'method';
+class myHello extends hello
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+}

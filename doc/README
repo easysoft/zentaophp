@@ -55,9 +55,9 @@
    3. 创建一个数据库，比如名字叫做zentao  
    4. 修改config.test.php, 修改其中的访问数据库的用户名和密码。
 
-      $config['db']['name']       = 'zentao';
-      $config['db']['user']       = 'root';
-      $config['db']['password']   = '';
+      $config->db->name       = 'zentao';
+      $config->db->user       = 'root';
+      $config->db->password   = '';
 
       修改完毕之后，将其拷贝为config.php，或者使用符号链接。
     

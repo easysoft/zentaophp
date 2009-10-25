@@ -101,6 +101,46 @@ class model
     protected $message;
 
     /**
+     * dao对象。
+     * 
+     * @var object
+     * @access protected
+     */
+    public $dao;
+
+    /**
+     * POST对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $post;
+
+    /**
+     * session对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $session;
+
+    /**
+     * server对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $server;
+
+    /**
+     * global对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $global;
+
+    /**
      * 构造函数：
      *
      * 1. 引用全局变量，使之可以通过成员属性访问。
@@ -123,6 +163,9 @@ class model
         $this->loadModuleConfig();
         $this->setModuleLang();
         $this->loadModuleLang();
+
+        if(isset($config->db->dao)   and $config->db->dao)   $this->loadDAO();
+        if(isset($config->super2OBJ) and $config->super2OBJ) $this->setSuperVars();
     }
 
     /**
@@ -135,7 +178,10 @@ class model
      */
     protected function setModuleName()
     {
-        $this->moduleName = strtolower(str_ireplace('Model', '', get_class($this)));
+        $parentClass = get_parent_class($this);
+        $selfClass   = get_class($this);
+        $className   = $parentClass == 'model' ? $selfClass : $parentClass;
+        $this->moduleName = strtolower(str_ireplace('Model', '', $className));
     }
 
     /**
@@ -183,6 +229,20 @@ class model
     }
 
     /**
+     * 设置超全局变量。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setSuperVars()
+    {
+        $this->post    = $this->app->post;
+        $this->server  = $this->app->server;
+        $this->session = $this->app->session;
+        $this->global  = $this->app->global;
+    }
+
+    /**
      * 加载模块的语言文件。
      * 
      * @access protected
@@ -226,5 +286,49 @@ class model
     protected function appendMessage($message)
     {
         $this->message .= $message;
+    }
+
+    //-------------------- 数据库操作相应的方法。--------------------//
+
+    /**
+     * 加载DAO类，并返回对象。
+     * 
+     * @access private
+     * @return void
+     */
+    private function loadDAO()
+    {
+        $this->dao = $this->app->loadClass('dao');
+    }
+
+    /**
+     * 返回key=>value形式的数组。
+     * 
+     * @param string $sql           要执行的sql语句。 
+     * @param string $keyField      key字段名。
+     * @param string $valueField    value字段名。
+     * @access protected
+     * @return void
+     */
+    public function fetchPairs($sql, $keyField = '', $valueField = '')
+    {
+        $pairs = array();
+        $stmt  = $this->dbh->query($sql, PDO::FETCH_ASSOC);
+        $ready = false;
+        while($row = $stmt->fetch())
+        {
+            if(!$ready)
+            {
+                if(empty($keyField)) $keyField = key($row);
+                if(empty($valueField)) 
+                {
+                    end($row);
+                    $valueField = key($row);
+                }
+                $ready = true;
+            }
+            $pairs[$row[$keyField]] = $row[$valueField];
+        }
+        return $pairs;
     }
 }    

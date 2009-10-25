@@ -23,6 +23,6 @@
  * @version     $Id$
  * @link        http://www.zentao.cn
  */
-$lang['module'] = '模块';
-$lang['hasno']  = '没有';
-$lang['method'] = '方法';
+$lang->module = '模块';
+$lang->hasno  = '没有';
+$lang->method = '方法';

@@ -21,4 +21,4 @@
  * @version     $Id$
  * @link        http://www.zentao.cn/
  */
-$lang['welcome'] = 'Welcome to ZenTaoPHP framework!';
+$lang->welcome = 'Welcome to ZenTaoPHP framework!';

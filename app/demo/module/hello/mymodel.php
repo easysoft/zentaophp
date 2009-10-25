@@ -1,14 +1,12 @@
 <?php
 /**
- * The common english language file of ZenTaoPHP.
- *
- * All items used commonly should be defined here.
+ * The child model file extends from hello module of ZenTaoPHP.
  *
  * ZenTaoPHP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * ZenTaoPHP is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,9 +18,10 @@
  * @copyright   Copyright: 2009 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id$
- * @link        http://www.zentao.cn
+ * @version     $Id: mymodel.php 1324 2009-09-16 07:37:47Z wwccss $
  */
-$lang->module = 'module';
-$lang->hasno  = 'has no';
-$lang->method = 'method';
+?>
+<?php
+class myhelloModel extends helloModel
+{
+}

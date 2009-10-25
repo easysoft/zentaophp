@@ -62,6 +62,46 @@ class control
     protected $dbh;
 
     /**
+     * dao对象。
+     * 
+     * @var object
+     * @access protected
+     */
+    public $dao;
+
+    /**
+     * POST对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $post;
+
+    /**
+     * session对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $session;
+
+    /**
+     * server对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $server;
+
+    /**
+     * global对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $global;
+
+    /**
      * 所属模块的名字。
      * 
      * @var string
@@ -84,6 +124,14 @@ class control
      * @access private
      */
     private $modelFile;
+
+    /**
+     * 派生的model文件。
+     * 
+     * @var string
+     * @access private
+     */
+    private $myModelFile;
 
     /**
      * 记录赋值到view的所有变量。
@@ -142,9 +190,12 @@ class control
         /* 自动加载当前模块的model文件。*/
         $this->loadModel();
 
-        /* 自动将$config和$lang赋值到模板中。*/
+        /* 自动将$app, $config和$lang赋值到模板中。*/
+        $this->assign('app',    $app);
         $this->assign('lang',   $lang);
         $this->assign('config', $config);
+
+        if(isset($config->super2OBJ) and $config->super2OBJ) $this->setSuperVars();
     }
 
     //-------------------- model相关的方法。--------------------//
@@ -163,6 +214,19 @@ class control
     }
 
     /**
+     * 设置派生的model文件。
+     * 
+     * @param   string      $moduleName     模块名字。
+     * @access  private
+     * @return void
+     */
+    private function setMyModelFile()
+    {
+        $this->myModelFile = str_replace('model.php', 'mymodel.php', $this->modelFile);
+        return file_exists($this->myModelFile);
+    }
+
+    /**
      * 加载某一个模块的model文件。
      * 
      * @param   string  $moduleName     模块名字，如果为空，则取当前的模块名作为model名。
@@ -177,8 +241,34 @@ class control
 
         $modelClass = $moduleName. 'Model';
         helper::import($this->modelFile);
+        
+        /* 存在派生的model文件，则加载。*/
+        if($this->setMyModelFile())
+        {
+            helper::import($this->myModelFile);
+            $modelClass = 'my' . $modelClass;
+        }
+
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
         $this->$moduleName = new $modelClass();
+        if(isset($this->config->db->dao) and $this->config->db->dao)
+        {
+            $this->dao = $this->$moduleName->dao;
+        }
+    }
+
+    /**
+     * 设置超全局变量。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setSuperVars()
+    {
+        $this->post    = $this->app->post;
+        $this->server  = $this->app->server;
+        $this->session = $this->app->session;
+        $this->global  = $this->app->global;
     }
 
     //-------------------- 加载view相关的方法。--------------------//

@@ -15,10 +15,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wwccss@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-06-20</date>
+ <date>2009-09-10</date>
  <time>09:00:00</time>
  <version>
-  <release>1.0</release>
+  <release>1.1</release>
   <api>1.0</api>
  </version>
  <stability>

@@ -141,6 +141,14 @@ class router
     private $controlFile;
 
     /**
+     * 当前模块所对应的派生出来的控制器文件。
+     * 
+     * @var string
+     * @access private
+     */
+    private $myControlFile;
+
+    /**
      * 需要调用的方法。
      * 
      * @var string
@@ -178,7 +186,7 @@ class router
      * @var string
      * @access private
      */
-    private $config;
+    public $config;
 
     /**
      * 语言对象。
@@ -186,7 +194,7 @@ class router
      * @var string
      * @access private
      */
-    private $lang;
+    public $lang;
 
     /**
      * 数据库访问对象。
@@ -194,7 +202,39 @@ class router
      * @var string
      * @access private
      */
-    private $dbh;
+    public $dbh;
+
+    /**
+     * POST对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $post;
+
+    /**
+     * session对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $session;
+
+    /**
+     * server对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $server;
+
+    /**
+     * global对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $global;
 
     /**
      * 构造函数。
@@ -203,10 +243,10 @@ class router
      *
      * @param string $appName   应用的名称，如果没有指定$appRoot变量，系统会根据$appName来计算应用的根目录。
      * @param string $appRoot   应用所在的根目录。
-     * @access private
+     * @access protected
      * @return void
      */
-    private function __construct($appName = 'demo', $appRoot = '')
+    protected function __construct($appName = 'demo', $appRoot = '')
     {
         $this->setPathFix();
         $this->setBasePath();
@@ -234,13 +274,15 @@ class router
      * </code>
      * @param string $appName   应用的名称
      * @param string $appRoot   应用所在的根目录，可以为空。
+     * @param string $className 对象名称，当从router派生一个子类，然后调用该方法时，可以指定该参数。
      * @static
      * @access public
      * @return void
      */
-    public static function createApp($appName = 'demo', $appRoot = '')
+    public static function createApp($appName = 'demo', $appRoot = '', $className = 'router')
     {
-        return new router($appName, $appRoot);
+        if(empty($className)) $className = __CLASS__;
+        return new $className($appName, $appRoot);
     }
 
     //-------------------- 路径相关的方法。--------------------//
@@ -366,6 +408,23 @@ class router
     protected function setThemeRoot()
     {
         $this->themeRoot = $this->appRoot . 'www' . $this->pathFix . 'theme' . $this->pathFix;
+    }
+
+    /**
+     * 设置超全局变量。
+     * 
+     * @access protected
+     * @return void
+     */
+    public function setSuperVars()
+    {
+        if(isset($this->config->super2OBJ) and $this->config->super2OBJ)
+        {
+            $this->post    = new super('post');
+            $this->server  = new super('server');
+            $this->session = new super('session');
+            $this->global  = new super('global');
+        }
     }
 
     /**
@@ -586,6 +645,17 @@ class router
         return $this->config->webRoot . 'theme/' . $this->clientTheme . '/';
     }
 
+    /**
+     * 返回web的根目录。
+     * 
+     * @access public
+     * @return string
+     */
+    public function getWebRoot()
+    {
+        return $this->config->webRoot;
+    }
+
     //-------------------- 解析请求。--------------------//
 
     /**
@@ -688,8 +758,9 @@ class router
      * @access public
      * @return string
      */
-    public function getURI()
+    public function getURI($full = false)
     {
+        if($full) return $this->config->webRoot . $this->URI . '.' . $this->viewType;
         return $this->URI;
     }
 
@@ -762,6 +833,19 @@ class router
         }    
         return true;
     }
+    
+    /**
+     * 判断是否存在派生的控制器类文件。
+     * 
+     * @access  public
+     * @return  bool
+     */
+    public function setMyControlFile()
+    {
+        $this->myControlFile = $this->moduleRoot . $this->moduleName . $this->pathFix . 'mycontrol.php'; 
+        if(file_exists($this->myControlFile)) return true;
+        return false;
+    }
 
     /**
      * 设置要调用的方法。
@@ -832,24 +916,33 @@ class router
         chdir(dirname($this->controlFile));
         include $this->controlFile;
         $moduleName = $this->moduleName;
+        if($this->setMyControlFile())
+        {
+            include $this->myControlFile;
+            $moduleName = 'my' . $moduleName;
+        }
         $methodName = $this->methodName;
         if(!class_exists($moduleName)) $this->error("the control $moduleName not found", __FILE__, __LINE__, $exit = true);
         $module = new $moduleName();
         if(!method_exists($module, $methodName)) $this->error("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
 
+        /* 获取方法的参数定义。*/
+        $defaultParams = array();
+        $methodReflect = new reflectionMethod($moduleName, $methodName);
+        foreach($methodReflect->getParameters() as $param)
+        {
+            $name    = $param->getName();
+            $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : '_NOT_SET';
+            $defaultParams[$name] = $default;
+        }
+
         if($this->config->requestType == 'PATH_INFO')
         {
-            /* 获取方法的参数定义。*/
-            $methodParams = array();
-            $methodReflect = new reflectionMethod($moduleName, $methodName);
-            foreach ($methodReflect->getParameters() as $param) $methodParams[] = $param->getName();
-
-            /* 设置要传递给当前方法的参数。*/
-            $this->setParamsByPathInfo($methodParams);
+            $this->setParamsByPathInfo($defaultParams);
         }
         elseif($this->config->requestType == 'GET')
         {
-            $this->setParamsByGET();
+            $this->setParamsByGET($defaultParams);
         }
 
         call_user_func_array(array(&$module, $methodName), $this->params);
@@ -859,50 +952,101 @@ class router
     /**
      * 通过PATH_INFO信息来设置需要传递给control类方法的参数。
      * 
-     * @param   array $methodParams     传给方法的参数。
+     * @param   array $defaultParams    方法定义中默认值列表
      * @access  public
      * @return  void
      */
-    public function setParamsByPathInfo($methodParams = array())
+    public function setParamsByPathInfo($defaultParams = array())
     {
+        /* 将请求串按照分割符分开。*/
         $items     = explode($this->config->requestFix, $this->URI);
         $itemCount = count($items);
 
-        /* 如果item的个数和方法的参数个数相差2，则为简洁方式。*/
-        if(count($methodParams) + 2 == $itemCount)
+        /**
+         * items前面两个元素分别为moduleName和methodName，因此从第二个元素开始。
+         * 分别为clean模式和full模式。
+         */ 
+
+        $params = array();
+        if($this->config->pathType == 'clean')
         {
-            /* items前面两个元素分别为moduleName和methodName。*/
             for($i = 2; $i < $itemCount; $i ++)
             {
-                $key   = $methodParams[$i - 2];
-                $value = $items[$i];
-                $this->params[$key] = $value;
+                $key = key($defaultParams);
+                $params[$key] = $items[$i];
+                next($defaultParams);
             }
         }
-        else
+        elseif($this->config->pathType == 'full')
         {
-            if($itemCount < 4) return;  // 小于四，则没有传递参数。
             for($i = 2; $i < $itemCount; $i += 2)
             {
                 $key   = $items[$i];
                 $value = $items[$i + 1];
-                $this->params[$key] = $value;
+                $params[$key] = $value;
             }
         }
+        $this->params = $this->mergeParams($defaultParams, $params);
     }
 
     /**
      * 通过GET变量设置需要传递给control类访问的参数。
      * 
-     * @access public
-     * @return void
+     * @param   array   $defaultParams  方法定义中默认值列表。
+     * @access  public
+     * @return  void
      */
-    public function setParamsByGET()
+    public function setParamsByGET($defaultParams)
     {
         unset($_GET[$this->config->moduleVar]);
         unset($_GET[$this->config->methodVar]);
         unset($_GET[$this->config->viewVar]);
-        $this->params = $_GET;
+        $this->params = $this->mergeParams($defaultParams, $_GET);
+    }
+
+    /**
+     * 将方法定义中的默认值与用户请求中传递的值合并起来。
+     *
+     * @param   array $defaultParams     方法定义中的参数默认值列表。
+     * @param   array $passedParams      用户请求中传递的参数列表。
+     * @access  private
+     * @return  array
+     */
+    private function mergeParams($defaultParams, $passedParams)
+    {
+        /* 如果参数传递是非严格模式，认为passedParams的顺序和defaultParams是一致的。*/
+        if(!isset($this->config->strictParams) or $this->config->strictParams == false) 
+        {
+            $passedParams = array_values($passedParams);
+            $i = 0;
+            foreach($defaultParams as $key => $defaultValue)
+            {
+                if(isset($passedParams[$i]))
+                {
+                    $defaultParams[$key] = $passedParams[$i];
+                }
+                else
+                {
+                    if($defaultValue === '_NOT_SET') $this->error("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
+                }
+                $i ++;
+            }
+        }
+        else
+        {
+            foreach($defaultParams as $key => $defaultValue)
+            {
+                if(isset($passedParams[$key]))
+                {
+                    $defaultParams[$key] = $passedParams[$key];
+                }
+                else
+                {
+                    if($defaultValue === '_NOT_SET') $this->error("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
+                }
+            }
+        }
+        return $defaultParams;
     }
  
     /**
@@ -937,6 +1081,18 @@ class router
     {
         return $this->methodName;
     }
+
+    /**
+     * 返回当前传递的参数名。
+     * 
+     * @access public
+     * @return string
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
 
     //-------------------- 工具类方法。-------------------//
 
@@ -1011,10 +1167,11 @@ class router
      * 如果模块的名字为common，则从配置的根目录查找，其他的模块则从模块路径下面查找。
      *
      * @param mixed $moduleName     模块的名字。
+     * @param bool  $exitIfNone     如果配置文件不存在，是否退出。
      * @access public
      * @return object
      */
-    public function loadConfig($moduleName)
+    public function loadConfig($moduleName, $exitIfNone = true)
     {
         /* 设置模块所对应的配置文件路径。*/
         if($moduleName == 'common')
@@ -1025,23 +1182,19 @@ class router
         {
             $configFile = $this->moduleRoot . $moduleName . $this->pathFix . 'config.php';
         }
-        if(!file_exists($configFile)) self::error("config file $configFile not found", __FILE__, __LINE__, $exit = true);
+        if(!file_exists($configFile))
+        {
+            self::error("config file $configFile not found", __FILE__, __LINE__, $exitIfNone);
+            return;
+        }
 
         static $loadedConfigs = array();
         if(in_array($configFile, $loadedConfigs)) return;
-
         $loadedConfigs[] = $configFile;
-        include $configFile;
-        if(!isset($config) or empty($config)) return false;
 
-        /* 转换变量，避免变量命名冲突。*/
-        $configArray = &$config;
-        unset($config);
-
-        /* 生成config对象。*/
         global $config;
         if(!is_object($config)) $config = new config();
-        eval(helper::array2Object($configArray, 'config'));
+        include $configFile;
         $this->config = $config;
         return $config;
     }
@@ -1064,19 +1217,13 @@ class router
 
         static $loadedLangs = array();
         if(in_array($langFile, $loadedLangs)) return;
-
         $loadedLangs[] = $langFile;
-        include $langFile;
-        if(!isset($lang) or empty($lang)) return false;
-
-        /* 转换变量，避免变量命名冲突。*/
-        $langArray = &$lang;
-        unset($lang);
 
         /* 生成lang对象。*/
         global $lang;
         if(!is_object($lang)) $lang = new language();
-        eval(helper::array2Object($langArray, 'lang'));
+        include $langFile;
+        if(!isset($lang) or empty($lang)) return false;
         $this->lang = $lang;
         return $lang;
     }
@@ -1161,4 +1308,104 @@ class language
     {
         helper::setMember('lang', $key, $value);
     }
+
+    /**
+     * 打印某一个对象的属性。
+     */
+    public function show($obj, $key)
+    {
+        if(isset($obj->$key)) echo $obj->$key; else echo '';
+    }
 }
+
+/**
+ * 超全局变量类。
+ * 
+ * @package ZenTaoPHP
+ */
+class super
+{
+    /* 构造函数。*/
+    public function __construct($scope)
+    {
+        $this->scope = $scope;
+    }
+
+    /* 设置属性。*/
+    public function set($key, $value)
+    {
+        if($this->scope == 'post')
+        {
+            $_POST[$key] = $value;
+        }
+        elseif($this->scope == 'get')
+        {
+            $_GET[$key] = $value;
+        }
+        elseif($this->scope == 'server')
+        {
+            $_SERVER[$key] = $value;
+        }
+        elseif($this->scope == 'cookie')
+        {
+            $_COOKIE[$key] = $value;
+        }
+        elseif($this->scope == 'session')
+        {
+            $_SESSION[$key] = $value;
+        }
+        elseif($this->scope == 'env')
+        {
+            $_ENV[$key] = $value;
+        }
+        elseif($this->scope == 'global')
+        {
+            $GLOBAL[$key] = $value;
+        }
+    }
+
+    /* 魔术方法。*/
+    public function __get($key)
+    {
+        if($this->scope == 'post')
+        {
+            if(isset($_POST[$key])) return $_POST[$key];
+            return false;
+        }
+        elseif($this->scope == 'get')
+        {
+            if(isset($_GET[$key])) return $_GET[$key];
+            return false;
+        }
+        elseif($this->scope == 'server')
+        {
+            if(isset($_SERVER[$key])) return $_SERVER[$key];
+            return false;
+        }
+        elseif($this->scope == 'cookie')
+        {
+            if(isset($_COOKIE[$key])) return $_COOKIE[$key];
+            return false;
+        }
+        elseif($this->scope == 'session')
+        {
+            if(isset($_SESSION[$key])) return $_SESSION[$key];
+            return false;
+        }
+        elseif($this->scope == 'env')
+        {
+            if(isset($_ENV[$key])) return $_ENV[$key];
+            return false;
+        }
+        elseif($this->scope == 'global')
+        {
+            if(isset($GLOBALS[$key])) return $GLOBALS[$key];
+            return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
