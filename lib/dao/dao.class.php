@@ -536,11 +536,14 @@ class dao
     }
  
     /* 自动根据数据库中表的字段格式进行检查。*/
-    public function autoCheck()
+    public function autoCheck($skipFields = '')
     {
-        $fields = $this->getFieldsType();
+        $fields     = $this->getFieldsType();
+        $skipFields = ",$skipFields,";
+
         foreach($fields as $fieldName => $validater)
         {
+            if(strpos($skipFields, $fieldName) !== false) continue;    // 忽略。
             if(!isset($this->sqlobj->data->$fieldName)) continue;
             if($validater['rule'] == 'skip') continue;
             $options = array();
@@ -621,7 +624,7 @@ class dao
                 $rangeEnd    = strrpos($rawField->type, ')') - 1; // 将最后一个引号去掉。
                 $range       = substr($rawField->type, $rangeBegin, $rangeEnd - $rangeBegin);
                 $field['rule'] = 'reg';
-                $field['options']['reg']  = str_replace("','", '|', $range);
+                $field['options']['reg']  = '/' . str_replace("','", '|', $range) . '/';
             }
             elseif($type == 'char')
             {
@@ -639,6 +642,10 @@ class dao
             elseif($type == 'float' or $type == 'double')
             {
                 $field['rule'] = 'float';
+            }
+            elseif($type == 'date')
+            {
+                $field['rule'] = 'date';
             }
             else
             {
@@ -694,6 +701,15 @@ class sql
      * @access protected
      */
     public $data;
+
+    /**
+     * 是否是首次调用set。
+     * 
+     * @var bool    
+     * @access private;
+     */
+    private $isFirstSet = true;
+
 
     /* 构造函数。*/
     private function __construct($table = '')
@@ -775,11 +791,10 @@ class sql
     /* SET key=value。*/
     public function set($set)
     {
-        static $first = true;    // 是否是首次调用set。
-        if($first)
+        if($this->isFirstSet)
         {
             $this->sql .= " $set ";
-            $first = false;
+            $this->isFirstSet = false;
         }
         else
         {
