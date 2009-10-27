@@ -96,6 +96,14 @@ class validater
         }
     }
 
+    /* 检查是否是日期。bug: 2009-09-31会被认为合法的日期，因为strtotime自动将其改为了10-01。*/
+    public static function checkDate($date)
+    {
+        $stamp = strtotime($date);
+        if(!is_numeric($stamp)) return false; 
+        return checkdate(date('m', $stamp), date('d', $stamp), date('Y', $stamp));
+    }
+
     /* 检查是否符合正则表达式。*/
     public static function checkREG($var, $reg)
     {
