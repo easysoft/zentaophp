@@ -1314,7 +1314,8 @@ class language
      */
     public function show($obj, $key)
     {
-        if(isset($obj->$key)) echo $obj->$key; else echo '';
+        $obj = (array)$obj;
+        if(isset($obj[$key])) echo $obj[$key]; else echo '';
     }
 }
 
