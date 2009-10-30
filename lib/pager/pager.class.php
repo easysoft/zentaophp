@@ -322,14 +322,10 @@ EOT;
     /* Create the select list of RecPerPage. */
     function createRecPerPageList()
     {
-        for($i = 5; $i <= 30; $i += 5) $range[$i] = $i;
-        if($this->pageTotal > 50 and $this->pageTotal < 100) $range[50]  = 50;
-        if($this->pageTotal >= 100)
-        {
-            $range[100] = 100;
-            $range[200] = 200;
-            $range[500] = 500;
-        }
+        for($i = 5; $i <= 50; $i += 5) $range[$i] = $i;
+        $range[100] = 100;
+        $range[200] = 200;
+        $range[500] = 500;
         return html::select('_recPerPage', $range, $this->recPerPage, "onchange='submitPage(\"changeRecPerPage\");'");
     }
 
