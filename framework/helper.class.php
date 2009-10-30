@@ -205,4 +205,17 @@ class helper
     {
         return base64_decode(strtr($string, '', '+/='));
     }
+
+    /**
+     *  计算两个日期的差。
+     * 
+     * @param   date  $date1   第一个时间
+     * @param   date  $date2   第二个时间
+     * @access  public
+     * @return  string
+     */
+    static function dateDiff($date1, $date2)
+    {
+        return round(strtotime($date2) - strtotime($date1) / 86400, 0);
+    }
 }
