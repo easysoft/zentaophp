@@ -249,7 +249,6 @@ class fixer
     /* 设置默认值。*/
     public function setDefault($fieldName, $value)
     {
-        if(!isset($this->data->$fieldName)) return $this;
         if(!isset($this->data->$fieldName) or empty($this->data->$fieldName)) $this->data->$fieldName = $value;
         return $this;
     }
@@ -257,7 +256,6 @@ class fixer
     /* 条件设置。*/
     public function setIF($condition, $fieldName, $value)
     {
-        if(!isset($this->data->$fieldName)) return $this;
         if($condition) $this->data->$fieldName = $value;
         return $this;
     }
@@ -265,7 +263,6 @@ class fixer
     /* 强制设置。*/
     public function setForce($fieldName, $value)
     {
-        if(!isset($this->data->$fieldName)) return $this;
         $this->data->$fieldName = $value;
         return $this;
     }
