@@ -383,13 +383,14 @@ class control
      * @param   string  $moduleName    模块名。
      * @param   string  $methodName    方法名。
      * @param   mixed   $vars          要传递的参数，可以是数组，array('var1'=>'value1')。也可以是var1=value1&var2=value2的形式。
+     * @param   string  $viewType      视图格式。
      * @access  public
      * @return  string
      */
-    public function createLink($moduleName, $methodName = 'index', $vars = array())
+    public function createLink($moduleName, $methodName = 'index', $vars = array(), $viewType = '')
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
-        return helper::createLink($moduleName, $methodName, $vars);
+        return helper::createLink($moduleName, $methodName, $vars, $viewType);
     }
 
     /**
