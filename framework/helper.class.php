@@ -214,7 +214,7 @@ class helper
      * @access  public
      * @return  string
      */
-    static function dateDiff($date1, $date2)
+    static function diffDate($date1, $date2)
     {
         return round(strtotime($date2) - strtotime($date1) / 86400, 0);
     }
