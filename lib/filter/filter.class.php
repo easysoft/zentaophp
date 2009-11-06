@@ -99,6 +99,7 @@ class validater
     /* 检查是否是日期。bug: 2009-09-31会被认为合法的日期，因为strtotime自动将其改为了10-01。*/
     public static function checkDate($date)
     {
+        if($date == '0000-00-00') return true;
         $stamp = strtotime($date);
         if(!is_numeric($stamp)) return false; 
         return checkdate(date('m', $stamp), date('d', $stamp), date('Y', $stamp));
@@ -120,6 +121,12 @@ class validater
     public static function checkNotEmpty($var)
     {
         return !empty($var);
+    }
+
+    /* 检查用户名。*/
+    public static function checkAccount($var)
+    {
+        return self::checkREG($var, '|[a-zA-Z0-9._]{3}|');
     }
 
     /* 调用回掉函数。*/
@@ -272,6 +279,13 @@ class fixer
     {
         $fields = $this->processFields($fieldName);
         foreach($fields as $fieldName) unset($this->data->$fieldName);
+        return $this;
+    }
+
+    /* 条件删除。*/
+    public function removeIF($condition, $fieldName)
+    {
+        if($condition) unset($this->data->$fieldName);
         return $this;
     }
 
