@@ -254,9 +254,10 @@ class fixer
     }
 
     /* 设置默认值。*/
-    public function setDefault($fieldName, $value)
+    public function setDefault($fields, $value)
     {
-        if(!isset($this->data->$fieldName) or empty($this->data->$fieldName)) $this->data->$fieldName = $value;
+        $fields = strpos($fields, ',') ? explode(',', str_replace(' ', '', $fields)) : array($fields);
+        foreach($fields as $fieldName)if(!isset($this->data->$fieldName) or empty($this->data->$fieldName)) $this->data->$fieldName = $value;
         return $this;
     }
 
@@ -293,6 +294,21 @@ class fixer
     public function add($fieldName, $value)
     {
         $this->data->$fieldName = $value;
+        return $this;
+    }
+
+    /* 条件添加。*/
+    public function addIF($condition, $fieldName, $value)
+    {
+        if($condition) $this->data->$fieldName = $value;
+        return $this;
+    }
+
+    /* 连接。*/
+    public function join($fieldName, $value)
+    {
+        if(!isset($this->data->$fieldName) or !is_array($this->data->$fieldName)) return $this;
+        $this->data->$fieldName = join($value, $this->data->$fieldName);
         return $this;
     }
 
