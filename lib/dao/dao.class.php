@@ -347,7 +347,8 @@ class dao
     {
         if(empty($field)) return $this->query()->fetch();
         $this->setFields($field);
-        return($this->query()->fetch(PDO::FETCH_OBJ)->$field);
+        $result = $this->query()->fetch(PDO::FETCH_OBJ);
+        if($result) return $result->$field;
     }
 
     /* 返回全部的结果。如果指定了$keyField，则以keyField的值作为key。*/
