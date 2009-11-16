@@ -243,6 +243,39 @@ class model
     }
 
     /**
+     * 加载某一个模块的model文件。
+     * 
+     * @param   string  $moduleName     模块名字，如果为空，则取当前的模块名作为model名。
+     * @access  public
+     * @return  void
+     */
+    public function loadModel($moduleName)
+    {
+        if(empty($moduleName)) return false;
+        $modelFile = $this->setModelFile($moduleName);
+        if(!file_exists($modelFile)) return false;
+
+        $modelClass = $moduleName. 'Model';
+        helper::import($modelFile);
+        
+        if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+        $this->$moduleName = new $modelClass();
+    }
+
+    /**
+     * 设置model文件。
+     * 
+     * @param   string      $moduleName     模块名字。
+     * @access  private
+     * @return void
+     */
+    private function setModelFile($moduleName)
+    {
+        $modelFile = $this->app->getModuleRoot() . strtolower(trim($moduleName)) . $this->app->getPathFix() . 'model.php';
+        return $modelFile;
+    }
+
+    /**
      * 加载模块的语言文件。
      * 
      * @access protected

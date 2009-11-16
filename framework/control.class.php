@@ -175,7 +175,7 @@ class control
      * @access public
      * @return void
      */
-    public function __construct()
+    public function __construct($moduleName = '', $methodName = '')
     {
         /* 引用全局对象，并赋值。*/
         global $app, $config, $lang, $dbh;
@@ -184,8 +184,10 @@ class control
         $this->lang       = $lang;
         $this->dbh        = $dbh;
         $this->pathFix    = $this->app->getPathFix();
-        $this->moduleName = $this->app->getModuleName();
-        $this->modulePath = $this->app->getModuleRoot() . $this->moduleName . $this->pathFix;
+
+        $this->setModuleName($moduleName);
+        $this->setModulePath();
+        $this->setMethodName($methodName);
 
         /* 自动加载当前模块的model文件。*/
         $this->loadModel();
@@ -199,6 +201,24 @@ class control
     }
 
     //-------------------- model相关的方法。--------------------//
+    //
+    /* 设置模块名。*/
+    private function setModuleName($moduleName = '')
+    {
+        $this->moduleName = $moduleName ? strtolower($moduleName) : $this->app->getModuleName();
+    }
+
+    /* 设置模块路径。*/
+    private function setModulePath()
+    {
+        $this->modulePath = $this->app->getModuleRoot() . $this->moduleName . $this->pathFix;
+    }
+
+    /* 设置方法名。*/
+    private function setMethodName($methodName = '')
+    {
+        $this->methodName = $methodName ? strtolower($methodName) : $this->app->getMethodName();
+    }
 
     /**
      * 设置model文件。
@@ -328,7 +348,7 @@ class control
     public function parse($moduleName = '', $methodName = '')
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
-        if(empty($methodName)) $methodName = $this->app->getMethodName();
+        if(empty($methodName)) $methodName = $this->methodName;
         $viewFile = $this->setViewFile($moduleName, $methodName);
 
         /* 切换到视图文件所在的目录，以保证视图文件中的包含路径有效。*/
@@ -346,21 +366,32 @@ class control
     }
 
     /**
-     * 获取视图内容。
+     * 获取某一个模块的某一个方法的内容。
      * 
      * 可以将某一个视图文件的内容作为字符串返回。 
      *
      * @param   string  $moduleName    模块名。
      * @param   string  $methodName    方法名。
-     * @param   bool    $clear         是否清除原来的视图内容。
+     * @param   array   $params        方法参数。
      * @access  public
      * @return  string
      */
-    public function fetch($moduleName = '', $methodName = '', $clear = false)
+    public function fetch($moduleName = '', $methodName = 'index', $params = array())
     {
-        if($clear) $this->clear();
-        if(empty($this->output)) $this->parse($moduleName, $methodName);
-        return $this->output;
+        $moduleControlFile = $this->app->getModuleRoot() . strtolower($moduleName) . '/control.php';
+        if(!file_exists($moduleControlFile)) $this->app->error("The control file $moduleControlFile not found", __FILE__, __LINE__, $exit = true);
+
+        helper::import($moduleControlFile);
+        if(!class_exists($moduleName)) $this->app->error(" The class $moduleName not found", __FILE__, __LINE__, $exit = true);
+        if(!is_array($params)) parse_str($params, $params);
+        $module = new $moduleName($moduleName, $methodName);
+
+        ob_start();
+        call_user_func_array(array($module, $methodName), $params);
+        $output = ob_get_contents();
+        ob_end_clean();
+        unset($module);
+        return $output;
     }
 
     /**
