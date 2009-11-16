@@ -174,6 +174,10 @@ class fixer
            case 'env':
                $this->data = (object)$_ENV;
                break;
+           case 'file':
+               $this->data = (object)$_FILES;
+               break;
+
            default:
                die('scope not supported, should be post|get|server|session|cookie|env');
        }
