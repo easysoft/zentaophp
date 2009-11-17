@@ -297,7 +297,7 @@ class dao
         if($pager->recTotal == 0)
         {
             /* 获得SELECT和FROM的位置，据此算出查询的字段，然后将其替换为count(*)。*/
-            $sql       = $this->sqlobj->get();
+            $sql       = $this->get();
             $selectPOS = strpos($sql, 'SELECT') + strlen('SELECT');
             $fromPOS   = strpos($sql, 'FROM');
             $fields    = substr($sql, $selectPOS, $fromPOS - $selectPOS );
