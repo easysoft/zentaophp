@@ -216,6 +216,6 @@ class helper
      */
     static function diffDate($date1, $date2)
     {
-        return round((strtotime($date2) - strtotime($date1)) / 86400, 0);
+        return round((strtotime($date1) - strtotime($date2)) / 86400, 0);
     }
 }
