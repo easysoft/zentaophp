@@ -260,6 +260,7 @@ class model
         
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
         $this->$moduleName = new $modelClass();
+        return $this->$moduleName;
     }
 
     /**

@@ -275,6 +275,7 @@ class control
         {
             $this->dao = $this->$moduleName->dao;
         }
+        return $this->$moduleName;
     }
 
     /**
@@ -368,7 +369,7 @@ class control
     /**
      * 获取某一个模块的某一个方法的内容。
      * 
-     * 可以将某一个视图文件的内容作为字符串返回。 
+     * 如果没有指定模块名，则取当前模块当前方法的视图。如果指定了模块和方法，则调用对应的模块方法的视图内容。
      *
      * @param   string  $moduleName    模块名。
      * @param   string  $methodName    方法名。
@@ -378,6 +379,13 @@ class control
      */
     public function fetch($moduleName = '', $methodName = 'index', $params = array())
     {
+        if($moduleName == '') $moduleName = $this->moduleName;
+        if($moduleName == $this->moduleName) 
+        {
+            $this->parse($moduleName, $methodName);
+            return $this->output;
+        }
+
         $moduleControlFile = $this->app->getModuleRoot() . strtolower($moduleName) . '/control.php';
         if(!file_exists($moduleControlFile)) $this->app->error("The control file $moduleControlFile not found", __FILE__, __LINE__, $exit = true);
 
