@@ -313,7 +313,15 @@ class dao
             self::$querys[] = $sql;
 
             /* 获得记录总数。*/
-            $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
+            try
+            {
+                $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
+            }
+            catch (PDOException $e) 
+            {
+                $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+            }
+
             $pager->setRecTotal($row->recTotal);
             $pager->setPageTotal();
         }
