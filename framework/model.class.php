@@ -159,11 +159,11 @@ class model
 
         $this->setModuleName();
         $this->setModulePath();
-        $this->setModuleConfig();
-        $this->loadModuleConfig();
         $this->setModuleLang();
         $this->loadModuleLang();
-
+        $this->setModuleConfig();
+        $this->loadModuleConfig();
+     
         if(isset($config->db->dao)   and $config->db->dao)   $this->loadDAO();
         if(isset($config->super2OBJ) and $config->super2OBJ) $this->setSuperVars();
     }
