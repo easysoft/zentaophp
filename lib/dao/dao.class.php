@@ -534,7 +534,7 @@ class dao
     /* 批量检查。*/
     public function batchCheck($fields, $funcName)
     {
-        $fields = explode(',', $fields);
+        $fields = explode(',', str_replace(' ', '', $fields));
         $funcArgs = func_get_args();
         for($i = 0; $i < VALIDATER::MAX_ARGS; $i ++)
         {
