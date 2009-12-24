@@ -494,8 +494,15 @@ class dao
             $args  = func_get_args();
             $sql = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->dbh->quote($value); 
             if(isset($args[2])) $sql .= ' AND ' . $args[2];
-            $row = $this->dbh->query($sql)->fetch();
-            if($row->count != 0) $this->logError($funcName, $fieldName, $fieldLabel, array($value));
+            try
+            {
+                 $row = $this->dbh->query($sql)->fetch();
+                 if($row->count != 0) $this->logError($funcName, $fieldName, $fieldLabel, array($value));
+            }
+            catch (PDOException $e) 
+            {
+                $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+            }
         }
         else
         {
