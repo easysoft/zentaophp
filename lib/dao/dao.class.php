@@ -624,9 +624,18 @@ class dao
     /* 获得某一个表的字段类型。*/
     private function getFieldsType()
     {
-        $this->dbh->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-        $rawFields = $this->dbh->query("DESC $this->table")->fetchAll();
-        $this->dbh->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+        try
+        {
+            $this->dbh->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+            $sql = "DESC $this->table";
+            $rawFields = $this->dbh->query($sql)->fetchAll();
+            $this->dbh->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+        }
+        catch (PDOException $e) 
+        {
+            $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+        }
+
         foreach($rawFields as $rawField)
         {
             $firstPOS = strpos($rawField->type, '(');
