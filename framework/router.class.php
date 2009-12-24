@@ -1111,6 +1111,10 @@ class router
         /* 记录错误信息。*/
         $log = "ERROR: $message in $file on line $line";
         if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
+        $trace = debug_backtrace(false);
+        extract($trace[0]);
+        extract($trace[1]);
+        $log .= ", last called by $file on $line through function $function.";
         error_log($log);
 
         /* 如果需要终止程序，则显示到终端用户的屏幕上。*/

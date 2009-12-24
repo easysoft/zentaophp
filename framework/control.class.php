@@ -136,10 +136,10 @@ class control
     /**
      * 记录赋值到view的所有变量。
      * 
-     * @var array
-     * @access private
+     * @var object
+     * @access public
      */
-    private $vars = array();
+    public $view; 
 
     /**
      * 要加载的view文件。
@@ -322,7 +322,7 @@ class control
      */
     public function assign($name, $value)
     {
-        $this->vars[$name] = $value;
+        $this->view->$name = $value;
     }
 
     /**
@@ -356,7 +356,7 @@ class control
         $currentPWD = getcwd();
         chdir(dirname($viewFile));
 
-        extract($this->vars);
+        extract((array)$this->view);
         ob_start();
         include $viewFile;
         $this->output .= ob_get_contents();
