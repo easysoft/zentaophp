@@ -735,6 +735,21 @@ class sql
      */
     private $isFirstSet = true;
 
+    /**
+     * 是否在条件判断中。
+     * 
+     * @var bool
+     * @access private;
+     */
+    private $inCondition = false;
+
+    /**
+     * 判断条件是否为ture。
+     * 
+     * @var bool
+     * @access private;
+     */
+    private $conditionIsTrue = false;
 
     /* 构造函数。*/
     private function __construct($table = '')
@@ -855,9 +870,24 @@ class sql
         return $this;
     }
 
+    /* 条件判断开始。*/
+    public function onCaseOf($condition)
+    {
+        $this->inCondition = true;
+        $this->conditionIsTrue = $condition;
+    }
+
+    /* 条件判断结束。*/
+    public function endCase()
+    {
+        $this->inCondition = false;
+        $this->conditionIsTrue = false;
+    }
+
     /* WHERE语句部分开始。*/
     public function where($arg1, $arg2 = null, $arg3 = null)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         if($arg3 !== null)
         {
             $value     = $this->dbh->quote($arg3);
@@ -875,6 +905,7 @@ class sql
     /* 追加AND条件。*/
     public function andWhere($condition)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " AND $condition ";
         return $this;
     }
@@ -882,6 +913,7 @@ class sql
     /* 追加OR条件。*/
     public function orWhere($condition)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " OR $condition ";
         return $this;
     }
@@ -889,6 +921,7 @@ class sql
     /* 等于。*/
     public function eq($value)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " = " . $this->dbh->quote($value);
         return $this;
     }
@@ -896,6 +929,7 @@ class sql
     /* 不等于。*/
     public function ne($value)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " != " . $this->dbh->quote($value);
         return $this;
     }
@@ -903,6 +937,7 @@ class sql
     /* 大于。*/
     public function gt($value)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " > " . $this->dbh->quote($value);
         return $this;
     }
@@ -910,6 +945,7 @@ class sql
     /* 小于。*/
     public function lt($value)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " < " . $this->dbh->quote($value);
         return $this;
     }
@@ -917,6 +953,7 @@ class sql
     /* 生成between语句。*/
     public function between($min, $max)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " BETWEEN $min AND $max ";
         return $this;
     }
@@ -924,6 +961,7 @@ class sql
     /* 生成 IN部分语句。*/
     public function in($ids)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= helper::dbIN($ids);
         return $this;
     }
@@ -931,6 +969,7 @@ class sql
     /* 生成LIKE部分语句。*/
     public function like($string)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " LIKE " . $this->dbh->quote($string);
         return $this;
     }
