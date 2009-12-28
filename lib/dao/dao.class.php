@@ -353,6 +353,19 @@ class dao
     /* 返回一条记录，如果指定了$field字段, 则直接返回该字段对应的值。*/
     public function fetch($field = '')
     {
+        if(isset($this->config->db->stripSlash) and $this->config->db->stripSlash)
+        {
+            if(empty($field))
+            {
+                $row = $this->query()->fetch();
+                foreach($row as $key => $value) $row->$key = stripslashes($value);
+                return $row;
+            }
+            $this->setFields($field);
+            $result = $this->query()->fetch(PDO::FETCH_OBJ);
+            if($result) return stripslashes($result->$field);
+        }
+
         if(empty($field)) return $this->query()->fetch();
         $this->setFields($field);
         $result = $this->query()->fetch(PDO::FETCH_OBJ);
@@ -363,10 +376,30 @@ class dao
     public function fetchAll($keyField = '')
     {
         $stmt = $this->query();
-        if(empty($keyField)) return $stmt->fetchAll();
-        $rows = array();
-        while($row = $stmt->fetch()) $rows[$row->$keyField] = $row;
-        return $rows;
+        if(isset($this->config->db->stripSlash) and $this->config->db->stripSlash)
+        {
+            $rows = array();
+            while($row = $stmt->fetch())
+            {
+                foreach($row as $key => $value) $row->$key = stripslashes($value);
+                if($keyField)
+                {
+                    $rows[$row->$keyField] = $row;
+                }
+                else
+                {
+                    $rows[] = $row;
+                }
+            }
+            return $rows;
+        }
+        else
+        {
+            if(empty($keyField)) return $stmt->fetchAll();
+            $rows = array();
+            while($row = $stmt->fetch()) $rows[$row->$keyField] = $row;
+            return $rows;
+        }
     }
 
     /* 返回结果并按照某个字段进行分组。*/
@@ -376,6 +409,10 @@ class dao
         $rows = array();
         while($row = $stmt->fetch())
         {
+            if(isset($this->config->db->stripSlash) and $this->config->db->stripSlash)
+            {
+                foreach($row as $key => $value) $row->$key = stripslashes($value);
+            }
             empty($keyField) ?  $rows[$row->$groupField][] = $row : $rows[$groupField][$row->$keyField] = $row;
         }
         return $rows;
