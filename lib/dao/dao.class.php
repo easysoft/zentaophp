@@ -353,19 +353,6 @@ class dao
     /* 返回一条记录，如果指定了$field字段, 则直接返回该字段对应的值。*/
     public function fetch($field = '')
     {
-        if(isset($this->config->db->stripSlash) and $this->config->db->stripSlash)
-        {
-            if(empty($field))
-            {
-                $row = $this->query()->fetch();
-                foreach($row as $key => $value) $row->$key = stripslashes($value);
-                return $row;
-            }
-            $this->setFields($field);
-            $result = $this->query()->fetch(PDO::FETCH_OBJ);
-            if($result) return stripslashes($result->$field);
-        }
-
         if(empty($field)) return $this->query()->fetch();
         $this->setFields($field);
         $result = $this->query()->fetch(PDO::FETCH_OBJ);
@@ -376,30 +363,10 @@ class dao
     public function fetchAll($keyField = '')
     {
         $stmt = $this->query();
-        if(isset($this->config->db->stripSlash) and $this->config->db->stripSlash)
-        {
-            $rows = array();
-            while($row = $stmt->fetch())
-            {
-                foreach($row as $key => $value) $row->$key = stripslashes($value);
-                if($keyField)
-                {
-                    $rows[$row->$keyField] = $row;
-                }
-                else
-                {
-                    $rows[] = $row;
-                }
-            }
-            return $rows;
-        }
-        else
-        {
-            if(empty($keyField)) return $stmt->fetchAll();
-            $rows = array();
-            while($row = $stmt->fetch()) $rows[$row->$keyField] = $row;
-            return $rows;
-        }
+        if(empty($keyField)) return $stmt->fetchAll();
+        $rows = array();
+        while($row = $stmt->fetch()) $rows[$row->$keyField] = $row;
+        return $rows;
     }
 
     /* 返回结果并按照某个字段进行分组。*/
@@ -409,10 +376,6 @@ class dao
         $rows = array();
         while($row = $stmt->fetch())
         {
-            if(isset($this->config->db->stripSlash) and $this->config->db->stripSlash)
-            {
-                foreach($row as $key => $value) $row->$key = stripslashes($value);
-            }
             empty($keyField) ?  $rows[$row->$groupField][] = $row : $rows[$groupField][$row->$keyField] = $row;
         }
         return $rows;
@@ -529,7 +492,7 @@ class dao
         if($funcName == 'unique')
         {
             $args  = func_get_args();
-            $sql = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->dbh->quote($value); 
+            $sql = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->sqlobj->quote($value); 
             if(isset($args[2])) $sql .= ' AND ' . $args[2];
             try
             {
@@ -788,12 +751,21 @@ class sql
      */
     private $conditionIsTrue = false;
 
+    /**
+     * 是否自动magic quote。
+     * 
+     * @var bool
+     * @access public
+     */
+     public $magicQuote; 
+
     /* 构造函数。*/
     private function __construct($table = '')
     {
         global $dbh;
-        $this->dbh   = $dbh;
-        $this->table = $table;
+        $this->dbh        = $dbh;
+        $this->table      = $table;
+        $this->magicQuote = get_magic_quotes_gpc();
     }
 
     /* 实例化方法，通过该方法实例对象。*/
@@ -846,7 +818,7 @@ class sql
     public function data($data)
     {
         $this->data = $data;
-        foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->dbh->quote($value) . ',';
+        foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
         $this->sql = rtrim($this->sql, ',');    // 去掉最后面的逗号。
         return $this;
     }
@@ -927,8 +899,8 @@ class sql
         if($this->inCondition and !$this->conditionIsTrue) return $this;
         if($arg3 !== null)
         {
-            $value     = $this->dbh->quote($arg3);
-            $condition = "`$arg1` $arg2 " . $this->dbh->quote($arg3);
+            $value     = $this->quote($arg3);
+            $condition = "`$arg1` $arg2 " . $this->quote($arg3);
         }
         else
         {
@@ -959,7 +931,7 @@ class sql
     public function eq($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
-        $this->sql .= " = " . $this->dbh->quote($value);
+        $this->sql .= " = " . $this->quote($value);
         return $this;
     }
 
@@ -967,7 +939,7 @@ class sql
     public function ne($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
-        $this->sql .= " != " . $this->dbh->quote($value);
+        $this->sql .= " != " . $this->quote($value);
         return $this;
     }
 
@@ -975,7 +947,7 @@ class sql
     public function gt($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
-        $this->sql .= " > " . $this->dbh->quote($value);
+        $this->sql .= " > " . $this->quote($value);
         return $this;
     }
 
@@ -983,7 +955,7 @@ class sql
     public function lt($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
-        $this->sql .= " < " . $this->dbh->quote($value);
+        $this->sql .= " < " . $this->quote($value);
         return $this;
     }
 
@@ -1007,7 +979,7 @@ class sql
     public function like($string)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
-        $this->sql .= " LIKE " . $this->dbh->quote($string);
+        $this->sql .= " LIKE " . $this->quote($string);
         return $this;
     }
 
@@ -1045,5 +1017,12 @@ class sql
     public function get()
     {
         return $this->sql;
+    }
+
+    /* 转义。*/
+    public function quote($value)
+    {
+        if($this->magicQuote) $value = stripslashes($value);
+        return $this->dbh->quote($value);
     }
 }
