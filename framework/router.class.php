@@ -1111,7 +1111,7 @@ class router
         /* ¼ÇÂ¼´íÎóÐÅÏ¢¡£*/
         $log = "ERROR: $message in $file on line $line";
         if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
-        $trace = debug_backtrace(false);
+        $trace = debug_backtrace();
         extract($trace[0]);
         extract($trace[1]);
         $log .= ", last called by $file on $line through function $function.";
