@@ -77,12 +77,28 @@ class router
     private $appLibRoot;
 
     /**
+     * 临时文件所在的目录
+     * 
+     * @var string
+     * @access private
+     */
+    private $tmpRoot;
+
+    /**
      * 缓存文件所在的根目录。
      * 
      * @var string
      * @access private
      */
     private $cacheRoot;
+
+    /**
+     * 日志文件所在的目录。
+     * 
+     * @var string
+     * @access private
+     */
+    private $logRoot;
 
     /**
      * 配置文件所在的根目录。
@@ -254,7 +270,9 @@ class router
         $this->setCoreLibRoot();
         $this->setAppRoot($appName, $appRoot);
         $this->setAppLibRoot();
+        $this->setTmpRoot();
         $this->setCacheRoot();
+        $this->setLogRoot();
         $this->setConfigRoot();
         $this->setModuleRoot();
         $this->setThemeRoot();
@@ -367,6 +385,17 @@ class router
     }
 
     /**
+     * 设置临时文件所在的目录。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setTmpRoot()
+    {
+        $this->tmpRoot = $this->appRoot . 'tmp' . $this->pathFix;
+    }
+
+    /**
      * 设置缓存文件所在的根目录。
      * 
      * @access protected
@@ -374,7 +403,18 @@ class router
      */
     protected function setCacheRoot()
     {
-        $this->cacheRoot = $this->appRoot . 'cache' . $this->pathFix;
+        $this->cacheRoot = $this->tmpRoot . 'cache' . $this->pathFix;
+    }
+
+    /**
+     * 设置日志文件所在的目录。
+     * 
+     * @access protected
+     * @return void
+     */
+    protected function setLogRoot()
+    {
+        $this->logRoot = $this->tmpRoot . 'log' . $this->pathFix;
     }
 
     /**
@@ -494,6 +534,17 @@ class router
     }
 
     /**
+     * 返回临时文件所在的目录。
+     * 
+     * @access public
+     * @return string
+     */
+    public function getTmpRoot()
+    {
+        return $this->tmpRoot;
+    } 
+
+    /**
      * 返回缓存文件所在的根目录。
      * 
      * @access public
@@ -502,6 +553,17 @@ class router
     public function getCacheRoot()
     {
         return $this->cacheRoot;
+    } 
+
+    /**
+     * 返回日志文件所在的目录。
+     * 
+     * @access public
+     * @return string
+     */
+    public function getLogRoot()
+    {
+        return $this->logRoot;
     } 
 
     /**
