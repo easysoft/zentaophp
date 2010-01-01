@@ -75,7 +75,16 @@ class helper
     static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '')
     {
         global $app, $config;
+
         $link = $config->webRoot;
+        if($config->requestType == 'GET')
+        {
+            if(strpos($_SERVER['SCRIPT_NAME'], 'index.php') === false)
+            {
+                $link = $_SERVER['SCRIPT_NAME'];
+            }
+        }
+
         if(empty($viewType)) $viewType = $app->getViewType();
 
         /* 如果传递进来的vars不是数组，尝试将其解析成数组格式。*/
