@@ -822,7 +822,7 @@ class router
      */
     public function getURI($full = false)
     {
-        if($full) return $this->config->webRoot . $this->URI . '.' . $this->viewType;
+        if($full and $this->config->requestType == 'PATH_INFO') return $this->config->webRoot . $this->URI . '.' . $this->viewType;
         return $this->URI;
     }
 
