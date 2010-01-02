@@ -18,7 +18,7 @@
  * @copyright   Copyright 2009, Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@gmail.com>
  * @package     ZenTaoPHP
- * @version     $Id: dao.class.php 1467 2009-10-24 08:04:12Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 

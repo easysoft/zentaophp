@@ -18,7 +18,7 @@
  * @copyright   Copyright 2009, Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@gmail.com>
  * @package     ZenTaoPHP
- * @version     $Id: filter.class.php 1457 2009-10-23 01:57:46Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 /**

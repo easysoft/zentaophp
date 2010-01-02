@@ -15,10 +15,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wwccss@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2009-09-10</date>
+ <date>2010-01-03</date>
  <time>09:00:00</time>
  <version>
-  <release>1.1</release>
+  <release>1.3.0</release>
   <api>1.0</api>
  </version>
  <stability>
@@ -30,12 +30,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </notes>
  <contents>
   <dir name="/">
+   <!--
    <file baseinstalldir="/" name="ztphp" role="script">
      <tasks:replace from="@php_dir@" to="php_dir" type="pear-config" />
    </file>  
    <file baseinstalldir="/" name="ztphp.bat" role="script">
      <tasks:replace from="@php_dir@" to="php_dir" type="pear-config" />
    </file>  
+   -->
 
    <dir name="framework">
     <file baseinstalldir="zentao" name="router.class.php"  role="php" />
@@ -43,7 +45,17 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file baseinstalldir="zentao" name="model.class.php"   role="php" />
     <file baseinstalldir="zentao" name="helper.class.php"  role="php" />
    </dir>
+   <dir name="lib/dao/">
+    <file baseinstalldir="zentao" name="dao.class.php"  role="php" />
+   </dir>
+   <dir name="lib/filter/">
+    <file baseinstalldir="zentao" name="filter.class.php"  role="php" />
+   </dir>
+   <dir name="lib/pager/">
+    <file baseinstalldir="zentao" name="pager.class.php"  role="php" />
+   </dir>
 
+   <!--
    <dir name="app/cli/">
      <file baseinstalldir="zentao" name="ztphp" role="php" />
    </dir>
@@ -79,6 +91,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <file baseinstalldir="zentao" name="createupdate.html.php"  role="php" />
      <file baseinstalldir="zentao" name="createrouter.html.php"  role="php" />
    </dir>
+   -->
   </dir>
  </contents>
  <dependencies>
@@ -97,16 +110,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
        <name>windows</name>
      </os>
    </installconditions>
+   <!--
    <filelist>
      <install as="ztphp.bat" name="ztphp.bat" />
      <ignore name="ztphp" />
    </filelist>
+   -->
  </phprelease>
  <phprelease>
+   <!--
    <filelist>
      <install as="ztphp" name="ztphp" />
      <ignore name="ztphp.bat" />
    </filelist>
+   -->
  </phprelease>
 
 </package>

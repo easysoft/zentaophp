@@ -18,7 +18,7 @@
  * @copyright   Copyright 2009, Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@gmail.com>
  * @package     ZenTaoPHP
- * @version     $Id: pager.class.php 1438 2009-10-22 01:24:43Z wwccss $
+ * @version     $Id$
  * @link        http://www.zentao.cn
  */
 /**

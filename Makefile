@@ -3,7 +3,6 @@ VERSION=$(shell head -n 1 VERSION)
 all: pear tgz
 
 clean:
-	rm -fr ../zentaophp_*
 	rm -fr *-stamp
 	rm -fr debian/zentaophp
 	rm -fr ZenTaoPHP-*.tgz
