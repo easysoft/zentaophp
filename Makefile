@@ -28,6 +28,7 @@ tgz:
 	mkdir zentaophp
 	cp -fr app zentaophp
 	cp -fr framework zentaophp
+	cp -fr lib zentaophp
 	cp doc/COPY* zentaophp
 	cp doc/README zentaophp
 	rm -fr zentaophp/app/pms
@@ -36,4 +37,5 @@ tgz:
 	find zentaophp -name .svn |xargs rm -fr
 	tar czvf ZenTaoPHP.$(VERSION).tar.gz zentaophp
 ztphpdoc:
-	phpdoc -d framework -t ztphpapi -o HTML:frames:phphtmllib -ti ZenTaoPHP¿ò¼ÜAPI²Î¿¼ÊÖ²á -s on -pp on -i *test*
+	phpdoc -d framework,lib -t ztphpapi -o HTML:frames:phphtmllib -ti ZenTaoPHP¿ò¼ÜAPI²Î¿¼ÊÖ²á -s on -pp on -i *test*
+	phpdoc -d framework,lib -t ztphpapi.chm -o chm:default:default -ti ZenTaoPHP¿ò¼ÜAPI²Î¿¼ÊÖ²á -s on -pp on -i *test*
