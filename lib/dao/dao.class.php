@@ -23,14 +23,14 @@
  */
 
 /**
- * DAO类。提供各种便利的数据库操作方法。
+ * DAO�ࡣ�ṩ���ֱ��������ݿ����������
  * 
  * @package ZenTaoPHP
  */
 class dao
 {
     /**
-     * 全局的$app对象。
+     * ȫ�ֵ�$app����
      * 
      * @var object
      * @access protected
@@ -38,7 +38,7 @@ class dao
     protected $app;
 
     /**
-     * 全局的$config对象。 
+     * ȫ�ֵ�$config���� 
      * 
      * @var object
      * @access protected
@@ -46,7 +46,7 @@ class dao
     protected $config;
 
     /**
-     * 全局的$lang对象。
+     * ȫ�ֵ�$lang����
      * 
      * @var object
      * @access protected
@@ -54,7 +54,7 @@ class dao
     protected $lang;
 
     /**
-     * 全局的$dbh（数据库访问句柄）对象。
+     * ȫ�ֵ�$dbh�����ݿ���ʾ��������
      * 
      * @var object
      * @access protected
@@ -62,7 +62,7 @@ class dao
     protected $dbh;
 
     /**
-     * 当前model所对应的table name。
+     * ��ǰmodel����Ӧ��table name��
      * 
      * @var object
      * @access private
@@ -70,7 +70,7 @@ class dao
     public $table;
 
     /**
-     * 当前查询所返回的字段列表。
+     * ��ǰ��ѯ�����ص��ֶ��б���
      * 
      * @var object
      * @access private
@@ -78,9 +78,9 @@ class dao
     public $fields;
 
     /**
-     * 查询的模式，现在支持两种，一种是通过魔术方法，一种是直接拼写sql查询。
+     * ��ѯ��ģʽ������֧�����֣�һ����ͨ��ħ��������һ����ֱ��ƴдsql��ѯ��
      * 
-     * 主要用来区分dao::from()方法和sql::from()方法。
+     * ��Ҫ��������dao::from()������sql::from()������
      *
      * @var object
      * @access private
@@ -88,9 +88,9 @@ class dao
     public $mode;
 
     /**
-     * 执行的sql查询列表。
+     * ִ�е�sql��ѯ�б���
      * 
-     * 用来记录当前页面所有的sql查询。
+     * ������¼��ǰҳ�����е�sql��ѯ��
      *
      * @var array
      * @access public
@@ -98,7 +98,7 @@ class dao
     static public $querys = array();
 
     /**
-     * 数据检查结果。
+     * ���ݼ������
      * 
      * @var array
      * @access public
@@ -106,11 +106,11 @@ class dao
     static public $errors = array();
 
     /**
-     * 构造函数。
+     * ���캯����
      * 
-     * 设置当前model对应的表名，并引用全局的变量。
+     * ���õ�ǰmodel��Ӧ�ı�����������ȫ�ֵı�����
      *
-     * @param string $table   表名。
+     * @param string $table   ������
      * @access public
      * @return void
      */
@@ -126,9 +126,9 @@ class dao
     }
 
     /**
-     * 设置数据表。
+     * �������ݱ���
      * 
-     * @param string $table   表名。
+     * @param string $table   ������
      * @access private
      * @return void
      */
@@ -138,9 +138,9 @@ class dao
     }
 
     /**
-     * 设置返回的字段列表。
+     * ���÷��ص��ֶ��б���
      * 
-     * @param string $fields   字段列表。
+     * @param string $fields   �ֶ��б���
      * @access private
      * @return void
      */
@@ -150,7 +150,7 @@ class dao
     }
 
     /**
-     * 重新设置table, field, mode。
+     * ��������table, field, mode��
      * 
      * @access private
      * @return void
@@ -162,12 +162,12 @@ class dao
         $this->setMode('');
     }
 
-    //-------------------- 根据查询方式的不同，调用SQL类的对应方法。--------------------//
+    //-------------------- ���ݲ�ѯ��ʽ�Ĳ�ͬ������SQL��Ķ�Ӧ������--------------------//
 
     /**
-     * 设置查询模式。magic是通过findby之类的魔术方法进行查询的，而raw则直接拼装sql进行查询。
+     * ���ò�ѯģʽ��magic��ͨ��findby֮���ħ���������в�ѯ�ģ���raw��ֱ��ƴװsql���в�ѯ��
      * 
-     * @param string mode   查询模式： empty|magic|raw
+     * @param string mode   ��ѯģʽ�� empty|magic|raw
      * @access private
      * @return void
      */
@@ -176,7 +176,7 @@ class dao
         $this->mode = $mode;
     }
     
-    /* select：调用SQL类的select方法。*/
+    /* select������SQL���select������*/
     public function select($fields = '*')
     {
         $this->setMode('raw');
@@ -184,7 +184,7 @@ class dao
         return $this;
     }
 
-    /* update：调用SQL类的update方法。*/
+    /* update������SQL���update������*/
     public function update($table)
     {
         $this->setMode('raw');
@@ -193,7 +193,7 @@ class dao
         return $this;
     }
 
-    /* delete：调用SQL类的delete方法。*/
+    /* delete������SQL���delete������*/
     public function delete()
     {
         $this->setMode('raw');
@@ -201,7 +201,7 @@ class dao
         return $this;
     }
 
-    /* insert：调用SQL类的insert方法。*/
+    /* insert������SQL���insert������*/
     public function insert($table)
     {
         $this->setMode('raw');
@@ -210,7 +210,7 @@ class dao
         return $this;
     }
 
-    /* replace：调用SQL类的replace方法。*/
+    /* replace������SQL���replace������*/
     public function replace($table)
     {
         $this->setMode('raw');
@@ -219,7 +219,7 @@ class dao
         return $this;
     }
 
-    /* from: 设定要查询的table name。*/
+    /* from: �趨Ҫ��ѯ��table name��*/
     public function from($table) 
     {
         $this->setTable($table);
@@ -227,28 +227,28 @@ class dao
         return $this;
     }
 
-    /* fields方法：设置要查询的字段列表。*/
+    /* fields����������Ҫ��ѯ���ֶ��б���*/
     public function fields($fields)
     {
         $this->setFields($fields);
         return $this;
     }
 
-    //-------------------- 拼装之后的SQL相关处理方法。--------------------//
+    //-------------------- ƴװ֮���SQL��ش���������--------------------//
 
-    /* 返回SQL语句。*/
+    /* ����SQL��䡣*/
     public function get()
     {
         return $this->processSQL();
     }
 
-    /* 打印SQL语句。*/
+    /* ��ӡSQL��䡣*/
     public function printSQL()
     {
         echo $this->processSQL();
     }
 
-    /* 处理SQL，将table和fields字段替换成对应的值。*/
+    /* ����SQL����table��fields�ֶ��滻�ɶ�Ӧ��ֵ��*/
     private function processSQL()
     {
         if($this->mode == 'magic')
@@ -267,15 +267,15 @@ class dao
         }
     }
 
-    //-------------------- SQL查询相关的方法。--------------------//
+    //-------------------- SQL��ѯ��صķ�����--------------------//
     
-    /* 执行sql查询，返回stmt对象。*/
+    /* ִ��sql��ѯ������stmt����*/
     public function query()
     {
-        /* 如果dao::$errors不为空，返回一个空的stmt对象，这样后续的方法调用还可以继续。*/
+        /* ���dao::$errors��Ϊ�գ�����һ���յ�stmt�������������ķ������û����Լ�����*/
         if(!empty(dao::$errors)) return new PDOStatement();
 
-        /* 处理一下SQL语句。*/
+        /* ����һ��SQL��䡣*/
         $sql = $this->processSQL();
         try
         {
@@ -288,22 +288,22 @@ class dao
         }
     }
 
-    /* 执行分页。*/
+    /* ִ�з�ҳ��*/
     public function page($pager)
     {
         if(!is_object($pager)) return $this;
 
-        /* 没有传递recTotal，则自己进行计算。*/
+        /* û�д���recTotal�����Լ����м��㡣*/
         if($pager->recTotal == 0)
         {
-            /* 获得SELECT和FROM的位置，据此算出查询的字段，然后将其替换为count(*)。*/
+            /* ���SELECT��FROM��λ�ã��ݴ������ѯ���ֶΣ�Ȼ�����滻Ϊcount(*)��*/
             $sql       = $this->get();
             $selectPOS = strpos($sql, 'SELECT') + strlen('SELECT');
             $fromPOS   = strpos($sql, 'FROM');
             $fields    = substr($sql, $selectPOS, $fromPOS - $selectPOS );
             $sql       = str_replace($fields, ' COUNT(*) AS recTotal ', $sql);
 
-            /* 取得order 或者limit的位置，将后面的去掉。*/
+            /* ȡ��order ����limit��λ�ã��������ȥ����*/
             $subLength = strlen($sql);
             $orderPOS  = strripos($sql, 'order');
             $limitPOS  = strripos($sql , 'limit');
@@ -312,7 +312,7 @@ class dao
             $sql = substr($sql, 0, $subLength);
             self::$querys[] = $sql;
 
-            /* 获得记录总数。*/
+            /* ��ü�¼������*/
             try
             {
                 $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
@@ -329,13 +329,13 @@ class dao
         return $this;
     }
 
-    /* 执行sql查询，返回受影响的记录数。*/
+    /* ִ��sql��ѯ��������Ӱ��ļ�¼����*/
     public function exec()
     {
-        /* 如果dao::$errors不为空，返回一个空的stmt对象，这样后续的方法调用还可以继续。*/
+        /* ���dao::$errors��Ϊ�գ�����һ���յ�stmt�������������ķ������û����Լ�����*/
         if(!empty(dao::$errors)) return new PDOStatement();
 
-        /* 处理一下SQL语句。*/
+        /* ����һ��SQL��䡣*/
         $sql = $this->processSQL();
         try
         {
@@ -348,9 +348,9 @@ class dao
         }
     }
 
-    //-------------------- 数据获取相关的方法。--------------------//
+    //-------------------- ���ݻ�ȡ��صķ�����--------------------//
 
-    /* 返回一条记录，如果指定了$field字段, 则直接返回该字段对应的值。*/
+    /* ����һ����¼�����ָ����$field�ֶ�, ��ֱ�ӷ��ظ��ֶζ�Ӧ��ֵ��*/
     public function fetch($field = '')
     {
         if(empty($field)) return $this->query()->fetch();
@@ -359,7 +359,7 @@ class dao
         if($result) return $result->$field;
     }
 
-    /* 返回全部的结果。如果指定了$keyField，则以keyField的值作为key。*/
+    /* ����ȫ���Ľ�������ָ����$keyField������keyField��ֵ��Ϊkey��*/
     public function fetchAll($keyField = '')
     {
         $stmt = $this->query();
@@ -369,7 +369,7 @@ class dao
         return $rows;
     }
 
-    /* 返回结果并按照某个字段进行分组。*/
+    /* ���ؽ��������ĳ���ֶν��з��顣*/
     public function fetchGroup($groupField, $keyField = '')
     {
         $stmt = $this->query();
@@ -381,7 +381,7 @@ class dao
         return $rows;
     }
 
-    /* fetchPairs方法：如果没有指定key和value字段，则取行字段里面的第一个作为key，最后一个作为value。*/
+    /* fetchPairs���������û��ָ��key��value�ֶΣ���ȡ���ֶ�����ĵ�һ����Ϊkey�����һ����Ϊvalue��*/
     public function fetchPairs($keyField = '', $valueField = '')
     {
         $pairs = array();
@@ -405,28 +405,28 @@ class dao
         return $pairs;
     }
 
-    /* 获取最后插入的id。*/
+    /* ��ȡ�������id��*/
     public function lastInsertID()
     {
         return $this->dbh->lastInsertID();
     }
 
-    //-------------------- 各种魔术方法。--------------------//
+    //-------------------- ����ħ��������--------------------//
 
     /**
-     * 魔术方法，籍此提供各种便利的查询方法。
+     * ħ�������������ṩ���ֱ����Ĳ�ѯ������
      * 
-     * @param string $funcName  被调用的方法名。
-     * @param array  $funcArgs  传入的参数列表。
+     * @param string $funcName  �����õķ�������
+     * @param array  $funcArgs  ����Ĳ����б���
      * @access public
      * @return void
      */
     public function __call($funcName, $funcArgs)
     {
-        /* 将funcName转为小写。*/
+        /* ��funcNameתΪСд��*/
         $funcName = strtolower($funcName);
 
-        /* findBy类的方法。*/
+        /* findBy��ķ�����*/
         if(strpos($funcName, 'findby') !== false)
         {
             $this->setMode('magic');
@@ -441,16 +441,16 @@ class dao
                 $operator = $funcArgs[0];
                 $value    = $funcArgs[1];
             }
-            $this->sqlobj = sql::select('%s')->from('%s')->where($field, $operator, $value);    // 使用占位符，执行查询之前替换为相应的字段和表名。
+            $this->sqlobj = sql::select('%s')->from('%s')->where($field, $operator, $value);    // ʹ��ռλ����ִ�в�ѯ֮ǰ�滻Ϊ��Ӧ���ֶκͱ�����
             return $this;
         }
-        /* fetch10方法，真正的数据查询。*/
+        /* fetch10���������������ݲ�ѯ��*/
         elseif(strpos($funcName, 'fetch') !== false)
         {
             $max  = str_replace('fetch', '', $funcName);
             $stmt = $this->query();
 
-            /* 设定了key字段。 */
+            /* �趨��key�ֶΡ� */
             $rows = array();
             $key  = isset($funcArgs[0]) ? $funcArgs[0] : '';
             $i    = 0;
@@ -462,10 +462,10 @@ class dao
             }
             return $rows;
         }
-        /* 其余的都直接调用sql类里面的方法。*/
+        /* ����Ķ�ֱ�ӵ���sql������ķ�����*/
         else
         {
-            /* 取SQL类方法中参数个数最大值，生成一个最大集合的参数列表。。*/
+            /* ȡSQL�෽���в����������ֵ������һ����󼯺ϵĲ����б�����*/
             for($i = 0; $i < SQL::MAX_ARGS; $i ++)
             {
                 ${"arg$i"} = isset($funcArgs[$i]) ? $funcArgs[$i] : null;
@@ -475,15 +475,15 @@ class dao
         }
     }
 
-    //-------------------- 数据检查相关的方法。--------------------//
+    //-------------------- ���ݼ����صķ�����--------------------//
     
-    /* 按照某个规则检查值是否符合要求。*/
+    /* ����ĳ��������ֵ�Ƿ����Ҫ��*/
     public function check($fieldName, $funcName)
     {
-        /* 如果data变量里面没有这个字段，直接返回。*/
+        /* ���data��������û������ֶΣ�ֱ�ӷ��ء�*/
         if(!isset($this->sqlobj->data->$fieldName)) return $this;
 
-        /* 引用全局的config, lang。*/
+        /* ����ȫ�ֵ�config, lang��*/
         global $lang, $config;
         $table = str_replace($config->db->prefix, '', $this->table);
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
@@ -506,7 +506,7 @@ class dao
         }
         else
         {
-            /* 取validate类方法中参数个数最大值，生成一个最大集合的参数列表。。*/
+            /* ȡvalidate�෽���в����������ֵ������һ����󼯺ϵĲ����б�����*/
             $funcArgs = func_get_args();
             unset($funcArgs[0]);
             unset($funcArgs[1]);
@@ -525,7 +525,7 @@ class dao
         return $this;
     }
 
-    /* 如果满足某一个条件，按照某个规则检查值是否符合要求。*/
+    /* �������ĳһ������������ĳ��������ֵ�Ƿ����Ҫ��*/
     public function checkIF($condition, $fieldName, $funcName)
     {
         if(!$condition) return $this;
@@ -538,7 +538,7 @@ class dao
         return $this;
     }
 
-    /* 批量检查。*/
+    /* ������顣*/
     public function batchCheck($fields, $funcName)
     {
         $fields = explode(',', str_replace(' ', '', $fields));
@@ -551,7 +551,7 @@ class dao
         return $this;
     }
  
-    /* 自动根据数据库中表的字段格式进行检查。*/
+    /* �Զ��������ݿ��б����ֶθ�ʽ���м�顣*/
     public function autoCheck($skipFields = '')
     {
         $fields     = $this->getFieldsType();
@@ -559,7 +559,7 @@ class dao
 
         foreach($fields as $fieldName => $validater)
         {
-            if(strpos($skipFields, $fieldName) !== false) continue;    // 忽略。
+            if(strpos($skipFields, $fieldName) !== false) continue;    // ���ԡ�
             if(!isset($this->sqlobj->data->$fieldName)) continue;
             if($validater['rule'] == 'skip') continue;
             $options = array();
@@ -573,14 +573,14 @@ class dao
         return $this;
     }
 
-    /* 记录错误。*/
+    /* ��¼����*/
     public function logError($checkType, $fieldName, $fieldLabel, $funcArgs = array())
     {
         global $lang;
         $error    = $lang->error->$checkType;
         $replaces = array_merge(array($fieldLabel), $funcArgs);
 
-        /* 如果error不是数组，只是字符串，则循环replace，依次替换%s。*/
+        /* ���error�������飬ֻ���ַ�������ѭ��replace�������滻%s��*/
         if(!is_array($error))
         {
             foreach($replaces as $replace)
@@ -590,10 +590,10 @@ class dao
                 $error = substr($error, 0, $pos) . $replace . substr($error, $pos +2);
             }
         }
-        /* 如果error是一个数组，则从数组中挑选%s个数与replace元素个数相同的。*/
+        /* ���error��һ�����飬�����������ѡ%s������replaceԪ�ظ�����ͬ�ġ�*/
         else
         {
-            /* 去掉replace中空白的元素。*/
+            /* ȥ��replace�пհ׵�Ԫ�ء�*/
             foreach($replaces as $key => $value) if(is_null($value)) unset($replaces[$key]);
             $replacesCount = count($replaces);
             foreach($error as $errorString)
@@ -607,13 +607,13 @@ class dao
         dao::$errors[$fieldName][] = $error;
     }
 
-    /* 判断这次查询是否有错误。*/
+    /* �ж���β�ѯ�Ƿ��д���*/
     public function isError()
     {
         return !empty(dao::$errors);
     }
 
-    /* 返回error。*/
+    /* ����error��*/
     public function getError()
     {
         $errors = dao::$errors;
@@ -621,7 +621,7 @@ class dao
         return $errors;
     }
 
-    /* 获得某一个表的字段类型。*/
+    /* ���ĳһ�������ֶ����͡�*/
     private function getFieldsType()
     {
         try
@@ -645,8 +645,8 @@ class dao
 
             if($type == 'enum' or $type == 'set')
             {
-                $rangeBegin  = $firstPOS + 2;  // 将第一个引号去掉。
-                $rangeEnd    = strrpos($rawField->type, ')') - 1; // 将最后一个引号去掉。
+                $rangeBegin  = $firstPOS + 2;  // ����һ������ȥ����
+                $rangeEnd    = strrpos($rawField->type, ')') - 1; // �����һ������ȥ����
                 $range       = substr($rawField->type, $rangeBegin, $rangeEnd - $rangeBegin);
                 $field['rule'] = 'reg';
                 $field['options']['reg']  = '/' . str_replace("','", '|', $range) . '/';
@@ -683,20 +683,20 @@ class dao
 }
 
 /**
- * SQL查询封装类。
+ * SQL��ѯ��װ�ࡣ
  * 
  * @package ZenTaoPHP
  */
 class sql
 {
     /**
-     * 所有方法的参数个数最大值。
+     * ���з����Ĳ����������ֵ��
      * 
      */
     const MAX_ARGS = 3;
 
     /**
-     * SQL语句。
+     * SQL��䡣
      * 
      * @var string
      * @access private
@@ -704,7 +704,7 @@ class sql
     private $sql = '';
 
     /**
-     * 数据表名。
+     * ���ݱ�����
      * 
      * @var string
      * @access private
@@ -712,7 +712,7 @@ class sql
     private $table = '';
 
     /**
-     * 全局的$dbh（数据库访问句柄）对象。
+     * ȫ�ֵ�$dbh�����ݿ���ʾ��������
      * 
      * @var object
      * @access protected
@@ -720,7 +720,7 @@ class sql
     protected $dbh;
 
     /**
-     * INSERT或者UPDATE时赋给的数据。
+     * INSERT����UPDATEʱ���������ݡ�
      * 
      * @var mix
      * @access protected
@@ -728,7 +728,7 @@ class sql
     public $data;
 
     /**
-     * 是否是首次调用set。
+     * �Ƿ����״ε���set��
      * 
      * @var bool    
      * @access private;
@@ -736,7 +736,7 @@ class sql
     private $isFirstSet = true;
 
     /**
-     * 是否在条件判断中。
+     * �Ƿ��������ж��С�
      * 
      * @var bool
      * @access private;
@@ -744,7 +744,7 @@ class sql
     private $inCondition = false;
 
     /**
-     * 判断条件是否为ture。
+     * �ж������Ƿ�Ϊture��
      * 
      * @var bool
      * @access private;
@@ -752,14 +752,14 @@ class sql
     private $conditionIsTrue = false;
 
     /**
-     * 是否自动magic quote。
+     * �Ƿ��Զ�magic quote��
      * 
      * @var bool
      * @access public
      */
      public $magicQuote; 
 
-    /* 构造函数。*/
+    /* ���캯����*/
     private function __construct($table = '')
     {
         global $dbh;
@@ -768,13 +768,13 @@ class sql
         $this->magicQuote = get_magic_quotes_gpc();
     }
 
-    /* 实例化方法，通过该方法实例对象。*/
+    /* ʵ����������ͨ���÷���ʵ������*/
     public function factory($table = '')
     {
         return new sql($table);
     }
 
-    /* 查询语句开始。*/
+    /* ��ѯ��俪ʼ��*/
     public function select($field = '*')
     {
         $sqlobj = self::factory();
@@ -782,7 +782,7 @@ class sql
         return $sqlobj;
     }
 
-    /* 更新语句开始。*/
+    /* ������俪ʼ��*/
     public function update($table)
     {
         $sqlobj = self::factory();
@@ -790,7 +790,7 @@ class sql
         return $sqlobj;
     }
 
-    /* 插入语句开始。*/
+    /* ������俪ʼ��*/
     public function insert($table)
     {
         $sqlobj = self::factory();
@@ -798,7 +798,7 @@ class sql
         return $sqlobj;
     }
 
-    /* 替换语句开始。*/
+    /* �滻��俪ʼ��*/
     public function replace($table)
     {
         $sqlobj = self::factory();
@@ -806,7 +806,7 @@ class sql
         return $sqlobj;
     }
 
-    /* 删除语句开始。*/
+    /* ɾ����俪ʼ��*/
     public function delete()
     {
         $sqlobj = self::factory();
@@ -814,30 +814,30 @@ class sql
         return $sqlobj;
     }
 
-    /* 给定一个key=>value结构的数组或者对象，拼装成key = value的形式。*/
+    /* ����һ��key=>value�ṹ��������߶���ƴװ��key = value����ʽ��*/
     public function data($data)
     {
         $this->data = $data;
         foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
-        $this->sql = rtrim($this->sql, ',');    // 去掉最后面的逗号。
+        $this->sql = rtrim($this->sql, ',');    // ȥ�������Ķ��š�
         return $this;
     }
 
-    /* 加左边的括弧。*/
+    /* ����ߵ�������*/
     public function markLeft($count = 1)
     {
         $this->sql .= str_repeat('(', $count);
         return $this;
     }
 
-    /* 加右边的括弧。*/
+    /* ���ұߵ�������*/
     public function markRight($count = 1)
     {
         $this->sql .= str_repeat(')', $count);
         return $this;
     }
 
-    /* SET key=value。*/
+    /* SET key=value��*/
     public function set($set)
     {
         if($this->isFirstSet)
@@ -852,48 +852,48 @@ class sql
         return $this;
     }
 
-    /* 设定要查询的表名。*/
+    /* �趨Ҫ��ѯ�ı�����*/
     public function from($table)
     {
         $this->sql .= "FROM $table";
         return $this;
     }
 
-    /* 设置别名。*/
+    /* ���ñ�����*/
     public function alias($alias)
     {
         $this->sql .= " AS $alias ";
     }
 
-    /* 设定LEFT JOIN语句。*/
+    /* �趨LEFT JOIN��䡣*/
     public function leftJoin($table)
     {
         $this->sql .= " LEFT JOIN $table";
         return $this;
     }
 
-    /* 设定ON条件。*/
+    /* �趨ON������*/
     public function on($condition)
     {
         $this->sql .= " ON $condition ";
         return $this;
     }
 
-    /* 条件判断开始。*/
+    /* �����жϿ�ʼ��*/
     public function onCaseOf($condition)
     {
         $this->inCondition = true;
         $this->conditionIsTrue = $condition;
     }
 
-    /* 条件判断结束。*/
+    /* �����жϽ�����*/
     public function endCase()
     {
         $this->inCondition = false;
         $this->conditionIsTrue = false;
     }
 
-    /* WHERE语句部分开始。*/
+    /* WHERE��䲿�ֿ�ʼ��*/
     public function where($arg1, $arg2 = null, $arg3 = null)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -911,7 +911,7 @@ class sql
         return $this;
     } 
 
-    /* 追加AND条件。*/
+    /* ׷��AND������*/
     public function andWhere($condition)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -919,7 +919,7 @@ class sql
         return $this;
     }
 
-    /* 追加OR条件。*/
+    /* ׷��OR������*/
     public function orWhere($condition)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -927,7 +927,7 @@ class sql
         return $this;
     }
 
-    /* 等于。*/
+    /* ���ڡ�*/
     public function eq($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -935,7 +935,7 @@ class sql
         return $this;
     }
 
-    /* 不等于。*/
+    /* �����ڡ�*/
     public function ne($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -943,7 +943,7 @@ class sql
         return $this;
     }
 
-    /* 大于。*/
+    /* ���ڡ�*/
     public function gt($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -951,7 +951,7 @@ class sql
         return $this;
     }
 
-    /* 小于。*/
+    /* С�ڡ�*/
     public function lt($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -959,7 +959,7 @@ class sql
         return $this;
     }
 
-    /* 生成between语句。*/
+    /* ����between��䡣*/
     public function between($min, $max)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -967,7 +967,7 @@ class sql
         return $this;
     }
 
-    /* 生成 IN部分语句。*/
+    /* ���� IN������䡣*/
     public function in($ids)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -975,7 +975,7 @@ class sql
         return $this;
     }
 
-    /* 生成LIKE部分语句。*/
+    /* ����LIKE������䡣*/
     public function like($string)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -983,7 +983,7 @@ class sql
         return $this;
     }
 
-    /* 设定ORDER BY。*/
+    /* �趨ORDER BY��*/
     public function orderBy($order)
     {
         $order = str_replace('|', ' ', $order);
@@ -991,7 +991,7 @@ class sql
         return $this;
     }
 
-    /* 设定LIMIT。*/
+    /* �趨LIMIT��*/
     public function limit($limit)
     {
         if(empty($limit)) return $this;
@@ -999,27 +999,27 @@ class sql
         return $this;
     }
 
-    /* 设定GROUP BY。*/
+    /* �趨GROUP BY��*/
     public function groupBy($groupBy)
     {
         $this->sql .= " GROUP BY $groupBy";
         return $this;
     }
 
-    /* 设定having。*/
+    /* �趨having��*/
     public function having($having)
     {
         $this->sql .= " HAVING $having";
         return $this;
     }
 
-    /* 返回拼装好的语句。*/
+    /* ����ƴװ�õ���䡣*/
     public function get()
     {
         return $this->sql;
     }
 
-    /* 转义。*/
+    /* ת�塣*/
     public function quote($value)
     {
         if($this->magicQuote) $value = stripslashes($value);

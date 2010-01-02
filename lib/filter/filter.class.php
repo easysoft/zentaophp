@@ -22,33 +22,33 @@
  * @link        http://www.zentao.cn
  */
 /**
- * validateç±»ï¼Œæä¾›å¯¹æ•°æ®çš„éªŒè¯ã€‚
+ * validateÀà£¬Ìá¹©¶ÔÊı¾İµÄÑéÖ¤¡£
  * 
  * @package ZenTaoPHP
  */
 class validater
 {
     /**
-     * å‚æ•°ä¸ªæ•°çš„æœ€å¤§å€¼ã€‚
+     * ²ÎÊı¸öÊıµÄ×î´óÖµ¡£
      */
     const MAX_ARGS = 3;
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯å¸ƒå°”å‹ã€‚*/
+    /* ¼ì²éÊÇ·ñÊÇ²¼¶ûĞÍ¡£*/
     public static function checkBool($var)
     {
         return filter_var($var, FILTER_VALIDATE_BOOLEAN);
     }
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯æ•´å‹ã€‚*/
+    /* ¼ì²éÊÇ·ñÊÇÕûĞÍ¡£*/
     public static function checkInt($var)
     {
         $args = func_get_args();
-        if($var != 0) $var = ltrim($var, 0);  // å°†å·¦è¾¹çš„0å»æ‰ï¼Œfilterçš„è¿™ä¸ªè¿‡æ»¤è§„åˆ™æ¯”è¾ƒä¸¥æ ¼ã€‚
+        if($var != 0) $var = ltrim($var, 0);  // ½«×ó±ßµÄ0È¥µô£¬filterµÄÕâ¸ö¹ıÂË¹æÔò±È½ÏÑÏ¸ñ¡£
 
-        /* è®¾ç½®äº†minã€‚*/
+        /* ÉèÖÃÁËmin¡£*/
         if(isset($args[1]))
         {
-            /* åŒæ—¶è®¾ç½®äº†maxã€‚*/
+            /* Í¬Ê±ÉèÖÃÁËmax¡£*/
             if(isset($args[2]))
             {
                 $options = array('options' => array('min_range' => $args[1], 'max_range' => $args[2]));
@@ -66,25 +66,25 @@ class validater
         }
     }
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯æµ®ç‚¹å‹ã€‚*/
+    /* ¼ì²éÊÇ·ñÊÇ¸¡µãĞÍ¡£*/
     public static function checkFloat($var, $decimal = '.')
     {
         return filter_var($var, FILTER_VALIDATE_FLOAT, array('options' => array('decimail' => $decimal)));
     }
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯emailåœ°å€ã€‚*/
+    /* ¼ì²éÊÇ·ñÊÇemailµØÖ·¡£*/
     public static function checkEmail($var)
     {
         return filter_var($var, FILTER_VALIDATE_EMAIL);
     }
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯URLåœ°å€ã€‚å¤‡æ³¨ï¼šfilterçš„è¿™ä¸ªæ£€æŸ¥å¹¶ä¸é æ™®ï¼Œæ¯”å¦‚å¦‚æœurlåœ°å€å«æœ‰ä¸­æ–‡ï¼Œå°±ä¼šå¤±æ•ˆã€‚ */
+    /* ¼ì²éÊÇ·ñÊÇURLµØÖ·¡£±¸×¢£ºfilterµÄÕâ¸ö¼ì²é²¢²»¿¿ÆÕ£¬±ÈÈçÈç¹ûurlµØÖ·º¬ÓĞÖĞÎÄ£¬¾Í»áÊ§Ğ§¡£ */
     public static function checkURL($var)
     {
         return fitler_var($var, FILTER_VALIDATE_URL);
     }
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯IPåœ°å€ã€‚NO_PRIV_RANGEæ˜¯æ£€æŸ¥æ˜¯å¦æ˜¯ç§æœ‰åœ°å€ï¼ŒNO_RES_RANGEæ£€æŸ¥æ˜¯å¦æ˜¯ä¿ç•™IPåœ°å€ã€‚*/
+    /* ¼ì²éÊÇ·ñÊÇIPµØÖ·¡£NO_PRIV_RANGEÊÇ¼ì²éÊÇ·ñÊÇË½ÓĞµØÖ·£¬NO_RES_RANGE¼ì²éÊÇ·ñÊÇ±£ÁôIPµØÖ·¡£*/
     public static function checkIP($var, $range = 'all')
     {
         if($range == 'all')    return filter_var($var, FILTER_VALIDATE_IP);
@@ -96,7 +96,7 @@ class validater
         }
     }
 
-    /* æ£€æŸ¥æ˜¯å¦æ˜¯æ—¥æœŸã€‚bug: 2009-09-31ä¼šè¢«è®¤ä¸ºåˆæ³•çš„æ—¥æœŸï¼Œå› ä¸ºstrtotimeè‡ªåŠ¨å°†å…¶æ”¹ä¸ºäº†10-01ã€‚*/
+    /* ¼ì²éÊÇ·ñÊÇÈÕÆÚ¡£bug: 2009-09-31»á±»ÈÏÎªºÏ·¨µÄÈÕÆÚ£¬ÒòÎªstrtotime×Ô¶¯½«Æä¸ÄÎªÁË10-01¡£*/
     public static function checkDate($date)
     {
         if($date == '0000-00-00') return true;
@@ -105,31 +105,31 @@ class validater
         return checkdate(date('m', $stamp), date('d', $stamp), date('Y', $stamp));
     }
 
-    /* æ£€æŸ¥æ˜¯å¦ç¬¦åˆæ­£åˆ™è¡¨è¾¾å¼ã€‚*/
+    /* ¼ì²éÊÇ·ñ·ûºÏÕıÔò±í´ïÊ½¡£*/
     public static function checkREG($var, $reg)
     {
         return filter_var($var, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $reg)));
     }
     
-    /* æ£€æŸ¥é•¿åº¦æ˜¯å¦åœ¨æŒ‡å®šçš„èŒƒå›´å†…ã€‚*/
+    /* ¼ì²é³¤¶ÈÊÇ·ñÔÚÖ¸¶¨µÄ·¶Î§ÄÚ¡£*/
     public static function checkLength($var, $max, $min = 0)
     {
         return self::checkInt(strlen($var), $min, $max);
     }
 
-    /* æ£€æŸ¥é•¿åº¦æ˜¯å¦åœ¨æŒ‡å®šçš„èŒƒå›´å†…ã€‚*/
+    /* ¼ì²é³¤¶ÈÊÇ·ñÔÚÖ¸¶¨µÄ·¶Î§ÄÚ¡£*/
     public static function checkNotEmpty($var)
     {
         return !empty($var);
     }
 
-    /* æ£€æŸ¥ç”¨æˆ·åã€‚*/
+    /* ¼ì²éÓÃ»§Ãû¡£*/
     public static function checkAccount($var)
     {
         return self::checkREG($var, '|[a-zA-Z0-9._]{3}|');
     }
 
-    /* è°ƒç”¨å›æ‰å‡½æ•°ã€‚*/
+    /* µ÷ÓÃ»Øµôº¯Êı¡£*/
     public static function call($var, $func)
     {
         return filter_var($var, FILTER_CALLBACK, array('options' => $func));
@@ -137,21 +137,21 @@ class validater
 }
 
 /**
- * fixerç±»ï¼Œæä¾›å¯¹æ•°æ®çš„ä¿®æ­£ã€‚
+ * fixerÀà£¬Ìá¹©¶ÔÊı¾İµÄĞŞÕı¡£
  * 
  * @package ZenTaoPHP
  */
 class fixer
 {
     /**
-     * è¦å¤„ç†çš„æ•°æ®ã€‚
+     * Òª´¦ÀíµÄÊı¾İ¡£
      * 
      * @var ojbect
      * @access private
      */
     private $data;
 
-    /* æ„é€ å‡½æ•°ã€‚*/
+    /* ¹¹Ôìº¯Êı¡£*/
     private function __construct($scope)
     {
        switch($scope)
@@ -183,13 +183,13 @@ class fixer
        }
     }
 
-    /* factoryã€‚*/
+    /* factory¡£*/
     public function input($scope)
     {
         return new fixer($scope);
     }
 
-    /* å»é™¤emailé‡Œé¢çš„éæ³•å­—ç¬¦ã€‚*/
+    /* È¥³ıemailÀïÃæµÄ·Ç·¨×Ö·û¡£*/
     public function cleanEmail($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -197,7 +197,7 @@ class fixer
         return $this;
     }
 
-    /* å¯¹URLè¿›è¡Œç¼–ç ã€‚*/
+    /* ¶ÔURL½øĞĞ±àÂë¡£*/
     public function encodeURL($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -209,7 +209,7 @@ class fixer
         return $this;
     }
 
-    /* å»é™¤urlé‡Œé¢çš„éæ³•å­—ç¬¦ã€‚*/
+    /* È¥³ıurlÀïÃæµÄ·Ç·¨×Ö·û¡£*/
     public function cleanURL($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -217,7 +217,7 @@ class fixer
         return $this;
     }
 
-    /* è·å–æµ®ç‚¹æ•°ã€‚*/
+    /* »ñÈ¡¸¡µãÊı¡£*/
     public function cleanFloat($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -225,7 +225,7 @@ class fixer
         return $this;
     }
 
-    /* è·å–æ•´å‹ã€‚*/
+    /* »ñÈ¡ÕûĞÍ¡£*/
     public function cleanINT($fieldName = '')
     {
         $fields = $this->processFields($fieldName);
@@ -233,7 +233,7 @@ class fixer
         return $this;
     }
 
-    /* å¤„ç†ç‰¹æ®Šå­—ç¬¦ã€‚*/
+    /* ´¦ÀíÌØÊâ×Ö·û¡£*/
     public function specialChars($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -241,7 +241,7 @@ class fixer
         return $this;
     }
 
-    /* å»é™¤å­—ç¬¦ä¸²é‡Œé¢çš„æ ‡ç­¾ã€‚*/
+    /* È¥³ı×Ö·û´®ÀïÃæµÄ±êÇ©¡£*/
     public function stripTags($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -249,7 +249,7 @@ class fixer
         return $this;
     }
 
-    /* æ·»åŠ æ–œçº¿ã€‚*/
+    /* Ìí¼ÓĞ±Ïß¡£*/
     public function quote($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -257,7 +257,7 @@ class fixer
         return $this;
     }
 
-    /* è®¾ç½®é»˜è®¤å€¼ã€‚*/
+    /* ÉèÖÃÄ¬ÈÏÖµ¡£*/
     public function setDefault($fields, $value)
     {
         $fields = strpos($fields, ',') ? explode(',', str_replace(' ', '', $fields)) : array($fields);
@@ -265,21 +265,21 @@ class fixer
         return $this;
     }
 
-    /* æ¡ä»¶è®¾ç½®ã€‚*/
+    /* Ìõ¼şÉèÖÃ¡£*/
     public function setIF($condition, $fieldName, $value)
     {
         if($condition) $this->data->$fieldName = $value;
         return $this;
     }
 
-    /* å¼ºåˆ¶è®¾ç½®ã€‚*/
+    /* Ç¿ÖÆÉèÖÃ¡£*/
     public function setForce($fieldName, $value)
     {
         $this->data->$fieldName = $value;
         return $this;
     }
 
-    /* åˆ é™¤æŸä¸€ä¸ªå­—æ®µã€‚*/
+    /* É¾³ıÄ³Ò»¸ö×Ö¶Î¡£*/
     public function remove($fieldName)
     {
         $fields = $this->processFields($fieldName);
@@ -287,28 +287,28 @@ class fixer
         return $this;
     }
 
-    /* æ¡ä»¶åˆ é™¤ã€‚*/
+    /* Ìõ¼şÉ¾³ı¡£*/
     public function removeIF($condition, $fieldName)
     {
         if($condition) unset($this->data->$fieldName);
         return $this;
     }
 
-    /* æ·»åŠ ä¸€ä¸ªå­—æ®µã€‚*/
+    /* Ìí¼ÓÒ»¸ö×Ö¶Î¡£*/
     public function add($fieldName, $value)
     {
         $this->data->$fieldName = $value;
         return $this;
     }
 
-    /* æ¡ä»¶æ·»åŠ ã€‚*/
+    /* Ìõ¼şÌí¼Ó¡£*/
     public function addIF($condition, $fieldName, $value)
     {
         if($condition) $this->data->$fieldName = $value;
         return $this;
     }
 
-    /* è¿æ¥ã€‚*/
+    /* Á¬½Ó¡£*/
     public function join($fieldName, $value)
     {
         if(!isset($this->data->$fieldName) or !is_array($this->data->$fieldName)) return $this;
@@ -316,7 +316,7 @@ class fixer
         return $this;
     }
 
-    /* è°ƒç”¨å›æ‰å‡½æ•°ã€‚*/
+    /* µ÷ÓÃ»Øµôº¯Êı¡£*/
     public function callFunc($fieldName, $func)
     {
         $fields = $this->processFields($fieldName);
@@ -324,14 +324,14 @@ class fixer
         return $this;
     }
 
-    /* è¿”å›æœ€ç»ˆå¤„ç†ä¹‹åçš„æ•°æ®ã€‚*/
+    /* ·µ»Ø×îÖÕ´¦ÀíÖ®ºóµÄÊı¾İ¡£*/
     public function get($fieldName = '')
     {
         if(empty($fieldName)) return $this->data;
         return $this->data->$fieldName;
     }
 
-    /* å¤„ç†ä¼ å…¥çš„å­—æ®µåï¼šå¦‚æœå«æœ‰é€—å·ï¼Œå°†å…¶æ‹†ä¸ºæ•°ç»„ã€‚ç„¶åæ£€æŸ¥dataå˜é‡ä¸­æ˜¯å¦æœ‰è¿™ä¸ªå­—æ®µã€‚*/
+    /* ´¦Àí´«ÈëµÄ×Ö¶ÎÃû£ºÈç¹ûº¬ÓĞ¶ººÅ£¬½«Æä²ğÎªÊı×é¡£È»ºó¼ì²édata±äÁ¿ÖĞÊÇ·ñÓĞÕâ¸ö×Ö¶Î¡£*/
     private function processFields($fields)
     {
         $fields = strpos($fields, ',') ? explode(',', str_replace(' ', '', $fields)) : array($fields);
