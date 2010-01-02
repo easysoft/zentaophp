@@ -753,6 +753,7 @@ class router
     public function parsePathInfo()
     {
         $pathInfo = $this->getPathInfo('PATH_INFO');
+        if(empty($pathInfo)) $pathInfo = $this->getPathInfo('ORIG_PATH_INFO');
         if(!empty($pathInfo))
         {
             $dotPos = strpos($pathInfo, '.');
