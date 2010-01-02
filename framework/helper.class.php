@@ -106,7 +106,8 @@ class helper
         }
         elseif($config->requestType == 'GET')
         {
-            $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName&{$config->viewVar}=" . $viewType;
+            $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName";
+            if($viewType != 'html') $link .= "&{$config->viewVar}=" . $viewType;
             foreach($vars as $key => $value) $link .= "&$key=$value";
         }
         return $link;
