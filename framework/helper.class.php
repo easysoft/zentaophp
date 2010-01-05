@@ -187,7 +187,7 @@ class helper
     static function dbIN($ids)
     {
         if(is_array($ids)) return "IN ('" . join("','", $ids) . "')";
-        return "IN ('" . str_replace(',', "','", $ids) . "')";
+        return "IN ('" . str_replace(',', "','", str_replace(' ', '',$ids)) . "')";
     }
 
     /**
