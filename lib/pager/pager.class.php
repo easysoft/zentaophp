@@ -200,6 +200,12 @@ class pager
         return $limit;
     }
    
+    /* 直接显示分页代码。*/
+    public function show($align = 'right', $type = 'full')
+    {
+        echo $this->get($align, $type);
+    }
+
     /**
      * 返回pager的html代码。
      *
