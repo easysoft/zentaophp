@@ -377,10 +377,11 @@ class control
      * @access  public
      * @return  string
      */
-    public function fetch($moduleName = '', $methodName = 'index', $params = array())
+    public function fetch($moduleName = '', $methodName = '', $params = array())
     {
         if($moduleName == '') $moduleName = $this->moduleName;
-        if($moduleName == $this->moduleName) 
+        if($methodName == '') $methodName = $this->methodName;
+        if($moduleName == $this->moduleName and $methodName == $this->methodName) 
         {
             $this->parse($moduleName, $methodName);
             return $this->output;
@@ -389,7 +390,7 @@ class control
         $moduleControlFile = $this->app->getModuleRoot() . strtolower($moduleName) . '/control.php';
         if(!file_exists($moduleControlFile)) $this->app->error("The control file $moduleControlFile not found", __FILE__, __LINE__, $exit = true);
 
-        helper::import($moduleControlFile);
+        if($moduleName != $this->moduleName) helper::import($moduleControlFile);
         if(!class_exists($moduleName)) $this->app->error(" The class $moduleName not found", __FILE__, __LINE__, $exit = true);
         if(!is_array($params)) parse_str($params, $params);
         $module = new $moduleName($moduleName, $methodName);
@@ -430,6 +431,20 @@ class control
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
         return helper::createLink($moduleName, $methodName, $vars, $viewType);
+    }
+
+    /**
+     * 生成对本模块某个方法的链接。
+     * 
+     * @param   string  $methodName    方法名。
+     * @param   mixed   $vars          要传递的参数，可以是数组，array('var1'=>'value1')。也可以是var1=value1&var2=value2的形式。
+     * @param   string  $viewType      视图格式。
+     * @access  public
+     * @return  string
+     */
+    public function inlink($methodName = 'index', $vars = array(), $viewType = '')
+    {
+        return helper::createLink($this->moduleName, $methodName, $vars, $viewType);
     }
 
     /**

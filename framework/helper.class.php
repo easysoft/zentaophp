@@ -229,3 +229,10 @@ class helper
         return round((strtotime($date1) - strtotime($date2)) / 86400, 0);
     }
 }
+
+/* 别名函数，生成对内部方法的链接。 */
+function inLink($methodName = 'index', $vars = '', $viewType = '')
+{
+    global $app;
+    return helper::createLink($app->getModuleName(), $methodName, $vars, $viewType);
+}
