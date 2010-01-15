@@ -132,7 +132,7 @@ class pager
     /* 设置每页显示的记录数。*/
     public function setRecPerPage($recPerPage)
     {
-        $this->recPerPage = ($recPerPage > 0) ? $recPerPage : SELF::DEFAULT_REC_PRE_PAGE;
+        $this->recPerPage = ($recPerPage > 0) ? $recPerPage : PAGER::DEFAULT_REC_PRE_PAGE;
     }
 
     /* 设置总共的页数。*/
