@@ -364,6 +364,7 @@ class control
 
         /* 最后还要切换到原来的目录。*/
         chdir($currentPWD);
+        return $this->output;
     }
 
     /**
