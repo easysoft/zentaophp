@@ -23,5 +23,5 @@
  * @version     $Id$
  * @link        http://www.zentao.cn
  */
-$lang['afterAppNote'] = "The application has been successfully created, it's directory is %s. \nOpen the config file %s to set params.\n";
-$lang['fillClaim']    = "The claim file %s has been created, please open it and fill the items and then re execute the same command.\n";
+$lang->afterAppNote = "The application has been successfully created, it's directory is %s. \nOpen the config file %s to set params.\n";
+$lang->fillClaim    = "The claim file %s has been created, please open it and fill the items and then re execute the same command.\n";

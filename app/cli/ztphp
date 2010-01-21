@@ -33,23 +33,19 @@ if($argc != 2)
     echo <<<EOT
 possiable requests:
 
-compress framwork class files to one file: 
-将框架类文件压缩为一个文件，以提升性能。
+1. compress framwork class files to one file: 
 
 $> ztphp compress/compressFramework
 
-init a app. (You can set the ZT_APP_ROOT env variable if the application in other directory.)
+2. init a app. 
+
+(You can set the ZT_APP_ROOT env variable if the application in other directory.)
 for example: export ZT_APP_ROOT=/home/wwccss/app (under linux)
 note: If you set ZT_APP_ROOT, it should be absolute path.
 
-初始化一个应用。(你可以设置ZT_APP_ROOT这个环境变量来指定应用所在的根目录，如果应用和框架的目录是分离的话。)
-linux下面： export ZT_APP_ROOT=/home/wwccss/app
-注意：如果你设置了ZT_APP_ROOT变量，应当是绝对路径。
-
 $> ztphp generator/createApp/\$appName/
 
-create a module for a app. need appName, moduleName and tableanme.
-创建一个模块，需要指定appName, moduleName以及这个模块所对应的tableName.
+3. create a module for a app. need appName, moduleName and tableanme.
 
 $> ztphp generator/createModule/\$appName/\$moduleName/\$tableName
 
