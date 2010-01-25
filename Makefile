@@ -32,6 +32,7 @@ tgz:
 	cp doc/COPY* zentaophp
 	cp doc/README zentaophp
 	rm -fr zentaophp/app/pms
+	rm -fr zentaophp/app/cli
 	rm -fr zentaophp/framework/tests
 	rm -fr zentaophp/app/cli/test
 	find zentaophp -name .svn |xargs rm -fr

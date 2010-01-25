@@ -1313,7 +1313,7 @@ class router
         {
             $dbh = new PDO($dsn, $config->db->user, $config->db->password, array(PDO::ATTR_PERSISTENT => $config->db->persistant));
             $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-            $dbh->setAttribute(PDO::ATTR_ERRMODE, $config->db->errorMode);
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $dbh->exec("SET NAMES {$config->db->encoding}");
             $this->dbh = $dbh;
             return $dbh;
