@@ -1183,7 +1183,7 @@ class router
         /* 如果需要终止程序，则显示到终端用户的屏幕上。*/
         if($exit)
         {
-            if($this->config->debug) die($log);
+            if($this->config->debug) die("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body>$log</body></html>");
             die();
         }
     }
