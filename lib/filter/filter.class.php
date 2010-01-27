@@ -81,7 +81,7 @@ class validater
     /* 检查是否是URL地址。备注：filter的这个检查并不靠普，比如如果url地址含有中文，就会失效。 */
     public static function checkURL($var)
     {
-        return fitler_var($var, FILTER_VALIDATE_URL);
+        return filter_var($var, FILTER_VALIDATE_URL);
     }
 
     /* 检查是否是IP地址。NO_PRIV_RANGE是检查是否是私有地址，NO_RES_RANGE检查是否是保留IP地址。*/
