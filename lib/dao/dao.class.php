@@ -485,7 +485,7 @@ class dao
 
         /* 引用全局的config, lang。*/
         global $lang, $config;
-        $table = str_replace($config->db->prefix, '', $this->table);
+        $table = strtolower(str_replace($config->db->prefix, '', $this->table));
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
         $value = $this->sqlobj->data->$fieldName;
         
@@ -972,6 +972,14 @@ class sql
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= helper::dbIN($ids);
+        return $this;
+    }
+
+    /* 生成 NOTIN部分语句。*/
+    public function notin($ids)
+    {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
+        $this->sql .= ' NOT ' . helper::dbIN($ids);
         return $this;
     }
 
