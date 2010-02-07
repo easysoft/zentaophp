@@ -288,9 +288,10 @@ class fixer
     }
 
     /* Ìõ¼þÉ¾³ý¡£*/
-    public function removeIF($condition, $fieldName)
+    public function removeIF($condition, $fields)
     {
-        if($condition) unset($this->data->$fieldName);
+        $fields = $this->processFields($fields);
+        if($condition) foreach($fields as $fieldName) unset($this->data->$fieldName);
         return $this;
     }
 
