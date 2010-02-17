@@ -1315,6 +1315,7 @@ class router
             $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
             $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $dbh->exec("SET NAMES {$config->db->encoding}");
+            if(isset($config->db->strictMode) and $config->db->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
             $this->dbh = $dbh;
             return $dbh;
         }
