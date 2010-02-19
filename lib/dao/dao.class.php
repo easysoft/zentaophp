@@ -269,6 +269,12 @@ class dao
 
     //-------------------- SQL查询相关的方法。--------------------//
     
+    /* 设置数据库访问句柄。*/
+    public function dbh($dbh)
+    {
+        $this->dbh = $dbh;
+    }
+
     /* 执行sql查询，返回stmt对象。*/
     public function query()
     {
