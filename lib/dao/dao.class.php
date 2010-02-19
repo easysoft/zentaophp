@@ -273,6 +273,7 @@ class dao
     public function dbh($dbh)
     {
         $this->dbh = $dbh;
+        return $this;
     }
 
     /* 执行sql查询，返回stmt对象。*/
