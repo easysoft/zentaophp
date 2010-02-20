@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright: 2009 Chunsheng Wang
+ * @copyright   Copyright 2009-2010 Chunsheng Wang
  * @author      Chunsheng Wang <wwccss@263.net>
  * @package     ZenTaoPHP
- * @version     $Id: mymodel.php 1324 2009-09-16 07:37:47Z wwccss $
+ * @version     $Id$
  */
 ?>
 <?php

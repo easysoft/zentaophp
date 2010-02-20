@@ -3,7 +3,7 @@
 /**
  * Ñ¹Ëõ¿ò¼ÜÎÄ¼ş²âÊÔ¡£
  *
- * @copyright   Copyright 2009, Chunsheng Wang
+ * @copyright   Copyright 2009-2010, Chunsheng Wang
  * @author      chunsheng.wang <wwccss@gmail.com>
  * @package     Testing
  * @version     $Id:
