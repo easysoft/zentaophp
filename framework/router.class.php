@@ -635,10 +635,7 @@ class router
         if(!empty($this->clientLang))
         {
             $this->clientLang = strtolower($this->clientLang);
-            if(strpos($this->config->langs, $this->clientLang) === false)
-            {
-                $this->clientLang = $this->config->default->lang;
-            }
+            if(!isset($this->config->langs[$this->clientLang])) $this->clientLang = $this->config->default->lang;
         }    
         else
         {
