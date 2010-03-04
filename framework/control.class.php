@@ -142,6 +142,14 @@ class control
     public $view; 
 
     /**
+     * 视图类型
+     * 
+     * @var string
+     * @access private
+     */
+    private $viewType;
+
+    /**
      * 要加载的view文件。
      * 
      * @var string
@@ -184,6 +192,7 @@ class control
         $this->lang       = $lang;
         $this->dbh        = $dbh;
         $this->pathFix    = $this->app->getPathFix();
+        $this->viewType   = $this->app->getViewType();
 
         $this->setModuleName($moduleName);
         $this->setModulePath();
@@ -307,7 +316,7 @@ class control
     {
         $moduleName = strtolower(trim($moduleName));
         $methodName = strtolower(trim($methodName));
-        $viewFile = $this->app->getModuleRoot() . $moduleName . $this->pathFix . 'view' . $this->pathFix . $methodName . '.' . $this->app->getViewType() . '.php';
+        $viewFile = $this->app->getModuleRoot() . $moduleName . $this->pathFix . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
         if(!file_exists($viewFile)) $this->app->error("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
         return $viewFile;
     }
@@ -350,20 +359,35 @@ class control
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
         if(empty($methodName)) $methodName = $this->methodName;
-        $viewFile = $this->setViewFile($moduleName, $methodName);
 
-        /* 切换到视图文件所在的目录，以保证视图文件中的包含路径有效。*/
-        $currentPWD = getcwd();
-        chdir(dirname($viewFile));
+        /* 处理json格式的请求。*/
+        if($this->viewType == 'json')
+        {
+            unset($this->view->app);
+            unset($this->view->config);
+            unset($this->view->lang);
+            unset($this->view->pager);
+            unset($this->view->header);
+            unset($this->view->position);
+            $this->output = json_encode($this->view);
+        }
+        else
+        {
+            $viewFile = $this->setViewFile($moduleName, $methodName);
 
-        extract((array)$this->view);
-        ob_start();
-        include $viewFile;
-        $this->output .= ob_get_contents();
-        ob_end_clean();
+            /* 切换到视图文件所在的目录，以保证视图文件中的包含路径有效。*/
+            $currentPWD = getcwd();
+            chdir(dirname($viewFile));
 
-        /* 最后还要切换到原来的目录。*/
-        chdir($currentPWD);
+            extract((array)$this->view);
+            ob_start();
+            include $viewFile;
+            $this->output .= ob_get_contents();
+            ob_end_clean();
+
+            /* 最后还要切换到原来的目录。*/
+            chdir($currentPWD);
+        }
         return $this->output;
     }
 
@@ -416,6 +440,7 @@ class control
     {
         if(empty($this->output)) $this->parse($moduleName, $methodName);
         echo $this->output;
+        if($this->viewType == 'json') die();
     }
 
     /**
