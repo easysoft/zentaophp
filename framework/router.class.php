@@ -149,6 +149,14 @@ class router
     private $moduleName;
 
     /**
+     * 当前模块的扩展目录。
+     * 
+     * @var string
+     * @access private
+     */
+    private $currentModuleExtRoot;
+
+    /**
      * 当前模块所对应的控制器文件。
      * 
      * @var string
@@ -157,20 +165,20 @@ class router
     private $controlFile;
 
     /**
-     * 当前模块所对应的派生出来的控制器文件。
-     * 
-     * @var string
-     * @access private
-     */
-    private $myControlFile;
-
-    /**
      * 需要调用的方法。
      * 
      * @var string
      * @access private
      */
     private $methodName;
+
+    /**
+     * 当前模块所对应的派生出来的action文件。
+     * 
+     * @var string
+     * @access private
+     */
+    private $extActionFile;
 
     /**
      * 当前请求的URI。
@@ -895,19 +903,6 @@ class router
     }
     
     /**
-     * 判断是否存在派生的控制器类文件。
-     * 
-     * @access  public
-     * @return  bool
-     */
-    public function setMyControlFile()
-    {
-        $this->myControlFile = $this->moduleRoot . $this->moduleName . $this->pathFix . 'mycontrol.php'; 
-        if(file_exists($this->myControlFile)) return true;
-        return false;
-    }
-
-    /**
      * 设置要调用的方法。
      * 
      * @param string $methodName    调用的方法名。 
@@ -917,6 +912,19 @@ class router
     public function setMethodName($methodName = '')
     {
         $this->methodName = strtolower($methodName);
+    }
+
+    /**
+     * 设置当前调用方法对应的扩展文件。
+     * 
+     * @access  public
+     * @return  bool
+     */
+    public function setActionExtFile()
+    {
+        $this->extActionFile = $this->currentModuleExtRoot . 'control'  . $this->pathFix . $this->methodName . '.control.php';
+        if(file_exists($this->extActionFile)) return true;
+        return false;
     }
 
     /**
@@ -974,14 +982,12 @@ class router
     public function loadModule()
     {
         chdir(dirname($this->controlFile));
-        include $this->controlFile;
         $moduleName = $this->moduleName;
-        if($this->setMyControlFile())
-        {
-            include $this->myControlFile;
-            $moduleName = 'my' . $moduleName;
-        }
         $methodName = $this->methodName;
+
+        /* 如果存在当前方法的扩展文件，则优先加载之。*/
+        $this->setActionExtFile() ? include $this->extActionFile : include $this->controlFile;
+
         if(!class_exists($moduleName)) $this->error("the control $moduleName not found", __FILE__, __LINE__, $exit = true);
         $module = new $moduleName();
         if(!method_exists($module, $methodName)) $this->error("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
