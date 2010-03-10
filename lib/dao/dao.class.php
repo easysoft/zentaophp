@@ -1001,7 +1001,7 @@ class sql
     /* Éè¶¨ORDER BY¡£*/
     public function orderBy($order)
     {
-        $order = str_replace('|', ' ', $order);
+        $order = str_replace(array('|', ''), ' ', $order);
         $this->sql .= " ORDER BY $order";
         return $this;
     }
