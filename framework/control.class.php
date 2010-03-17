@@ -316,8 +316,18 @@ class control
     {
         $moduleName = strtolower(trim($moduleName));
         $methodName = strtolower(trim($methodName));
-        $viewFile = $this->app->getModuleRoot() . $moduleName . $this->pathFix . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
+
+        $modulePath   = $this->app->getModuleRoot() . strtolower($moduleName) . $this->pathFix;
+        $viewExtPath  = $modulePath . "opt{$this->pathFix}view{$this->pathFix}";
+
+        /* 主视图文件，扩展视图文件和扩展钩子文件。*/
+        $mainViewFile = $modulePath . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
+        $extViewFile  = $viewExtPath . $methodName . ".{$this->viewType}.php";
+        $extHookFile  = $viewExtPath . $methodName . ".{$this->viewType}.hook.php";
+
+        $viewFile = file_exists($extViewFile) ? $extViewFile : $mainViewFile;
         if(!file_exists($viewFile)) $this->app->error("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
+        if(file_exists($extHookFile)) return array('viewFile' => $viewFile, 'hookFile' => $extHookFile);
         return $viewFile;
     }
 
@@ -374,6 +384,7 @@ class control
         else
         {
             $viewFile = $this->setViewFile($moduleName, $methodName);
+            if(is_array($viewFile)) extract($viewFile);
 
             /* 切换到视图文件所在的目录，以保证视图文件中的包含路径有效。*/
             $currentPWD = getcwd();
@@ -382,6 +393,7 @@ class control
             extract((array)$this->view);
             ob_start();
             include $viewFile;
+            if(isset($hookFile)) include $hookFile;
             $this->output .= ob_get_contents();
             ob_end_clean();
 
@@ -412,13 +424,23 @@ class control
             return $this->output;
         }
 
-        $moduleControlFile = $this->app->getModuleRoot() . strtolower($moduleName) . '/control.php';
-        if(!file_exists($moduleControlFile)) $this->app->error("The control file $moduleControlFile not found", __FILE__, __LINE__, $exit = true);
+        /* 设置被调用的模块的路径及相应的文件。*/
+        $modulePath        = $this->app->getModuleRoot() . strtolower($moduleName) . $this->pathFix;
+        $moduleControlFile = $modulePath . 'control.php';
+        $actionExtFile     = $modulePath . "opt{$this->pathFix}control{$this->pathFix}" . strtolower($methodName) . '.php';
+        $file2Included     = file_exists($actionExtFile) ? $actionExtFile : $moduleControlFile;
 
-        if($moduleName != $this->moduleName) helper::import($moduleControlFile);
-        if(!class_exists($moduleName)) $this->app->error(" The class $moduleName not found", __FILE__, __LINE__, $exit = true);
+        /* 加载控制文件。*/
+        if(!file_exists($file2Included)) $this->app->error("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
+        chdir(dirname($file2Included));
+        if($moduleName != $this->moduleName) helper::import($file2Included);
+        
+        /* 设置要调用的类的名称。*/
+        $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
+        if(!class_exists($className)) $this->app->error(" The class $className not found", __FILE__, __LINE__, $exit = true);
+
         if(!is_array($params)) parse_str($params, $params);
-        $module = new $moduleName($moduleName, $methodName);
+        $module = new $className($moduleName, $methodName);
 
         ob_start();
         call_user_func_array(array($module, $methodName), $params);
