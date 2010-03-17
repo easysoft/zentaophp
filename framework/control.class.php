@@ -370,37 +370,43 @@ class control
         if(empty($moduleName)) $moduleName = $this->moduleName;
         if(empty($methodName)) $methodName = $this->methodName;
 
-        /* 处理json格式的请求。*/
-        if($this->viewType == 'json')
-        {
-            unset($this->view->app);
-            unset($this->view->config);
-            unset($this->view->lang);
-            unset($this->view->pager);
-            unset($this->view->header);
-            unset($this->view->position);
-            $this->output = json_encode($this->view);
-        }
-        else
-        {
-            $viewFile = $this->setViewFile($moduleName, $methodName);
-            if(is_array($viewFile)) extract($viewFile);
-
-            /* 切换到视图文件所在的目录，以保证视图文件中的包含路径有效。*/
-            $currentPWD = getcwd();
-            chdir(dirname($viewFile));
-
-            extract((array)$this->view);
-            ob_start();
-            include $viewFile;
-            if(isset($hookFile)) include $hookFile;
-            $this->output .= ob_get_contents();
-            ob_end_clean();
-
-            /* 最后还要切换到原来的目录。*/
-            chdir($currentPWD);
-        }
+        if($this->viewType == 'json') $this->parseJSON($moduleName, $methodName);
+        if($this->viewType == 'html') $this->parseHtml($moduleName, $methodName);
         return $this->output;
+    }
+
+    /* 解析JSON格式的输出。*/
+    private function parseJSON($moduleName, $methodName)
+    {
+        unset($this->view->app);
+        unset($this->view->config);
+        unset($this->view->lang);
+        unset($this->view->pager);
+        unset($this->view->header);
+        unset($this->view->position);
+        $this->output = json_encode($this->view);
+    }
+
+    /* HTML格式。*/
+    private function parseHtml($moduleName, $methodName)
+    {
+        /* 设置视图文件。*/
+        $viewFile = $this->setViewFile($moduleName, $methodName);
+        if(is_array($viewFile)) extract($viewFile);
+
+        /* 切换到视图文件所在的目录，以保证视图文件中的包含路径有效。*/
+        $currentPWD = getcwd();
+        chdir(dirname($viewFile));
+
+        extract((array)$this->view);
+        ob_start();
+        include $viewFile;
+        if(isset($hookFile)) include $hookFile;
+        $this->output .= ob_get_contents();
+        ob_end_clean();
+
+        /* 最后还要切换到原来的目录。*/
+        chdir($currentPWD);
     }
 
     /**
