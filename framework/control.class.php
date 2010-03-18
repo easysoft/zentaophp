@@ -110,30 +110,6 @@ class control
     protected $moduleName;
 
     /**
-     * 模块所处的路径。
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $modulePath;
-
-    /**
-     * 要加载的model文件。
-     * 
-     * @var string
-     * @access private
-     */
-    private $modelFile;
-
-    /**
-     * 派生的model文件。
-     * 
-     * @var string
-     * @access private
-     */
-    private $myModelFile;
-
-    /**
      * 记录赋值到view的所有变量。
      * 
      * @var object
@@ -148,14 +124,6 @@ class control
      * @access private
      */
     private $viewType;
-
-    /**
-     * 要加载的view文件。
-     * 
-     * @var string
-     * @access private
-     */
-    private $viewFile;
 
     /**
      * 要输出的内容。
@@ -195,7 +163,6 @@ class control
         $this->viewType   = $this->app->getViewType();
 
         $this->setModuleName($moduleName);
-        $this->setModulePath();
         $this->setMethodName($methodName);
 
         /* 自动加载当前模块的model文件。*/
@@ -217,12 +184,6 @@ class control
         $this->moduleName = $moduleName ? strtolower($moduleName) : $this->app->getModuleName();
     }
 
-    /* 设置模块路径。*/
-    private function setModulePath()
-    {
-        $this->modulePath = $this->app->getModuleRoot() . $this->moduleName . $this->pathFix;
-    }
-
     /* 设置方法名。*/
     private function setMethodName($methodName = '')
     {
@@ -238,21 +199,67 @@ class control
      */
     private function setModelFile($moduleName)
     {
-        $this->modelFile = $this->app->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix . 'model.php';
-        return file_exists($this->modelFile);
-    }
+        /* 设定主model文件和扩展路径，并获得所有的扩展文件。*/
+        $mainModelFile = $this->app->getModulePath($moduleName) . 'model.php';
+        $modelExtPath  = $this->app->getModuleExtPath($moduleName, 'model');
+        $extFiles      = glob($modelExtPath . '*.php');
 
-    /**
-     * 设置派生的model文件。
-     * 
-     * @param   string      $moduleName     模块名字。
-     * @access  private
-     * @return void
-     */
-    private function setMyModelFile()
-    {
-        $this->myModelFile = str_replace('model.php', 'mymodel.php', $this->modelFile);
-        return file_exists($this->myModelFile);
+        /* 不存在扩展文件，返回主配置文件。*/
+        if(empty($extFiles)) return $mainModelFile;
+
+        /* 存在扩展文件，判断是否需要更新。*/
+        $mergedModelFile = $this->app->getTmpRoot() . 'model' . $this->pathFix . $moduleName . '.php';
+        $needUpdate      = false;
+        $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
+        foreach($extFiles as $extFile)
+        {
+            if(filemtime($extFile) > $lastTime)
+            {
+                $needUpdate = true;
+                break;
+            }
+        }
+
+        /* 如果不需要更新，则直接返回合并之后的model文件。*/
+        if(!$needUpdate) return $mergedModelFile;
+
+        if($needUpdate)
+        {
+            /* 加载主的model文件，并获得其方法列表。*/
+            helper::import($mainModelFile);
+            $modelMethods = get_class_methods($moduleName . 'model');
+            foreach($modelMethods as $key => $modelMethod) $modelMethods[$key] = strtolower($modelMethod);
+
+            /* 将主model文件读入数组。*/
+            $modelLines   = explode("\n", rtrim(file_get_contents($mainModelFile)));
+            $lines2Delete = array(count($modelLines) - 1);
+            $lines2Append = array();
+
+            /* 循环处理每个扩展方法文件。*/
+            foreach($extFiles as $extFile)
+            {
+                $methodName = strtolower(basename($extFile, '.php'));
+                if(in_array($methodName, $modelMethods))
+                {
+                    $method       = new ReflectionMethod($moduleName . 'model', $methodName);
+                    $startLine    = $method->getStartLine() - 1;
+                    $endLine      = $method->getEndLine() - 1;
+                    $lines2Delete = array_merge($lines2Delete, range($startLine, $endLine));
+                }
+                $lines2Append = array_merge($lines2Append, explode("\n", trim(file_get_contents($extFile))));
+            }
+
+            /* 生成新的model文件。*/
+            $lines2Append[] = '}';
+            foreach($lines2Delete as $lineNO) unset($modelLines[$lineNO]);
+            $modelLines = array_merge($modelLines, $lines2Append);
+            if(!is_dir(dirname($mergedModelFile))) mkdir(dirname($mergedModelFile));
+            $modelLines = join("\n", $modelLines);
+            $modelLines = str_ireplace($moduleName . 'model', 'my' . $moduleName . 'model', $modelLines); // 类名修改。
+            file_put_contents($mergedModelFile, $modelLines);
+
+            return $mergedModelFile;
+        }
     }
 
     /**
@@ -266,19 +273,13 @@ class control
     {
         /* 如果没有指定module名，则取当前加载的模块的名作为model名。*/
         if(empty($moduleName)) $moduleName = $this->moduleName;
-        if(!$this->setModelFile($moduleName)) return false;
+        $modelFile = $this->setModelFile($moduleName);
+        if(!file_exists($modelFile)) return false;
 
-        $modelClass = $moduleName. 'Model';
-        helper::import($this->modelFile);
-        
-        /* 存在派生的model文件，则加载。*/
-        if($this->setMyModelFile())
-        {
-            helper::import($this->myModelFile);
-            $modelClass = 'my' . $modelClass;
-        }
-
+        helper::import($modelFile);
+        $modelClass = class_exists('my' . $moduleName. 'model') ? 'my' . $moduleName . 'model' : $moduleName . 'model';
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+
         $this->$moduleName = new $modelClass();
         if(isset($this->config->db->dao) and $this->config->db->dao)
         {
@@ -317,8 +318,8 @@ class control
         $moduleName = strtolower(trim($moduleName));
         $methodName = strtolower(trim($methodName));
 
-        $modulePath   = $this->app->getModuleRoot() . strtolower($moduleName) . $this->pathFix;
-        $viewExtPath  = $modulePath . "opt{$this->pathFix}view{$this->pathFix}";
+        $modulePath  = $this->app->getModulePath($moduleName);
+        $viewExtPath = $this->app->getModuleExtPath($moduleName, 'view');
 
         /* 主视图文件，扩展视图文件和扩展钩子文件。*/
         $mainViewFile = $modulePath . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
@@ -431,13 +432,14 @@ class control
         }
 
         /* 设置被调用的模块的路径及相应的文件。*/
-        $modulePath        = $this->app->getModuleRoot() . strtolower($moduleName) . $this->pathFix;
+        $modulePath        = $this->app->getModulePath($moduleName);
         $moduleControlFile = $modulePath . 'control.php';
-        $actionExtFile     = $modulePath . "opt{$this->pathFix}control{$this->pathFix}" . strtolower($methodName) . '.php';
+        $actionExtFile     = $this->app->getModuleExtPath($moduleName, 'control') . strtolower($methodName) . '.php';
         $file2Included     = file_exists($actionExtFile) ? $actionExtFile : $moduleControlFile;
 
         /* 加载控制文件。*/
         if(!file_exists($file2Included)) $this->app->error("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
+        $currentPWD = getcwd();
         chdir(dirname($file2Included));
         if($moduleName != $this->moduleName) helper::import($file2Included);
         
@@ -445,14 +447,18 @@ class control
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
         if(!class_exists($className)) $this->app->error(" The class $className not found", __FILE__, __LINE__, $exit = true);
 
+        /* 处理参数，生成对象。*/
         if(!is_array($params)) parse_str($params, $params);
         $module = new $className($moduleName, $methodName);
 
+        /* 调用方法，获得输出。*/
         ob_start();
         call_user_func_array(array($module, $methodName), $params);
         $output = ob_get_contents();
         ob_end_clean();
+
         unset($module);
+        chdir($currentPWD);
         return $output;
     }
 

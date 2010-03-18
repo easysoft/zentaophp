@@ -914,15 +914,17 @@ class router
         $this->methodName = strtolower($methodName);
     }
 
-    /**
-     * 设置当前模块的扩展根目录。
-     * 
-     * @access  public
-     * @return  void
-     */
-    public function setModuleExtRoot()
+    /* 获得某一个模块的根目录。*/
+    public function getModulePath($moduleName = '')
     {
-        $this->moduleExtRoot = $this->moduleRoot . $this->moduleName . $this->pathFix . 'opt' . $this->pathFix;
+        if($moduleName == '') $moduleName = $this->moduleName;
+        return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix;
+    }
+
+    /* 获得某一个模块，某种扩展的目录。ext可选值：control, model, view, lang, config。*/
+    public function getModuleExtPath($moduleName, $ext)
+    {
+        return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix . 'opt' . $this->pathFix . $ext . $this->pathFix;
     }
 
     /**
@@ -933,7 +935,8 @@ class router
      */
     public function setActionExtFile()
     {
-        $this->extActionFile = $this->moduleExtRoot . 'control'  . $this->pathFix . $this->methodName . '.php';
+        $moduleExtPath = $this->getModuleExtPath($this->moduleName, 'control');
+        $this->extActionFile = $moduleExtPath . $this->methodName . '.php';
         return file_exists($this->extActionFile);
     }
 
@@ -995,7 +998,6 @@ class router
         $methodName = $this->methodName;
 
         /* 设置要加载的文件。*/
-        $this->setModuleExtRoot();
         $file2Included = $this->setActionExtFile() ? $this->extActionFile : $this->controlFile;
         chdir(dirname($file2Included));
         include $file2Included;
@@ -1017,6 +1019,7 @@ class router
             $defaultParams[$name] = $default;
         }
 
+        /* 设置参数。*/
         if($this->config->requestType == 'PATH_INFO')
         {
             $this->setParamsByPathInfo($defaultParams);
@@ -1026,6 +1029,7 @@ class router
             $this->setParamsByGET($defaultParams);
         }
 
+        /* 调用相应的方法。*/
         call_user_func_array(array(&$module, $methodName), $this->params);
         return $module;
     }
@@ -1161,17 +1165,6 @@ class router
     public function getMethodName()
     {
         return $this->methodName;
-    }
-
-    /**
-     * 返回当前模块扩展的根目录。
-     * 
-     * @access public
-     * @return string
-     */
-    public function getModuleExtRoot()
-    {
-        return $this->moduleExtRoot;
     }
 
     /**
