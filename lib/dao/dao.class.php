@@ -557,7 +557,21 @@ class dao
         foreach($fields as $fieldName) $this->check($fieldName, $funcName, $arg0, $arg1, $arg2);
         return $this;
     }
- 
+
+    /* 批量条件检查。*/
+    public function batchCheckIF($condition, $fields, $funcName)
+    {
+        if(!$condition) return $this;
+        $fields = explode(',', str_replace(' ', '', $fields));
+        $funcArgs = func_get_args();
+        for($i = 0; $i < VALIDATER::MAX_ARGS; $i ++)
+        {
+            ${"arg$i"} = isset($funcArgs[$i + 2]) ? $funcArgs[$i + 2] : null;
+        }
+        foreach($fields as $fieldName) $this->check($fieldName, $funcName, $arg0, $arg1, $arg2);
+        return $this;
+    }
+
     /* 自动根据数据库中表的字段格式进行检查。*/
     public function autoCheck($skipFields = '')
     {

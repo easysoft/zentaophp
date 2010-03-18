@@ -129,6 +129,12 @@ class validater
         return self::checkREG($var, '|[a-zA-Z0-9._]{3}|');
     }
 
+    /* 必须为某值。*/
+    public static function checkEqual($var, $value)
+    {
+        return $var == $value;
+    }
+
     /* 调用回掉函数。*/
     public static function call($var, $func)
     {
