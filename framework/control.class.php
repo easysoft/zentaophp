@@ -191,78 +191,6 @@ class control
     }
 
     /**
-     * 设置model文件。
-     * 
-     * @param   string      $moduleName     模块名字。
-     * @access  private
-     * @return void
-     */
-    private function setModelFile($moduleName)
-    {
-        /* 设定主model文件和扩展路径，并获得所有的扩展文件。*/
-        $mainModelFile = $this->app->getModulePath($moduleName) . 'model.php';
-        $modelExtPath  = $this->app->getModuleExtPath($moduleName, 'model');
-        $extFiles      = glob($modelExtPath . '*.php');
-
-        /* 不存在扩展文件，返回主配置文件。*/
-        if(empty($extFiles)) return $mainModelFile;
-
-        /* 存在扩展文件，判断是否需要更新。*/
-        $mergedModelFile = $this->app->getTmpRoot() . 'model' . $this->pathFix . $moduleName . '.php';
-        $needUpdate      = false;
-        $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
-        foreach($extFiles as $extFile)
-        {
-            if(filemtime($extFile) > $lastTime)
-            {
-                $needUpdate = true;
-                break;
-            }
-        }
-
-        /* 如果不需要更新，则直接返回合并之后的model文件。*/
-        if(!$needUpdate) return $mergedModelFile;
-
-        if($needUpdate)
-        {
-            /* 加载主的model文件，并获得其方法列表。*/
-            helper::import($mainModelFile);
-            $modelMethods = get_class_methods($moduleName . 'model');
-            foreach($modelMethods as $key => $modelMethod) $modelMethods[$key] = strtolower($modelMethod);
-
-            /* 将主model文件读入数组。*/
-            $modelLines   = explode("\n", rtrim(file_get_contents($mainModelFile)));
-            $lines2Delete = array(count($modelLines) - 1);
-            $lines2Append = array();
-
-            /* 循环处理每个扩展方法文件。*/
-            foreach($extFiles as $extFile)
-            {
-                $methodName = strtolower(basename($extFile, '.php'));
-                if(in_array($methodName, $modelMethods))
-                {
-                    $method       = new ReflectionMethod($moduleName . 'model', $methodName);
-                    $startLine    = $method->getStartLine() - 1;
-                    $endLine      = $method->getEndLine() - 1;
-                    $lines2Delete = array_merge($lines2Delete, range($startLine, $endLine));
-                }
-                $lines2Append = array_merge($lines2Append, explode("\n", trim(file_get_contents($extFile))));
-            }
-
-            /* 生成新的model文件。*/
-            $lines2Append[] = '}';
-            foreach($lines2Delete as $lineNO) unset($modelLines[$lineNO]);
-            $modelLines = array_merge($modelLines, $lines2Append);
-            if(!is_dir(dirname($mergedModelFile))) mkdir(dirname($mergedModelFile));
-            $modelLines = join("\n", $modelLines);
-            $modelLines = str_ireplace($moduleName . 'model', 'my' . $moduleName . 'model', $modelLines); // 类名修改。
-            file_put_contents($mergedModelFile, $modelLines);
-
-            return $mergedModelFile;
-        }
-    }
-
-    /**
      * 加载某一个模块的model文件。
      * 
      * @param   string  $moduleName     模块名字，如果为空，则取当前的模块名作为model名。
@@ -273,18 +201,15 @@ class control
     {
         /* 如果没有指定module名，则取当前加载的模块的名作为model名。*/
         if(empty($moduleName)) $moduleName = $this->moduleName;
-        $modelFile = $this->setModelFile($moduleName);
+        $modelFile = helper::setModelFile($moduleName);
         if(!file_exists($modelFile)) return false;
 
         helper::import($modelFile);
-        $modelClass = class_exists('my' . $moduleName. 'model') ? 'my' . $moduleName . 'model' : $moduleName . 'model';
+        $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
 
         $this->$moduleName = new $modelClass();
-        if(isset($this->config->db->dao) and $this->config->db->dao)
-        {
-            $this->dao = $this->$moduleName->dao;
-        }
+        if(isset($this->config->db->dao) and $this->config->db->dao) $this->dao = $this->$moduleName->dao;
         return $this->$moduleName;
     }
 
@@ -444,7 +369,7 @@ class control
         if($moduleName != $this->moduleName) helper::import($file2Included);
         
         /* 设置要调用的类的名称。*/
-        $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
+        $className = class_exists("ext$moduleName") ? "ext$moduleName" : $moduleName;
         if(!class_exists($className)) $this->app->error(" The class $className not found", __FILE__, __LINE__, $exit = true);
 
         /* 处理参数，生成对象。*/

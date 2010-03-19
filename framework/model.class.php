@@ -61,46 +61,6 @@ class model
     protected $dbh;
 
     /**
-     * 此model所属模块的名字。
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $moduleName;
-
-    /**
-     * 此model所属模块所在的路径。
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $modulePath;
-
-    /**
-     * 模块对应的配置文件。
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $moduleConfig;
-
-    /**
-     * 模块的语言文件。
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $moduleLang;
-
-    /**
-     * 消息变量，用来记录某一个方法的返回消息。
-     * 
-     * @var string
-     * @access protected
-     */
-    protected $message;
-
-    /**
      * dao对象。
      * 
      * @var object
@@ -157,12 +117,9 @@ class model
         $this->lang   = $lang;
         $this->dbh    = $dbh;
 
-        $this->setModuleName();
-        $this->setModulePath();
-        $this->setModuleLang();
-        $this->loadModuleLang();
-        $this->setModuleConfig();
-        $this->loadModuleConfig();
+        $moduleName = $this->getModuleName();
+        $this->app->loadLang($moduleName,   $exit = false);
+        $this->app->loadConfig($moduleName, $exit = false);
      
         if(isset($config->db->dao)   and $config->db->dao)   $this->loadDAO();
         if(isset($config->super2OBJ) and $config->super2OBJ) $this->setSuperVars();
@@ -176,56 +133,12 @@ class model
      * @access protected
      * @return void
      */
-    protected function setModuleName()
+    protected function getModuleName()
     {
         $parentClass = get_parent_class($this);
         $selfClass   = get_class($this);
         $className   = $parentClass == 'model' ? $selfClass : $parentClass;
-        $this->moduleName = strtolower(str_ireplace('Model', '', $className));
-    }
-
-    /**
-     * 设置模块所处的路径。
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function setModulePath()
-    {
-        $this->modulePath = $this->app->getModuleRoot() . $this->moduleName . $this->app->getPathFix();
-    }
-
-    /**
-     * 设置模块的配置文件。
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function setModuleConfig()
-    {
-        $this->moduleConfig = $this->modulePath. 'config.php';
-    }
-
-    /**
-     * 加载模块的配置文件。
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function loadModuleConfig()
-    {
-        if(file_exists($this->moduleConfig)) $this->app->loadConfig($this->moduleName);
-    }
-
-    /**
-     * 设置模块的语言文件。
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function setModuleLang()
-    {
-        $this->moduleLang = $this->modulePath. 'lang' . $this->app->getPathFix() . $this->app->getClientLang() . '.php';
+        return strtolower(str_ireplace(array('ext', 'Model'), '', $className));
     }
 
     /**
@@ -252,74 +165,15 @@ class model
     public function loadModel($moduleName)
     {
         if(empty($moduleName)) return false;
-        $modelFile = $this->setModelFile($moduleName);
+        $modelFile = helper::setModelFile($moduleName);
         if(!file_exists($modelFile)) return false;
 
-        $modelClass = $moduleName. 'Model';
         helper::import($modelFile);
-        
+        $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+
         $this->$moduleName = new $modelClass();
         return $this->$moduleName;
-    }
-
-    /**
-     * 设置model文件。
-     * 
-     * @param   string      $moduleName     模块名字。
-     * @access  private
-     * @return void
-     */
-    private function setModelFile($moduleName)
-    {
-        $modelFile = $this->app->getModuleRoot() . strtolower(trim($moduleName)) . $this->app->getPathFix() . 'model.php';
-        return $modelFile;
-    }
-
-    /**
-     * 加载模块的语言文件。
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function loadModuleLang()
-    {
-        if(file_exists($this->moduleLang)) $this->app->loadLang($this->moduleName);
-    }
-
-    /**
-     * 获取最新的消息记录。
-     * 
-     * @access public
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * 设置消息记录。
-     * 
-     * @param string $message 
-     * @access protected
-     * @return void
-     */
-    protected function setMessage($message)
-    {
-        $this->message = $message;
-    }
-    
-    /**
-     * 追加消息记录。
-     * 
-     * @param string $message 
-     * @access protected
-     * @return void
-     */
-    protected function appendMessage($message)
-    {
-        $this->message .= $message;
     }
 
     //-------------------- 数据库操作相应的方法。--------------------//
@@ -333,36 +187,5 @@ class model
     private function loadDAO()
     {
         $this->dao = $this->app->loadClass('dao');
-    }
-
-    /**
-     * 返回key=>value形式的数组。
-     * 
-     * @param string $sql           要执行的sql语句。 
-     * @param string $keyField      key字段名。
-     * @param string $valueField    value字段名。
-     * @access protected
-     * @return void
-     */
-    public function fetchPairs($sql, $keyField = '', $valueField = '')
-    {
-        $pairs = array();
-        $stmt  = $this->dbh->query($sql, PDO::FETCH_ASSOC);
-        $ready = false;
-        while($row = $stmt->fetch())
-        {
-            if(!$ready)
-            {
-                if(empty($keyField)) $keyField = key($row);
-                if(empty($valueField)) 
-                {
-                    end($row);
-                    $valueField = key($row);
-                }
-                $ready = true;
-            }
-            $pairs[$row[$keyField]] = $row[$valueField];
-        }
-        return $pairs;
     }
 }    

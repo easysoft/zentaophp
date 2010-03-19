@@ -1255,34 +1255,46 @@ class router
      * 如果模块的名字为common，则从配置的根目录查找，其他的模块则从模块路径下面查找。
      *
      * @param mixed $moduleName     模块的名字。
-     * @param bool  $exitIfNone     如果配置文件不存在，是否退出。
+     * @param bool  $exitIfNone     如果主配置文件不存在，是否退出。
      * @access public
      * @return object
      */
     public function loadConfig($moduleName, $exitIfNone = true)
     {
-        /* 设置模块所对应的配置文件路径。*/
+        /* 设置模块对应的主配置文件和扩展配置文件。*/
         if($moduleName == 'common')
         {
-            $configFile = $this->configRoot . 'config.php';
+            $mainConfigFile = $this->configRoot . 'config.php';
+            $extConfigFiles = array();
         }
         else
         {
-            $configFile = $this->moduleRoot . $moduleName . $this->pathFix . 'config.php';
+            $mainConfigFile = $this->moduleRoot . $moduleName . $this->pathFix . 'config.php';
+            $extConfigPath  = $this->getModuleExtPath($moduleName, 'config');
+            $extConfigFiles = glob($extConfigPath . '*.php');
         }
-        if(!file_exists($configFile))
+
+        /* 主配置文件不存在。*/
+        if(!file_exists($mainConfigFile))
         {
-            self::error("config file $configFile not found", __FILE__, __LINE__, $exitIfNone);
-            return;
+            if($exitIfNone) self::error("config file $mainConfigFile not found", __FILE__, __LINE__, true);
+            if(empty($extConfigFiles)) return;  // 没有扩展配置文件，退出。
+            $configFiles = $extConfigFiles;
         }
-
-        static $loadedConfigs = array();
-        if(in_array($configFile, $loadedConfigs)) return;
-        $loadedConfigs[] = $configFile;
-
+        else
+        {
+            $configFiles = array_merge(array($mainConfigFile), $extConfigFiles);
+        }
+        
         global $config;
         if(!is_object($config)) $config = new config();
-        include $configFile;
+        static $loadedConfigs = array();
+        foreach($configFiles as $configFile)
+        {
+            if(in_array($configFile, $loadedConfigs)) continue;
+            include $configFile;
+            $loadedConfigs[] = $configFile;
+        }
         $this->config = $config;
         return $config;
     }
@@ -1296,22 +1308,32 @@ class router
      */
     public function loadLang($moduleName)
     {
-        $langFile = $this->moduleRoot . $moduleName . $this->pathFix . 'lang' . $this->pathFix . $this->clientLang . '.php';
-        if(!file_exists($langFile))
+        $mainLangFile = $this->moduleRoot . $moduleName . $this->pathFix . 'lang' . $this->pathFix . $this->clientLang . '.php';
+        $extLangPath  = $this->getModuleExtPath($moduleName, 'lang');
+        $extLangFiles = glob($extLangPath . $this->clientLang . '*.php');
+
+        /* 主配置文件不存在。*/
+        if(!file_exists($mainLangFile))
         {
-            self::error("language file $langFile not found", __FILE__, __LINE__);
-            return false;
-        }    
+            if(empty($extLangFiles)) return;  // 没有扩展配置文件，退出。
+            $langFiles = $extLangFiles;
+        }
+        else
+        {
+            $langFiles = array_merge(array($mainLangFile), $extLangFiles);
+        }
 
-        static $loadedLangs = array();
-        if(in_array($langFile, $loadedLangs)) return;
-        $loadedLangs[] = $langFile;
-
-        /* 生成lang对象。*/
         global $lang;
         if(!is_object($lang)) $lang = new language();
-        include $langFile;
-        if(!isset($lang) or empty($lang)) return false;
+
+        static $loadedLangs = array();
+        foreach($langFiles as $langFile)
+        {
+            if(in_array($langFile, $loadedLangs)) continue;
+            include $langFile;
+            $loadedLangs[] = $langFile;
+        }
+
         $this->lang = $lang;
         return $lang;
     }
