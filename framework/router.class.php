@@ -475,6 +475,12 @@ class router
         }
     }
 
+    /* 设置时区。*/
+    public function setTimezone()
+    {
+        if(isset($this->config->timezone)) date_default_timezone_set($this->config->timezone);
+    }
+
     /**
      * 返回路径分隔符。
      * 

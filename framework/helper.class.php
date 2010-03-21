@@ -260,7 +260,7 @@ class helper
      * @access  public
      * @return  string
      */
-    static function dbIN($ids)
+    static public function dbIN($ids)
     {
         if(is_array($ids)) return "IN ('" . join("','", $ids) . "')";
         return "IN ('" . str_replace(',', "','", str_replace(' ', '',$ids)) . "')";
@@ -274,7 +274,7 @@ class helper
      * @access  public
      * @return  string
      */
-    static function safe64Encode($string)
+    static public function safe64Encode($string)
     {
         return strtr(base64_encode($string), '+/=', '');
     }
@@ -287,7 +287,7 @@ class helper
      * @access  public
      * @return  string
      */
-    static function safe64Decode($string)
+    static public function safe64Decode($string)
     {
         return base64_decode(strtr($string, '', '+/='));
     }
@@ -300,9 +300,27 @@ class helper
      * @access  public
      * @return  string
      */
-    static function diffDate($date1, $date2)
+    static public function diffDate($date1, $date2)
     {
         return round((strtotime($date1) - strtotime($date2)) / 86400, 0);
+    }
+
+    /* 获得当前的时间。*/
+    static public function now()
+    {
+        return date(DT_DATETIME1);
+    }
+
+    /* 获得今天的日期。*/
+    static public function today()
+    {
+        return date(DT_DATE1);
+    }
+
+    /* 判断是否0000-00-00格式的日期。*/
+    static public function isZeroDate($date)
+    {
+        return substr($date, 0, 4) == '0000';
     }
 }
 
