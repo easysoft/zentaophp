@@ -296,8 +296,14 @@ class control
         if(empty($moduleName)) $moduleName = $this->moduleName;
         if(empty($methodName)) $methodName = $this->methodName;
 
-        if($this->viewType == 'json') $this->parseJSON($moduleName, $methodName);
-        if($this->viewType == 'html') $this->parseHtml($moduleName, $methodName);
+        if($this->viewType == 'json')
+        {
+            $this->parseJSON($moduleName, $methodName);
+        }
+        else
+        {
+            $this->parseDefault($moduleName, $methodName);
+        }
         return $this->output;
     }
 
@@ -313,8 +319,8 @@ class control
         $this->output = json_encode($this->view);
     }
 
-    /* HTML格式。*/
-    private function parseHtml($moduleName, $methodName)
+    /* 默认的输出。*/
+    private function parseDefault($moduleName, $methodName)
     {
         /* 设置视图文件。*/
         $viewFile = $this->setViewFile($moduleName, $methodName);
