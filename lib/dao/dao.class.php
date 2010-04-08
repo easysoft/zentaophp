@@ -283,6 +283,16 @@ class dao
         return $this;
     }
 
+    /* data方法。*/
+    public function data($data)
+    {
+        /* 如果当前模块不是company，都追加company字段。*/
+        if(!is_object($data)) $data = (object)$data;
+        if(isset($this->app->company) and $this->table != TABLE_COMPANY and !isset($data->company)) $data->company = $this->app->company->id;
+        $this->sqlobj->data($data);
+        return $this;
+    }
+
     //-------------------- 拼装之后的SQL相关处理方法。--------------------//
 
     /* 返回SQL语句。*/
@@ -311,7 +321,7 @@ class dao
         }
 
         /* 如果处理的不是company表，并且查询方法不是insert和replace， 追加company的查询条件。*/
-        if($autoCompany and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
+        if(isset($this->app->company) and $autoCompany and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
         {
             /* 获得where 和 order by的位置。*/
             $wherePOS = strripos($sql, 'where');
@@ -906,9 +916,7 @@ class sql
     /* 给定一个key=>value结构的数组或者对象，拼装成key = value的形式。*/
     public function data($data)
     {
-        global $app;
         $this->data = $data;
-        if(!isset($this->data->company) and $app->getModuleName() != 'company') $this->data->company = $app->company->id;   // 如果当前模块不是company，都追加company字段。
         foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
         $this->sql = rtrim($this->sql, ',');    // 去掉最后面的逗号。
         return $this;
