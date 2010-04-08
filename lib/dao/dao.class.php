@@ -62,18 +62,26 @@ class dao
     protected $dbh;
 
     /**
-     * 当前model所对应的table name。
+     * 当前查询所对应的主表。
      * 
-     * @var object
-     * @access private
+     * @var string
+     * @access public
      */
     public $table;
 
     /**
+     * 主表所对应的alias
+     * 
+     * @var string
+     * @access public
+     */
+    public $alias;
+
+    /**
      * 当前查询所返回的字段列表。
      * 
-     * @var object
-     * @access private
+     * @var string
+     * @access public
      */
     public $fields;
 
@@ -82,10 +90,18 @@ class dao
      * 
      * 主要用来区分dao::from()方法和sql::from()方法。
      *
-     * @var object
-     * @access private
+     * @var string
+     * @access public
      */
     public $mode;
+
+    /**
+     * 查询的方法: insert, select, update, delete, replace
+     *
+     * @var string
+     * @access public
+     */
+    public $method;
 
     /**
      * 执行的sql查询列表。
@@ -138,6 +154,18 @@ class dao
     }
 
     /**
+     * 设置当前查询主表的alias。 
+     * 
+     * @param string $alias     别名。
+     * @access private
+     * @return void
+     */
+    private function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
+
+    /**
      * 设置返回的字段列表。
      * 
      * @param string $fields   字段列表。
@@ -159,7 +187,9 @@ class dao
     {
         $this->setFields('');
         $this->setTable('');
+        $this->setAlias('');
         $this->setMode('');
+        $this->setMethod('');
     }
 
     //-------------------- 根据查询方式的不同，调用SQL类的对应方法。--------------------//
@@ -175,11 +205,18 @@ class dao
     {
         $this->mode = $mode;
     }
-    
+
+    /* 设置查询的方法。select|update|insert|delete|replace */
+    private function setMethod($method = '')
+    {
+        $this->method = $method;
+    }
+
     /* select：调用SQL类的select方法。*/
     public function select($fields = '*')
     {
         $this->setMode('raw');
+        $this->setMethod('select');
         $this->sqlobj = sql::select($fields);
         return $this;
     }
@@ -188,6 +225,7 @@ class dao
     public function update($table)
     {
         $this->setMode('raw');
+        $this->setMethod('update');
         $this->sqlobj = sql::update($table);
         $this->setTable($table);
         return $this;
@@ -197,6 +235,7 @@ class dao
     public function delete()
     {
         $this->setMode('raw');
+        $this->setMethod('delete');
         $this->sqlobj = sql::delete();
         return $this;
     }
@@ -205,6 +244,7 @@ class dao
     public function insert($table)
     {
         $this->setMode('raw');
+        $this->setMethod('insert');
         $this->sqlobj = sql::insert($table);
         $this->setTable($table);
         return $this;
@@ -214,6 +254,7 @@ class dao
     public function replace($table)
     {
         $this->setMode('raw');
+        $this->setMethod('replace');
         $this->sqlobj = sql::replace($table);
         $this->setTable($table);
         return $this;
@@ -234,6 +275,14 @@ class dao
         return $this;
     }
 
+    /* alias方法。*/
+    public function alias($alias)
+    {
+        if(empty($this->alias)) $this->setAlias($alias);
+        $this->sqlobj->alias($alias);
+        return $this;
+    }
+
     //-------------------- 拼装之后的SQL相关处理方法。--------------------//
 
     /* 返回SQL语句。*/
@@ -251,20 +300,48 @@ class dao
     /* 处理SQL，将table和fields字段替换成对应的值。*/
     private function processSQL()
     {
+        $sql = $this->sqlobj->get();
+
+        /* 如果查询模式是magic，处理fields和table两个变量。*/
         if($this->mode == 'magic')
         {
             if($this->fields == '') $this->fields = '*';
             if($this->table == '')  $this->app->error('Must set the table name', __FILE__, __LINE__, $exit = true);
             $sql = sprintf($this->sqlobj->get(), $this->fields, $this->table);
-            self::$querys[] = $sql;
-            return $sql;
         }
-        else
+
+        /* 如果处理的不是company表，并且查询方法不是insert和replace， 追加company的查询条件。*/
+        if($this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
         {
-            $sql = $this->sqlobj->get();
-            self::$querys[] = $sql;
-            return $sql;
+            /* 获得where 和 order by的位置。*/
+            $wherePOS = strripos($sql, 'where');
+            $orderPOS = strripos($sql, 'order by');
+
+            /* 要追加的条件语句。*/
+            $tableName = !empty($this->alias) ? $this->alias : $this->table;
+            $companyCondition = " $tableName.company={$this->app->company->id} ";
+
+            /* SQL语句中有order by。*/
+            if($orderPOS)
+            {
+                $firstPart = substr($sql, 0, $orderPOS);
+                $lastPart  = substr($sql, $orderPOS);
+                if($wherePOS)
+                {
+                    $sql = $firstPart . " AND $companyCondition " . $lastPart;
+                }
+                else
+                {
+                    $sql = $firstPart . " WHERE $companyCondition " . $lastPart;
+                }
+            }
+            else
+            {
+                $sql .= $wherePOS ? " AND $companyCondition" : " WHERE $companyCondition";
+            }
         }
+        self::$querys[] = $sql;
+        return $sql;
     }
 
     //-------------------- SQL查询相关的方法。--------------------//
@@ -725,14 +802,6 @@ class sql
     private $sql = '';
 
     /**
-     * 数据表名。
-     * 
-     * @var string
-     * @access private
-     */
-    private $table = '';
-
-    /**
      * 全局的$dbh（数据库访问句柄）对象。
      * 
      * @var object
@@ -785,7 +854,6 @@ class sql
     {
         global $dbh;
         $this->dbh        = $dbh;
-        $this->table      = $table;
         $this->magicQuote = get_magic_quotes_gpc();
     }
 
@@ -838,7 +906,9 @@ class sql
     /* 给定一个key=>value结构的数组或者对象，拼装成key = value的形式。*/
     public function data($data)
     {
+        global $app;
         $this->data = $data;
+        if($app->getModuleName() != 'company') $this->data->company = $app->company->id;   // 如果当前模块不是company，都追加company字段。
         foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
         $this->sql = rtrim($this->sql, ',');    // 去掉最后面的逗号。
         return $this;
