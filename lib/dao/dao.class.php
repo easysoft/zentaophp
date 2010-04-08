@@ -298,7 +298,7 @@ class dao
     }
 
     /* 处理SQL，将table和fields字段替换成对应的值。*/
-    private function processSQL()
+    private function processSQL($autoCompany = true)
     {
         $sql = $this->sqlobj->get();
 
@@ -311,7 +311,7 @@ class dao
         }
 
         /* 如果处理的不是company表，并且查询方法不是insert和replace， 追加company的查询条件。*/
-        if($this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
+        if($autoCompany and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
         {
             /* 获得where 和 order by的位置。*/
             $wherePOS = strripos($sql, 'where');
@@ -319,7 +319,7 @@ class dao
 
             /* 要追加的条件语句。*/
             $tableName = !empty($this->alias) ? $this->alias : $this->table;
-            $companyCondition = " $tableName.company={$this->app->company->id} ";
+            $companyCondition = " $tableName.company = '{$this->app->company->id}' ";
 
             /* SQL语句中有order by。*/
             if($orderPOS)
@@ -353,14 +353,14 @@ class dao
         return $this;
     }
 
-    /* 执行sql查询，返回stmt对象。*/
-    public function query()
+    /* 执行sql查询，返回stmt对象。autoComapny设定是否自动追加company的查询条件。*/
+    public function query($autoCompany = true)
     {
         /* 如果dao::$errors不为空，返回一个空的stmt对象，这样后续的方法调用还可以继续。*/
         if(!empty(dao::$errors)) return new PDOStatement();
 
         /* 处理一下SQL语句。*/
-        $sql = $this->processSQL();
+        $sql = $this->processSQL($autoCompany);
         try
         {
             $this->reset();
@@ -413,14 +413,14 @@ class dao
         return $this;
     }
 
-    /* 执行sql查询，返回受影响的记录数。*/
-    public function exec()
+    /* 执行sql查询，返回受影响的记录数。autoComapny设定是否自动追加company的查询条件。*/
+    public function exec($autoCompany = true)
     {
         /* 如果dao::$errors不为空，返回一个空的stmt对象，这样后续的方法调用还可以继续。*/
         if(!empty(dao::$errors)) return new PDOStatement();
 
         /* 处理一下SQL语句。*/
-        $sql = $this->processSQL();
+        $sql = $this->processSQL($autoCompany);
         try
         {
             $this->reset();
@@ -908,7 +908,7 @@ class sql
     {
         global $app;
         $this->data = $data;
-        if($app->getModuleName() != 'company') $this->data->company = $app->company->id;   // 如果当前模块不是company，都追加company字段。
+        if(!isset($this->data->company) and $app->getModuleName() != 'company') $this->data->company = $app->company->id;   // 如果当前模块不是company，都追加company字段。
         foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
         $this->sql = rtrim($this->sql, ',');    // 去掉最后面的逗号。
         return $this;
