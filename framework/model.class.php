@@ -188,4 +188,23 @@ class model
     {
         $this->dao = $this->app->loadClass('dao');
     }
+
+    /* 将一条记录标记为已删除。*/
+    public function delete($table, $id)
+    {
+        $this->dao->update($table)->set('deleted')->eq(1)->where('id')->eq($id)->exec();
+        $object = str_replace($this->config->db->prefix, '', $table);
+        $this->loadModel('action')->create($object, $id, 'deleted', '', $extra = ACTIONMODEL::CAN_UNDELETED);
+    }
+
+    /* 欢迎已经标记为删除的记录。*/
+    public function undelete($actionID)
+    {
+        $action = $this->loadModel('action')->getById($actionID);
+        if($action->action != 'deleted') return;
+        $table = $this->config->action->objectTables[$action->objectType];
+        $this->dao->update($table)->set('deleted')->eq(0)->where('id')->eq($action->objectID)->exec();
+        $this->dao->update(TABLE_ACTION)->set('extra')->eq(ACTIONMODEL::BE_UNDELETED)->where('id')->eq($actionID)->exec();
+        $this->action->create($action->objectType, $action->objectID, 'undeleted');
+    }
 }    
