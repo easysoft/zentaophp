@@ -321,21 +321,25 @@ class dao
         }
 
         /* 如果处理的不是company表，并且查询方法不是insert和replace， 追加company的查询条件。*/
-        if(isset($this->app->company) and $autoCompany and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
+        if(isset($this->app->company) and $autoCompany and $this->table != '' and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
         {
             /* 获得where 和 order by的位置。*/
-            $wherePOS = strripos($sql, 'where');
-            $orderPOS = strripos($sql, 'order by');
+            $wherePOS  = strripos($sql, 'where');
+            $orderPOS  = strripos($sql, 'order by');            // order by的位置。
+            $groupPOS  = strripos($sql, 'group by');            // group by的位置。
+            $havingPOS = strrpos($sql, 'HAVING');               // having的位置。
+            $splitPOS  = $havingPOS ? $havingPOS : $orderPOS;   // 如果有having，则取之。
+            $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // group比having更为靠前。
 
             /* 要追加的条件语句。*/
             $tableName = !empty($this->alias) ? $this->alias : $this->table;
             $companyCondition = " $tableName.company = '{$this->app->company->id}' ";
 
             /* SQL语句中有order by。*/
-            if($orderPOS)
+            if($splitPOS)
             {
-                $firstPart = substr($sql, 0, $orderPOS);
-                $lastPart  = substr($sql, $orderPOS);
+                $firstPart = substr($sql, 0, $splitPOS);
+                $lastPart  = substr($sql, $splitPOS);
                 if($wherePOS)
                 {
                     $sql = $firstPart . " AND $companyCondition " . $lastPart;
