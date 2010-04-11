@@ -325,11 +325,13 @@ class dao
         {
             /* 获得where 和 order by的位置。*/
             $wherePOS  = strripos($sql, 'where');
-            $orderPOS  = strripos($sql, 'order by');            // order by的位置。
             $groupPOS  = strripos($sql, 'group by');            // group by的位置。
             $havingPOS = strrpos($sql, 'HAVING');               // having的位置。
-            $splitPOS  = $havingPOS ? $havingPOS : $orderPOS;   // 如果有having，则取之。
-            $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // group比having更为靠前。
+            $orderPOS  = strripos($sql, 'order by');            // order by的位置。
+            $limitPOS  = strrpos($sql, 'LIMIT');                // limit的位置。
+            $splitPOS  = $orderPOS ? $orderPOS : $limitPOS;     // order比limit靠前。
+            $splitPOS  = $havingPOS? $havingPOS: $splitPOS;     // having比orer靠前。
+            $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // group比having靠前。
 
             /* 要追加的条件语句。*/
             $tableName = !empty($this->alias) ? $this->alias : $this->table;
