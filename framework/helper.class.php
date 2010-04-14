@@ -330,3 +330,12 @@ function inLink($methodName = 'index', $vars = '', $viewType = '')
     global $app;
     return helper::createLink($app->getModuleName(), $methodName, $vars, $viewType);
 }
+
+/* 循环一个数组。*/
+function cycle($items)
+{
+    static $i = 0;
+    if(!is_array($items)) $items = explode(',', $items);
+    if(!isset($items[$i])) $i = 0;
+    return $items[$i++];
+}
