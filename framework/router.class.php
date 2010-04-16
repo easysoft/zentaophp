@@ -475,6 +475,12 @@ class router
         }
     }
 
+    /* 设置debug级别。*/
+    public function setDebug()
+    {
+        $this->config->debug ? error_reporting(E_ALL & ~ E_STRICT) : error_reporting(0);
+    }
+
     /* 设置时区。*/
     public function setTimezone()
     {
