@@ -451,18 +451,18 @@ class dao
     //-------------------- 数据获取相关的方法。--------------------//
 
     /* 返回一条记录，如果指定了$field字段, 则直接返回该字段对应的值。*/
-    public function fetch($field = '')
+    public function fetch($field = '', $autoCompany = true)
     {
-        if(empty($field)) return $this->query()->fetch();
+        if(empty($field)) return $this->query($autoCompany)->fetch();
         $this->setFields($field);
-        $result = $this->query()->fetch(PDO::FETCH_OBJ);
+        $result = $this->query($autoCompany)->fetch(PDO::FETCH_OBJ);
         if($result) return $result->$field;
     }
 
     /* 返回全部的结果。如果指定了$keyField，则以keyField的值作为key。*/
-    public function fetchAll($keyField = '')
+    public function fetchAll($keyField = '', $autoCompany = true)
     {
-        $stmt = $this->query();
+        $stmt = $this->query($autoCompany);
         if(empty($keyField)) return $stmt->fetchAll();
         $rows = array();
         while($row = $stmt->fetch()) $rows[$row->$keyField] = $row;
@@ -470,9 +470,9 @@ class dao
     }
 
     /* 返回结果并按照某个字段进行分组。*/
-    public function fetchGroup($groupField, $keyField = '')
+    public function fetchGroup($groupField, $keyField = '', $autoCompany = true)
     {
-        $stmt = $this->query();
+        $stmt = $this->query($autoCompany);
         $rows = array();
         while($row = $stmt->fetch())
         {
@@ -482,11 +482,11 @@ class dao
     }
 
     /* fetchPairs方法：如果没有指定key和value字段，则取行字段里面的第一个作为key，最后一个作为value。*/
-    public function fetchPairs($keyField = '', $valueField = '')
+    public function fetchPairs($keyField = '', $valueField = '', $autoCompany = true)
     {
         $pairs = array();
         $ready = false;
-        $stmt  = $this->query();
+        $stmt  = $this->query($autoCompany);
         while($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
             if(!$ready)
@@ -584,7 +584,7 @@ class dao
         if(!isset($this->sqlobj->data->$fieldName)) return $this;
 
         /* 引用全局的config, lang。*/
-        global $lang, $config;
+        global $lang, $config, $app;
         $table = strtolower(str_replace($config->db->prefix, '', $this->table));
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
         $value = $this->sqlobj->data->$fieldName;
@@ -593,6 +593,7 @@ class dao
         {
             $args  = func_get_args();
             $sql = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->sqlobj->quote($value); 
+            $sql .= " AND company = {$this->app->company->id} ";
             if(isset($args[2])) $sql .= ' AND ' . $args[2];
             try
             {
