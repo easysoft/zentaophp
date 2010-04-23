@@ -690,14 +690,15 @@ class router
         {
             $this->clientTheme = $theme;
         }
-        elseif(isset($_SESSION['theme']))
-        {
-            $this->clientTheme = $_SESSION['theme'];
-        }
         elseif(isset($_COOKIE['theme']))
         {
             $this->clientTheme = $_COOKIE['theme'];
         }    
+        elseif(isset($this->config->client->theme))
+        {
+            $this->clientTheme = $this->config->client->theme;
+        }    
+
         if(!empty($this->clientTheme))
         {
             $this->clientTheme = strtolower($this->clientTheme);
