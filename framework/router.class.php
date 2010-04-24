@@ -237,6 +237,14 @@ class router
     public $post;
 
     /**
+     * GET对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $get;
+
+    /**
      * session对象。
      * 
      * @var ojbect
@@ -251,6 +259,15 @@ class router
      * @access public
      */
     public $server;
+
+    /**
+     * cookie对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $cookie;
+
 
     /**
      * global对象。
@@ -469,7 +486,9 @@ class router
         if(isset($this->config->super2OBJ) and $this->config->super2OBJ)
         {
             $this->post    = new super('post');
+            $this->get     = new super('get');
             $this->server  = new super('server');
+            $this->cookie  = new super('cookie');
             $this->session = new super('session');
             $this->global  = new super('global');
         }

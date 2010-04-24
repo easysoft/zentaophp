@@ -78,6 +78,14 @@ class control
     public $post;
 
     /**
+     * get对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $get;
+
+    /**
      * session对象。
      * 
      * @var ojbect
@@ -92,6 +100,14 @@ class control
      * @access public
      */
     public $server;
+
+    /**
+     * cookie对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $cookie;
 
     /**
      * global对象。
@@ -222,8 +238,10 @@ class control
     protected function setSuperVars()
     {
         $this->post    = $this->app->post;
+        $this->get     = $this->app->get;
         $this->server  = $this->app->server;
         $this->session = $this->app->session;
+        $this->cookie  = $this->app->cookie;
         $this->global  = $this->app->global;
     }
 

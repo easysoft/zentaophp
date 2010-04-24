@@ -77,6 +77,14 @@ class model
     public $post;
 
     /**
+     * get对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $get;
+
+    /**
      * session对象。
      * 
      * @var ojbect
@@ -91,6 +99,14 @@ class model
      * @access public
      */
     public $server;
+
+    /**
+     * cookie对象。
+     * 
+     * @var ojbect
+     * @access public
+     */
+    public $cookie;
 
     /**
      * global对象。
@@ -150,7 +166,9 @@ class model
     protected function setSuperVars()
     {
         $this->post    = $this->app->post;
+        $this->get     = $this->app->get;
         $this->server  = $this->app->server;
+        $this->cookie  = $this->app->cookie;
         $this->session = $this->app->session;
         $this->global  = $this->app->global;
     }
