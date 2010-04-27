@@ -497,7 +497,7 @@ class router
     /* 设置debug级别。*/
     public function setDebug()
     {
-        $this->config->debug ? error_reporting(E_ALL & ~ E_STRICT) : error_reporting(0);
+        isset($this->config->debug) and $this->config->debug ? error_reporting(E_ALL & ~ E_STRICT) : error_reporting(0);
     }
 
     /* 设置时区。*/
@@ -860,7 +860,11 @@ class router
      */
     public function getURI($full = false)
     {
-        if($full and $this->config->requestType == 'PATH_INFO') return $this->config->webRoot . $this->URI . '.' . $this->viewType;
+        if($full and $this->config->requestType == 'PATH_INFO')
+        {
+            if($this->URI) return $this->config->webRoot . $this->URI . '.' . $this->viewType;
+            return $this->config->webRoot;
+        }
         return $this->URI;
     }
 
