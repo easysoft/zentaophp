@@ -276,7 +276,7 @@ class helper
      */
     static public function safe64Encode($string)
     {
-        return strtr(base64_encode($string), '+/=', '');
+        return strtr(base64_encode($string), '/', '.');
     }
 
     /**
@@ -289,7 +289,7 @@ class helper
      */
     static public function safe64Decode($string)
     {
-        return base64_decode(strtr($string, '', '+/='));
+        return base64_decode(strtr($string, '.', '/'));
     }
 
     /**
