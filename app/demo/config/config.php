@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 Chunsheng Wang
- * @author      Chunsheng Wang <wwccss@263.net>
+ * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentao.cn
+ * @link        http://www.zentaoms.com
  */
 $config->version     = '1.0.STABLE.090620'; // 版本号，切勿修改。
 $config->debug       = true;              // 是否打开debug功能。

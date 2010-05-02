@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 Chunsheng Wang
- * @author      Chunsheng Wang <wwccss@263.net>
+ * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentao.cn
+ * @link        http://www.zentaoms.com
  */
 /* 记录最开始的时间。*/
 $timeStart = _getTime();
@@ -59,7 +59,7 @@ $memory   = round(memory_get_usage() / 1024, 1);
 
 echo <<<EOT
 <div style='text-align:center'>
-  Powered By <a href='http://www.zentao.cn' target='_blank'>ZenTaoPHP</a>.
+  Powered By <a href='http://www.zentaoms.com' target='_blank'>ZenTaoPHP</a>.
 EOT;
 if($config->debug)
 {

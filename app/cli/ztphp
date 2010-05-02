@@ -19,10 +19,10 @@
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @copyright   Copyright: 2009 Chunsheng Wang
- * @author      Chunsheng Wang <wwccss@263.net>
+ * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentao.cn
+ * @link        http://www.zentaoms.com
  */
 define('IN_SHELL', true);
 

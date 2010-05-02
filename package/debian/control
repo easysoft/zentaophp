@@ -1,7 +1,7 @@
 Source: zentaophp
 Section: www
 Priority: extra
-Maintainer: chunsheng.wang <wwccss@gmail.com>
+Maintainer: chunsheng.wang <chunsheng@cnezsoft.com>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.2
 

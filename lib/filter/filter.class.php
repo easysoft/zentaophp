@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010, Chunsheng Wang
- * @author      Chunsheng Wang <wwccss@gmail.com>
+ * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentao.cn
+ * @link        http://www.zentaoms.com
  */
 /**
  * validate类，提供对数据的验证。

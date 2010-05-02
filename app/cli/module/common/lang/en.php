@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 Chunsheng Wang
- * @author      Chunsheng Wang <wwccss@263.net>
+ * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentao.cn
+ * @link        http://www.zentaoms.com
  */
 $lang->afterAppNote = "The application has been successfully created, it's directory is %s. \nOpen the config file %s to set params.\n";
 $lang->fillClaim    = "The claim file %s has been created, please open it and fill the items and then re execute the same command.\n";

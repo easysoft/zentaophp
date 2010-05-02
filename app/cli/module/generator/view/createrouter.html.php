@@ -49,7 +49,7 @@ include '../../../framework/helper.class.php';
 
 echo <<<EOD
 <div style='text-align:center'>
-  Powered By <a href='http://www.zentao.cn' target='_blank'>ZenTaoPHP</a>.
+  Powered By <a href='http://www.zentaoms.com' target='_blank'>ZenTaoPHP</a>.
 EOD;
 if(\$config->debug)
 {

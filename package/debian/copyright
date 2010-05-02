@@ -1,11 +1,11 @@
-This package was debianized by chunsheng.wang <wwccss@gmail.com> on
+This package was debianized by chunsheng.wang <chunsheng@cnezsoft.com> on
 Wed, 15 Apr 2009 14:49:47 +0800.
 
-It was downloaded from <http://www.zentao.cn>
+It was downloaded from <http://www.zentaoms.com>
 
 Upstream Author(s): 
 
-    <chunsheng.wang wwccss@gmail.com>
+    <chunsheng.wang chunsheng@cnezsoft.com>
 
 Copyright: 
 
@@ -15,5 +15,5 @@ License:
 
     <LGPL>
 
-The Debian packaging is (C) 2009, chunsheng.wang <wwccss@gmail.com> and
+The Debian packaging is (C) 2009, chunsheng.wang <chunsheng@cnezsoft.com> and
 is licensed under the LGPL, see `/usr/share/common-licenses/LGPL'.
