@@ -192,7 +192,7 @@ class helper
         /* 设定主model文件和扩展路径，并获得所有的扩展文件。*/
         $mainModelFile = $app->getModulePath($moduleName) . 'model.php';
         $modelExtPath  = $app->getModuleExtPath($moduleName, 'model');
-        $extFiles      = glob($modelExtPath . '*.php');
+        $extFiles      = helper::ls($modelExtPath, '.php');
 
         /* 不存在扩展文件，返回主配置文件。*/
         if(empty($extFiles)) return $mainModelFile;
@@ -321,6 +321,25 @@ class helper
     static public function isZeroDate($date)
     {
         return substr($date, 0, 4) == '0000';
+    }
+
+    /* 获得某一个目录下面含有某个特征字符串的所有文件。*/
+    static public function ls($dir, $pattern = '')
+    {
+        $files = array();
+        $dir = realpath($dir);
+        if(is_dir($dir))
+        {
+            if($dh = opendir($dir))
+            {
+                while(($file = readdir($dh)) !== false) 
+                {
+                    if(strpos($file, $pattern) !== false) $files[] = $dir . DIRECTORY_SEPARATOR . $file;
+                }
+                closedir($dh);
+            }
+        }
+        return $files;
     }
 }
 

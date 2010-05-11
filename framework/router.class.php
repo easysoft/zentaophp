@@ -1307,7 +1307,7 @@ class router
         {
             $mainConfigFile = $this->moduleRoot . $moduleName . $this->pathFix . 'config.php';
             $extConfigPath  = $this->getModuleExtPath($moduleName, 'config');
-            $extConfigFiles = glob($extConfigPath . '*.php');
+            $extConfigFiles = helper::ls($extConfigPath, '.php');
         }
 
         /* 主配置文件不存在。*/
@@ -1346,7 +1346,7 @@ class router
     {
         $mainLangFile = $this->moduleRoot . $moduleName . $this->pathFix . 'lang' . $this->pathFix . $this->clientLang . '.php';
         $extLangPath  = $this->getModuleExtPath($moduleName, 'lang');
-        $extLangFiles = glob($extLangPath . $this->clientLang . '*.php');
+        $extLangFiles = helper::ls($extLangPath . $this->clientLang, '.php');
 
         /* 主配置文件不存在。*/
         if(!file_exists($mainLangFile))
