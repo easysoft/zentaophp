@@ -1,40 +1,40 @@
 -----------------------------------------------------------------
-| ����ZenTaoPHP���                                             |  
+| 关于ZenTaoPHP框架                                             |  
 |                                                               |  
 | @copyright   Copyright: 2009 Chunsheng Wang                   |
-| @author      Chunsheng Wang <chunsheng@cnezsoft.com>                  |
-| @link        http://www.zentaoms.com                             | 
-| @version     $Id: README 1162 2009-04-27 06:46:23Z wwccss $   |                         |  
------------------------------------------------------------------        
+| @author      Chunsheng Wang <chunsheng@cnezsoft.com>          |
+| @link        http://www.zentaoms.com                          | 
+| @version     $Id: README 1162 2009-04-27 06:46:23Z wwccss $   |
+----------------------------------------------------------------|
 
-һ�� ZenTaoPHP��ʲô��
+一、 ZenTaoPHP是什么？
 
-  ZenTaoPHP��һ���ǳ��򵥵�PHP��ܣ���֧��MVC����Ŀ�����ʽ��zen�ǡ���������˼��tao�ǡ���������˼��
-  ���ڶ������֮�����͡����֮�������������ʱ�������������ʽ��˿������ΪZenTao��
+  ZenTaoPHP是一个非常简单的PHP框架，它支持MVC三层的开发方式。zen是“禅”的意思，tao是“道”的意思。
+  我在读《编程之道》和《编程之禅》这两本书的时候，深受启发，故将此框架命名为ZenTao。
 
-����Ϊʲô���������ܣ�  
+二、为什么开发这个框架？  
 
-  ���������ܵ���ҪĿ����Ϊ�˺������Ŀ�����������̵档�����Ҽƻ���������Ŀ�����������ǻ��������ܵ�
-  һ��Ӧ�á�
+  开发这个框架的主要目的是为了后面的项目管理软件做铺垫。后面我计划开发的项目管理软件会是基于这个框架的
+  一个应用。
 
-����Ϊʲô��ѡ�������Ŀ�ܣ�   
+三、为什么不选择其他的框架？   
 
-  ԭ��ܼ򵥣���Ϊ�����Ŀ�ܶ�̫���ӡ���Ҫ��֤�����㹻�򵥣���������Ҫ�á�
+  原因很简单，因为其他的框架都太复杂。我要保证代码足够简单，而且性能要好。
 
-�ġ�Ϊʲôѡ�������ܣ�  
+四、为什么选择这个框架？  
 
-  �򵥣����ܣ���Ҳ������ѡ���������ɰɡ���ĳ�������Ͻ��������ܸ�����һ��Լ���������ǿ�ܡ�
+  简单，性能，这也许是你选择它的理由吧。从某种意义上讲，这个框架更多是一个约定，而不是框架。
 
-�塢ϵͳҪ��  
+五、系统要求：  
 
-  webserver�����apache����rewriteģ�顣������webserver�д����ԡ�
-  php5.2�汾���ϣ�����pdo, pdo:mysql, json, spl����չ����֧��php4ϵ�еİ汾��
-  mysqlû��Ҫ�����������Ƚϸߵİ汾��
+  webserver最好是apache，打开rewrite模块。其他的webserver有待测试。
+  php5.2版本以上，加载pdo, pdo:mysql, json, spl等扩展。不支持php4系列的版本。
+  mysql没有要求，最好是最近比较高的版本。
 
-������װ��  
+六、安装：  
 
-  1. ���ر���ܣ������ѹ����webserver�ĸ�Ŀ¼������/data/www/zentao/
-  2. �޸�apache�������ļ�������һ��virtualhost������/usr/local/etc/apache22/extra/httpd-vhosts.conf
+  1. 下载本框架，将其解压缩到webserver的根目录，比如/data/www/zentao/
+  2. 修改apache的配置文件，增加一个virtualhost的配置/usr/local/etc/apache22/extra/httpd-vhosts.conf
 
      NameVirtualHost 192.168.9.99:80
      <VirtualHost 192.168.9.99:80>
@@ -47,23 +47,23 @@
          #RewriteLog "/data/logs/rewrite.log"
      </VirtualHost>
 
-     �����Ҫʹ��PATH_INFO������Ҫ�޸�config.test.php�������е�requestType����ΪPATH_INFO
+     如果需要使用PATH_INFO，则还需要修改config.test.php，将其中的requestType设置为PATH_INFO
      
-     ����������ļ�����ʵ�ʵİ�װĿ¼��ء����е�IP��ַ��Ҫ�����������ʵ�ʵ�ַ��
-     �����Ҫ����¼rewrite����־������������ע��ȥ����
+     具体的配置文件和你实际的安装目录相关。其中的IP地址需要换成你机器的实际地址。
+     如果需要及记录rewrite的日志，请把最后两行注释去掉。
 
-   3. ����һ�����ݿ⣬�������ֽ���zentao  
-   4. �޸�config.test.php, �޸����еķ������ݿ���û��������롣
+   3. 创建一个数据库，比如名字叫做zentao  
+   4. 修改config.test.php, 修改其中的访问数据库的用户名和密码。
 
       $config->db->name       = 'zentao';
       $config->db->user       = 'root';
       $config->db->password   = '';
 
-      �޸����֮�󣬽��俽��Ϊconfig.php������ʹ�÷������ӡ�
+      修改完毕之后，将其拷贝为config.php，或者使用符号链接。
     
-    5. ����apache֮�󣬷��������õ���վ���ɡ� 
+    5. 重启apache之后，访问你配置的网站即可。 
 
     6. ZenTaoPHP Hello World!
 
-       ��moduleĿ¼���棬��һ��helloģ�飬չʾ��ZenTaoPHP�Ĺ���ģʽ������Ҫ�Ȱ����Ŀ¼�����SQL���뵽���ݿ��У�
-       �Դ�������Ҫ��blog����
+       在module目录下面，有一个hello模块，展示了ZenTaoPHP的工作模式。你需要先把这个目录下面的SQL导入到数据库中，
+       以创建所需要的blog表。
