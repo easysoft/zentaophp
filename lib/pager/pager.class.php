@@ -15,95 +15,95 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
 /**
- * pagerÀà£¬Ìá¹©¶ÔÊı¾İ¿â·ÖÒ³µÄ²Ù×÷¡£
+ * pagerç±»ï¼Œæä¾›å¯¹æ•°æ®åº“åˆ†é¡µçš„æ“ä½œã€‚
  * 
  * @package ZenTaoPHP
  */
 class pager
 {
     /**
-     * Ä¬ÈÏÃ¿Ò³ÏÔÊ¾¼ÇÂ¼Êı¡£
+     * é»˜è®¤æ¯é¡µæ˜¾ç¤ºè®°å½•æ•°ã€‚
      *
      * @public int
      */
     const DEFAULT_REC_PRE_PAGE = 20;
 
     /**
-     * ¼ÇÂ¼×ÜÊı¡£
+     * è®°å½•æ€»æ•°ã€‚
      *
      * @public int
      */
     public $recTotal;
 
     /**
-     * Ã¿Ò³ÏÔÊ¾¼ÇÂ¼Êı¡£
+     * æ¯é¡µæ˜¾ç¤ºè®°å½•æ•°ã€‚
      *
      * @public int
      */
     public $recPerPage;
 
     /**
-     * ×Ü¹²µÄÒ³Êı¡£
+     * æ€»å…±çš„é¡µæ•°ã€‚
      *
      * @public int
      */
     public $pageTotal;
 
     /**
-     * µ±Ç°Ò³Êı·¶Î§¡£
+     * å½“å‰é¡µæ•°èŒƒå›´ã€‚
      *
      * @public int
      */
     public $pageID;
 
     /**
-     * È«¾ÖµÄapp¶ÔÏó¡£
+     * å…¨å±€çš„appå¯¹è±¡ã€‚
      *
      * @private object
      */
     private $app;
 
     /**
-     * È«¾ÖµÄlang¶ÔÏó¡£
+     * å…¨å±€çš„langå¯¹è±¡ã€‚
      *
      * @private object
      */
     private $lang;
 
     /**
-     * µ±Ç°ÇëÇóµÄmoduleName¡£
+     * å½“å‰è¯·æ±‚çš„moduleNameã€‚
      *
      * @private string
      */
     private $moduleName;
 
     /**
-     * µ±Ç°ÇëÇóµÄmethodName¡£
+     * å½“å‰è¯·æ±‚çš„methodNameã€‚
      *
      * @private string
      */
     private $methodName;
 
     /**
-     * µ±Ç°ÇëÇóµÄ²ÎÊı¡£
+     * å½“å‰è¯·æ±‚çš„å‚æ•°ã€‚
      *
      * @private array
      */
     private $params;
 
     /**
-     * ¹¹Ôìº¯Êı¡£
+     * æ„é€ å‡½æ•°ã€‚
      *
-     * @param  int      $recTotal       ¼ÇÂ¼×ÜÊı
-     * @param  int      $recPerPage     Ã¿Ò³¼ÇÂ¼Êı¡£
-     * @param  int      $pageID         µ±Ç°·ÖÒ³ID¡£
+     * @param  int      $recTotal       è®°å½•æ€»æ•°
+     * @param  int      $recPerPage     æ¯é¡µè®°å½•æ•°ã€‚
+     * @param  int      $pageID         å½“å‰åˆ†é¡µIDã€‚
      */
     public function __construct($recTotal = 0, $recPerPage = 20, $pageID = 1)
     {
@@ -123,25 +123,25 @@ class pager
         return new pager($recTotal, $recPerPage, $pageID);
     }
 
-    /* ÉèÖÃ¼ÇÂ¼×ÜÊı¡£*/
+    /* è®¾ç½®è®°å½•æ€»æ•°ã€‚*/
     public function setRecTotal($recTotal = 0)
     {
         $this->recTotal = (int)$recTotal;
     }
 
-    /* ÉèÖÃÃ¿Ò³ÏÔÊ¾µÄ¼ÇÂ¼Êı¡£*/
+    /* è®¾ç½®æ¯é¡µæ˜¾ç¤ºçš„è®°å½•æ•°ã€‚*/
     public function setRecPerPage($recPerPage)
     {
         $this->recPerPage = ($recPerPage > 0) ? $recPerPage : PAGER::DEFAULT_REC_PRE_PAGE;
     }
 
-    /* ÉèÖÃ×Ü¹²µÄÒ³Êı¡£*/
+    /* è®¾ç½®æ€»å…±çš„é¡µæ•°ã€‚*/
     public function setPageTotal()
     {
         $this->pageTotal = ceil($this->recTotal / $this->recPerPage);
     }
 
-    /* ÉèÖÃµ±Ç°µÄ·ÖÒ³ID¡£*/
+    /* è®¾ç½®å½“å‰çš„åˆ†é¡µIDã€‚*/
     public function setPageID($pageID)
     {
         if($pageID > 0 and $pageID <= $this->pageTotal)
@@ -154,33 +154,33 @@ class pager
         }
     }
 
-    /* ÉèÖÃapp¶ÔÏó¡£*/
+    /* è®¾ç½®appå¯¹è±¡ã€‚*/
     private function setApp()
     {
         global $app;
         $this->app = $app;
     }
 
-    /* ÉèÖÃlang¶ÔÏó¡£*/
+    /* è®¾ç½®langå¯¹è±¡ã€‚*/
     private function setLang()
     {
         global $lang;
         $this->lang = $lang;
     }
 
-    /* ÉèÖÃmoduleName¡£*/
+    /* è®¾ç½®moduleNameã€‚*/
     private function setModuleName()
     {
         $this->moduleName = $this->app->getModuleName();
     }
 
-    /* ÉèÖÃmethodName¡£*/
+    /* è®¾ç½®methodNameã€‚*/
     private function setMethodName()
     {
         $this->methodName = $this->app->getMethodName();
     }
 
-    /* ÉèÖÃparams¡£±¸×¢£º¸Ã·½·¨Ó¦µ±ÔÚÉú³Éhtml´úÂëÖ®Ç°±»µ÷ÓÃ¡£*/
+    /* è®¾ç½®paramsã€‚å¤‡æ³¨ï¼šè¯¥æ–¹æ³•åº”å½“åœ¨ç”Ÿæˆhtmlä»£ç ä¹‹å‰è¢«è°ƒç”¨ã€‚*/
     private function setParams()
     {
         $this->params = $this->app->getParams();
@@ -192,7 +192,7 @@ class pager
         }
     }
 
-    /* Éú³ÉlimitÓï¾ä¡£*/
+    /* ç”Ÿæˆlimitè¯­å¥ã€‚*/
     public function limit()
     {
         $limit = '';
@@ -200,14 +200,14 @@ class pager
         return $limit;
     }
    
-    /* Ö±½ÓÏÔÊ¾·ÖÒ³´úÂë¡£*/
+    /* ç›´æ¥æ˜¾ç¤ºåˆ†é¡µä»£ç ã€‚*/
     public function show($align = 'right', $type = 'full')
     {
         echo $this->get($align, $type);
     }
 
     /**
-     * ·µ»ØpagerµÄhtml´úÂë¡£
+     * è¿”å›pagerçš„htmlä»£ç ã€‚
      *
      * @param  string $align  Alignment, left|center|right, the default is right.
      * @param  string $type   type, full|short|shortest.
@@ -218,21 +218,21 @@ class pager
         /* If the RecTotal is zero, return with no record. */
         if($this->recTotal == 0) { return "<div style='float:$align; clear:none'>{$this->lang->pager->noRecord}</div>"; }
 
-        /* ÉèÖÃµ±Ç°ÇëÇó´«µİµÄ²ÎÊı¡£*/
+        /* è®¾ç½®å½“å‰è¯·æ±‚ä¼ é€’çš„å‚æ•°ã€‚*/
         $this->setParams();
         
-        /* ËùÓĞÄ£Ê½ÏÂ¶¼ÓĞµÄÄÚÈİ¡£*/
+        /* æ‰€æœ‰æ¨¡å¼ä¸‹éƒ½æœ‰çš„å†…å®¹ã€‚*/
         $pager  = $this->createPrePage();
         $pager .= $this->createNextPage();
 
-        /* shortºÍfullÄ£Ê½¶¼ÓĞµÄÄÚÈİ¡£*/
+        /* shortå’Œfullæ¨¡å¼éƒ½æœ‰çš„å†…å®¹ã€‚*/
         if($type !== 'shortest')
         {
             $pager  = $this->createFirstPage() . $pager;
             $pager .= $this->createLastPage();
         }
 
-        /* FullÄ£Ê½ÓĞµÄÄÚÈİ¡£*/
+        /* Fullæ¨¡å¼æœ‰çš„å†…å®¹ã€‚*/
         if($type == 'full')
         {
             $pager  = $this->createDigest() . $pager;
@@ -243,13 +243,13 @@ class pager
         return "<div style='float:$align; clear:none'>$pager</div>";
     }
 
-    /* Éú³ÉÕªÒª´úÂë¡£*/
+    /* ç”Ÿæˆæ‘˜è¦ä»£ç ã€‚*/
     function createDigest()
     {
         return sprintf($this->lang->pager->digest, $this->recTotal, $this->createRecPerPageList(), $this->pageID, $this->pageTotal);
     }
 
-    /* Éú³ÉÊ×Ò³Á´½Ó¡£*/
+    /* ç”Ÿæˆé¦–é¡µé“¾æ¥ã€‚*/
     function createFirstPage()
     {
         if($this->pageID == 1) return $this->lang->pager->first . ' ';
@@ -257,7 +257,7 @@ class pager
         return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->first);
     }
 
-    /* Éú³ÉÇ°Ò³Á´½Ó¡£*/
+    /* ç”Ÿæˆå‰é¡µé“¾æ¥ã€‚*/
     function createPrePage()
     {
         if($this->pageID == 1) return $this->lang->pager->pre . ' ';
@@ -265,7 +265,7 @@ class pager
         return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->pre);
     }    
 
-    /* Éú³ÉÏÂÒ³Á´½Ó¡£*/
+    /* ç”Ÿæˆä¸‹é¡µé“¾æ¥ã€‚*/
     function createNextPage()
     {
         if($this->pageID == $this->pageTotal) return $this->lang->pager->next . ' ';
@@ -273,7 +273,7 @@ class pager
         return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->next);
     }
 
-    /* Éú³ÉÄ©Ò³Á´½Ó¡£*/
+    /* ç”Ÿæˆæœ«é¡µé“¾æ¥ã€‚*/
     function createLastPage()
     {
         if($this->pageID == $this->pageTotal) return $this->lang->pager->last . ' ';
@@ -281,10 +281,10 @@ class pager
         return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->last);
     }    
 
-    /* Éú³ÉJS´úÂë¡£*/
+    /* ç”ŸæˆJSä»£ç ã€‚*/
     function createRecPerPageJS()
     {
-        /* ÖØĞÂĞŞÕıparams£¬½«ÆäÖĞ¹ØÓÚ·ÖÒ³µÄ±äÁ¿¶ÔÓ¦µÄÖµÉèÖÃÎªÌØÊâµÄ±ê¼Ç£¬È»ºóÊ¹ÓÃjs½«ÆäÌæ»»Îª¶ÔÓ¦µÄÖµ¡£*/
+        /* é‡æ–°ä¿®æ­£paramsï¼Œå°†å…¶ä¸­å…³äºåˆ†é¡µçš„å˜é‡å¯¹åº”çš„å€¼è®¾ç½®ä¸ºç‰¹æ®Šçš„æ ‡è®°ï¼Œç„¶åä½¿ç”¨jså°†å…¶æ›¿æ¢ä¸ºå¯¹åº”çš„å€¼ã€‚*/
         $params = $this->params;
         foreach($params as $key => $value)
         {
