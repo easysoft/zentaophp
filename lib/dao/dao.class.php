@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
@@ -23,14 +23,14 @@
  */
 
 /**
- * DAOÀà¡£Ìá¹©¸÷ÖÖ±ãÀûµÄÊı¾İ¿â²Ù×÷·½·¨¡£
+ * DAOç±»ã€‚æä¾›å„ç§ä¾¿åˆ©çš„æ•°æ®åº“æ“ä½œæ–¹æ³•ã€‚
  * 
  * @package ZenTaoPHP
  */
 class dao
 {
     /**
-     * È«¾ÖµÄ$app¶ÔÏó¡£
+     * å…¨å±€çš„$appå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -38,7 +38,7 @@ class dao
     protected $app;
 
     /**
-     * È«¾ÖµÄ$config¶ÔÏó¡£ 
+     * å…¨å±€çš„$configå¯¹è±¡ã€‚ 
      * 
      * @var object
      * @access protected
@@ -46,7 +46,7 @@ class dao
     protected $config;
 
     /**
-     * È«¾ÖµÄ$lang¶ÔÏó¡£
+     * å…¨å±€çš„$langå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -54,7 +54,7 @@ class dao
     protected $lang;
 
     /**
-     * È«¾ÖµÄ$dbh£¨Êı¾İ¿â·ÃÎÊ¾ä±ú£©¶ÔÏó¡£
+     * å…¨å±€çš„$dbhï¼ˆæ•°æ®åº“è®¿é—®å¥æŸ„ï¼‰å¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -62,7 +62,7 @@ class dao
     protected $dbh;
 
     /**
-     * µ±Ç°²éÑ¯Ëù¶ÔÓ¦µÄÖ÷±í¡£
+     * å½“å‰æŸ¥è¯¢æ‰€å¯¹åº”çš„ä¸»è¡¨ã€‚
      * 
      * @var string
      * @access public
@@ -70,7 +70,7 @@ class dao
     public $table;
 
     /**
-     * Ö÷±íËù¶ÔÓ¦µÄalias
+     * ä¸»è¡¨æ‰€å¯¹åº”çš„alias
      * 
      * @var string
      * @access public
@@ -78,7 +78,7 @@ class dao
     public $alias;
 
     /**
-     * µ±Ç°²éÑ¯Ëù·µ»ØµÄ×Ö¶ÎÁĞ±í¡£
+     * å½“å‰æŸ¥è¯¢æ‰€è¿”å›çš„å­—æ®µåˆ—è¡¨ã€‚
      * 
      * @var string
      * @access public
@@ -86,9 +86,9 @@ class dao
     public $fields;
 
     /**
-     * ²éÑ¯µÄÄ£Ê½£¬ÏÖÔÚÖ§³ÖÁ½ÖÖ£¬Ò»ÖÖÊÇÍ¨¹ıÄ§Êõ·½·¨£¬Ò»ÖÖÊÇÖ±½ÓÆ´Ğ´sql²éÑ¯¡£
+     * æŸ¥è¯¢çš„æ¨¡å¼ï¼Œç°åœ¨æ”¯æŒä¸¤ç§ï¼Œä¸€ç§æ˜¯é€šè¿‡é­”æœ¯æ–¹æ³•ï¼Œä¸€ç§æ˜¯ç›´æ¥æ‹¼å†™sqlæŸ¥è¯¢ã€‚
      * 
-     * Ö÷ÒªÓÃÀ´Çø·Ödao::from()·½·¨ºÍsql::from()·½·¨¡£
+     * ä¸»è¦ç”¨æ¥åŒºåˆ†dao::from()æ–¹æ³•å’Œsql::from()æ–¹æ³•ã€‚
      *
      * @var string
      * @access public
@@ -96,7 +96,7 @@ class dao
     public $mode;
 
     /**
-     * ²éÑ¯µÄ·½·¨: insert, select, update, delete, replace
+     * æŸ¥è¯¢çš„æ–¹æ³•: insert, select, update, delete, replace
      *
      * @var string
      * @access public
@@ -104,9 +104,9 @@ class dao
     public $method;
 
     /**
-     * Ö´ĞĞµÄsql²éÑ¯ÁĞ±í¡£
+     * æ‰§è¡Œçš„sqlæŸ¥è¯¢åˆ—è¡¨ã€‚
      * 
-     * ÓÃÀ´¼ÇÂ¼µ±Ç°Ò³ÃæËùÓĞµÄsql²éÑ¯¡£
+     * ç”¨æ¥è®°å½•å½“å‰é¡µé¢æ‰€æœ‰çš„sqlæŸ¥è¯¢ã€‚
      *
      * @var array
      * @access public
@@ -114,7 +114,7 @@ class dao
     static public $querys = array();
 
     /**
-     * Êı¾İ¼ì²é½á¹û¡£
+     * æ•°æ®æ£€æŸ¥ç»“æœã€‚
      * 
      * @var array
      * @access public
@@ -122,11 +122,11 @@ class dao
     static public $errors = array();
 
     /**
-     * ¹¹Ôìº¯Êı¡£
+     * æ„é€ å‡½æ•°ã€‚
      * 
-     * ÉèÖÃµ±Ç°model¶ÔÓ¦µÄ±íÃû£¬²¢ÒıÓÃÈ«¾ÖµÄ±äÁ¿¡£
+     * è®¾ç½®å½“å‰modelå¯¹åº”çš„è¡¨åï¼Œå¹¶å¼•ç”¨å…¨å±€çš„å˜é‡ã€‚
      *
-     * @param string $table   ±íÃû¡£
+     * @param string $table   è¡¨åã€‚
      * @access public
      * @return void
      */
@@ -142,9 +142,9 @@ class dao
     }
 
     /**
-     * ÉèÖÃÊı¾İ±í¡£
+     * è®¾ç½®æ•°æ®è¡¨ã€‚
      * 
-     * @param string $table   ±íÃû¡£
+     * @param string $table   è¡¨åã€‚
      * @access private
      * @return void
      */
@@ -154,9 +154,9 @@ class dao
     }
 
     /**
-     * ÉèÖÃµ±Ç°²éÑ¯Ö÷±íµÄalias¡£ 
+     * è®¾ç½®å½“å‰æŸ¥è¯¢ä¸»è¡¨çš„aliasã€‚ 
      * 
-     * @param string $alias     ±ğÃû¡£
+     * @param string $alias     åˆ«åã€‚
      * @access private
      * @return void
      */
@@ -166,9 +166,9 @@ class dao
     }
 
     /**
-     * ÉèÖÃ·µ»ØµÄ×Ö¶ÎÁĞ±í¡£
+     * è®¾ç½®è¿”å›çš„å­—æ®µåˆ—è¡¨ã€‚
      * 
-     * @param string $fields   ×Ö¶ÎÁĞ±í¡£
+     * @param string $fields   å­—æ®µåˆ—è¡¨ã€‚
      * @access private
      * @return void
      */
@@ -178,7 +178,7 @@ class dao
     }
 
     /**
-     * ÖØĞÂÉèÖÃtable, field, mode¡£
+     * é‡æ–°è®¾ç½®table, field, modeã€‚
      * 
      * @access private
      * @return void
@@ -192,12 +192,12 @@ class dao
         $this->setMethod('');
     }
 
-    //-------------------- ¸ù¾İ²éÑ¯·½Ê½µÄ²»Í¬£¬µ÷ÓÃSQLÀàµÄ¶ÔÓ¦·½·¨¡£--------------------//
+    //-------------------- æ ¹æ®æŸ¥è¯¢æ–¹å¼çš„ä¸åŒï¼Œè°ƒç”¨SQLç±»çš„å¯¹åº”æ–¹æ³•ã€‚--------------------//
 
     /**
-     * ÉèÖÃ²éÑ¯Ä£Ê½¡£magicÊÇÍ¨¹ıfindbyÖ®ÀàµÄÄ§Êõ·½·¨½øĞĞ²éÑ¯µÄ£¬¶ørawÔòÖ±½ÓÆ´×°sql½øĞĞ²éÑ¯¡£
+     * è®¾ç½®æŸ¥è¯¢æ¨¡å¼ã€‚magicæ˜¯é€šè¿‡findbyä¹‹ç±»çš„é­”æœ¯æ–¹æ³•è¿›è¡ŒæŸ¥è¯¢çš„ï¼Œè€Œrawåˆ™ç›´æ¥æ‹¼è£…sqlè¿›è¡ŒæŸ¥è¯¢ã€‚
      * 
-     * @param string mode   ²éÑ¯Ä£Ê½£º empty|magic|raw
+     * @param string mode   æŸ¥è¯¢æ¨¡å¼ï¼š empty|magic|raw
      * @access private
      * @return void
      */
@@ -206,13 +206,13 @@ class dao
         $this->mode = $mode;
     }
 
-    /* ÉèÖÃ²éÑ¯µÄ·½·¨¡£select|update|insert|delete|replace */
+    /* è®¾ç½®æŸ¥è¯¢çš„æ–¹æ³•ã€‚select|update|insert|delete|replace */
     private function setMethod($method = '')
     {
         $this->method = $method;
     }
 
-    /* select£ºµ÷ÓÃSQLÀàµÄselect·½·¨¡£*/
+    /* selectï¼šè°ƒç”¨SQLç±»çš„selectæ–¹æ³•ã€‚*/
     public function select($fields = '*')
     {
         $this->setMode('raw');
@@ -221,7 +221,7 @@ class dao
         return $this;
     }
 
-    /* update£ºµ÷ÓÃSQLÀàµÄupdate·½·¨¡£*/
+    /* updateï¼šè°ƒç”¨SQLç±»çš„updateæ–¹æ³•ã€‚*/
     public function update($table)
     {
         $this->setMode('raw');
@@ -231,7 +231,7 @@ class dao
         return $this;
     }
 
-    /* delete£ºµ÷ÓÃSQLÀàµÄdelete·½·¨¡£*/
+    /* deleteï¼šè°ƒç”¨SQLç±»çš„deleteæ–¹æ³•ã€‚*/
     public function delete()
     {
         $this->setMode('raw');
@@ -240,7 +240,7 @@ class dao
         return $this;
     }
 
-    /* insert£ºµ÷ÓÃSQLÀàµÄinsert·½·¨¡£*/
+    /* insertï¼šè°ƒç”¨SQLç±»çš„insertæ–¹æ³•ã€‚*/
     public function insert($table)
     {
         $this->setMode('raw');
@@ -250,7 +250,7 @@ class dao
         return $this;
     }
 
-    /* replace£ºµ÷ÓÃSQLÀàµÄreplace·½·¨¡£*/
+    /* replaceï¼šè°ƒç”¨SQLç±»çš„replaceæ–¹æ³•ã€‚*/
     public function replace($table)
     {
         $this->setMode('raw');
@@ -260,7 +260,7 @@ class dao
         return $this;
     }
 
-    /* from: Éè¶¨Òª²éÑ¯µÄtable name¡£*/
+    /* from: è®¾å®šè¦æŸ¥è¯¢çš„table nameã€‚*/
     public function from($table) 
     {
         $this->setTable($table);
@@ -268,14 +268,14 @@ class dao
         return $this;
     }
 
-    /* fields·½·¨£ºÉèÖÃÒª²éÑ¯µÄ×Ö¶ÎÁĞ±í¡£*/
+    /* fieldsæ–¹æ³•ï¼šè®¾ç½®è¦æŸ¥è¯¢çš„å­—æ®µåˆ—è¡¨ã€‚*/
     public function fields($fields)
     {
         $this->setFields($fields);
         return $this;
     }
 
-    /* alias·½·¨¡£*/
+    /* aliasæ–¹æ³•ã€‚*/
     public function alias($alias)
     {
         if(empty($this->alias)) $this->setAlias($alias);
@@ -283,36 +283,36 @@ class dao
         return $this;
     }
 
-    /* data·½·¨¡£*/
+    /* dataæ–¹æ³•ã€‚*/
     public function data($data)
     {
-        /* Èç¹ûµ±Ç°Ä£¿é²»ÊÇcompany£¬¶¼×·¼Ócompany×Ö¶Î¡£*/
+        /* å¦‚æœå½“å‰æ¨¡å—ä¸æ˜¯companyï¼Œéƒ½è¿½åŠ companyå­—æ®µã€‚*/
         if(!is_object($data)) $data = (object)$data;
         if(isset($this->app->company) and $this->table != TABLE_COMPANY and !isset($data->company)) $data->company = $this->app->company->id;
         $this->sqlobj->data($data);
         return $this;
     }
 
-    //-------------------- Æ´×°Ö®ºóµÄSQLÏà¹Ø´¦Àí·½·¨¡£--------------------//
+    //-------------------- æ‹¼è£…ä¹‹åçš„SQLç›¸å…³å¤„ç†æ–¹æ³•ã€‚--------------------//
 
-    /* ·µ»ØSQLÓï¾ä¡£*/
+    /* è¿”å›SQLè¯­å¥ã€‚*/
     public function get()
     {
         return $this->processSQL();
     }
 
-    /* ´òÓ¡SQLÓï¾ä¡£*/
+    /* æ‰“å°SQLè¯­å¥ã€‚*/
     public function printSQL()
     {
         echo $this->processSQL();
     }
 
-    /* ´¦ÀíSQL£¬½«tableºÍfields×Ö¶ÎÌæ»»³É¶ÔÓ¦µÄÖµ¡£*/
+    /* å¤„ç†SQLï¼Œå°†tableå’Œfieldså­—æ®µæ›¿æ¢æˆå¯¹åº”çš„å€¼ã€‚*/
     private function processSQL($autoCompany = true)
     {
         $sql = $this->sqlobj->get();
 
-        /* Èç¹û²éÑ¯Ä£Ê½ÊÇmagic£¬´¦ÀífieldsºÍtableÁ½¸ö±äÁ¿¡£*/
+        /* å¦‚æœæŸ¥è¯¢æ¨¡å¼æ˜¯magicï¼Œå¤„ç†fieldså’Œtableä¸¤ä¸ªå˜é‡ã€‚*/
         if($this->mode == 'magic')
         {
             if($this->fields == '') $this->fields = '*';
@@ -320,24 +320,24 @@ class dao
             $sql = sprintf($this->sqlobj->get(), $this->fields, $this->table);
         }
 
-        /* Èç¹û´¦ÀíµÄ²»ÊÇcompany±í£¬²¢ÇÒ²éÑ¯·½·¨²»ÊÇinsertºÍreplace£¬ ×·¼ÓcompanyµÄ²éÑ¯Ìõ¼ş¡£*/
+        /* å¦‚æœå¤„ç†çš„ä¸æ˜¯companyè¡¨ï¼Œå¹¶ä¸”æŸ¥è¯¢æ–¹æ³•ä¸æ˜¯insertå’Œreplaceï¼Œ è¿½åŠ companyçš„æŸ¥è¯¢æ¡ä»¶ã€‚*/
         if(isset($this->app->company) and $autoCompany and $this->table != '' and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
         {
-            /* »ñµÃwhere ºÍ order byµÄÎ»ÖÃ¡£*/
+            /* è·å¾—where å’Œ order byçš„ä½ç½®ã€‚*/
             $wherePOS  = strripos($sql, 'where');
-            $groupPOS  = strripos($sql, 'group by');            // group byµÄÎ»ÖÃ¡£
-            $havingPOS = strrpos($sql, 'HAVING');               // havingµÄÎ»ÖÃ¡£
-            $orderPOS  = strripos($sql, 'order by');            // order byµÄÎ»ÖÃ¡£
-            $limitPOS  = strrpos($sql, 'LIMIT');                // limitµÄÎ»ÖÃ¡£
-            $splitPOS  = $orderPOS ? $orderPOS : $limitPOS;     // order±Èlimit¿¿Ç°¡£
-            $splitPOS  = $havingPOS? $havingPOS: $splitPOS;     // having±Èorer¿¿Ç°¡£
-            $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // group±Èhaving¿¿Ç°¡£
+            $groupPOS  = strripos($sql, 'group by');            // group byçš„ä½ç½®ã€‚
+            $havingPOS = strrpos($sql, 'HAVING');               // havingçš„ä½ç½®ã€‚
+            $orderPOS  = strripos($sql, 'order by');            // order byçš„ä½ç½®ã€‚
+            $limitPOS  = strrpos($sql, 'LIMIT');                // limitçš„ä½ç½®ã€‚
+            $splitPOS  = $orderPOS ? $orderPOS : $limitPOS;     // orderæ¯”limité å‰ã€‚
+            $splitPOS  = $havingPOS? $havingPOS: $splitPOS;     // havingæ¯”oreré å‰ã€‚
+            $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // groupæ¯”havingé å‰ã€‚
 
-            /* Òª×·¼ÓµÄÌõ¼şÓï¾ä¡£*/
+            /* è¦è¿½åŠ çš„æ¡ä»¶è¯­å¥ã€‚*/
             $tableName = !empty($this->alias) ? $this->alias : $this->table;
             $companyCondition = " $tableName.company = '{$this->app->company->id}' ";
 
-            /* SQLÓï¾äÖĞÓĞorder by¡£*/
+            /* SQLè¯­å¥ä¸­æœ‰order byã€‚*/
             if($splitPOS)
             {
                 $firstPart = substr($sql, 0, $splitPOS);
@@ -360,22 +360,22 @@ class dao
         return $sql;
     }
 
-    //-------------------- SQL²éÑ¯Ïà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- SQLæŸ¥è¯¢ç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
     
-    /* ÉèÖÃÊı¾İ¿â·ÃÎÊ¾ä±ú¡£*/
+    /* è®¾ç½®æ•°æ®åº“è®¿é—®å¥æŸ„ã€‚*/
     public function dbh($dbh)
     {
         $this->dbh = $dbh;
         return $this;
     }
 
-    /* Ö´ĞĞsql²éÑ¯£¬·µ»Østmt¶ÔÏó¡£autoComapnyÉè¶¨ÊÇ·ñ×Ô¶¯×·¼ÓcompanyµÄ²éÑ¯Ìõ¼ş¡£*/
+    /* æ‰§è¡ŒsqlæŸ¥è¯¢ï¼Œè¿”å›stmtå¯¹è±¡ã€‚autoComapnyè®¾å®šæ˜¯å¦è‡ªåŠ¨è¿½åŠ companyçš„æŸ¥è¯¢æ¡ä»¶ã€‚*/
     public function query($autoCompany = true)
     {
-        /* Èç¹ûdao::$errors²»Îª¿Õ£¬·µ»ØÒ»¸ö¿ÕµÄstmt¶ÔÏó£¬ÕâÑùºóĞøµÄ·½·¨µ÷ÓÃ»¹¿ÉÒÔ¼ÌĞø¡£*/
+        /* å¦‚æœdao::$errorsä¸ä¸ºç©ºï¼Œè¿”å›ä¸€ä¸ªç©ºçš„stmtå¯¹è±¡ï¼Œè¿™æ ·åç»­çš„æ–¹æ³•è°ƒç”¨è¿˜å¯ä»¥ç»§ç»­ã€‚*/
         if(!empty(dao::$errors)) return new PDOStatement();
 
-        /* ´¦ÀíÒ»ÏÂSQLÓï¾ä¡£*/
+        /* å¤„ç†ä¸€ä¸‹SQLè¯­å¥ã€‚*/
         $sql = $this->processSQL($autoCompany);
         try
         {
@@ -388,22 +388,22 @@ class dao
         }
     }
 
-    /* Ö´ĞĞ·ÖÒ³¡£*/
+    /* æ‰§è¡Œåˆ†é¡µã€‚*/
     public function page($pager)
     {
         if(!is_object($pager)) return $this;
 
-        /* Ã»ÓĞ´«µİrecTotal£¬Ôò×Ô¼º½øĞĞ¼ÆËã¡£*/
+        /* æ²¡æœ‰ä¼ é€’recTotalï¼Œåˆ™è‡ªå·±è¿›è¡Œè®¡ç®—ã€‚*/
         if($pager->recTotal == 0)
         {
-            /* »ñµÃSELECTºÍFROMµÄÎ»ÖÃ£¬¾İ´ËËã³ö²éÑ¯µÄ×Ö¶Î£¬È»ºó½«ÆäÌæ»»Îªcount(*)¡£*/
+            /* è·å¾—SELECTå’ŒFROMçš„ä½ç½®ï¼Œæ®æ­¤ç®—å‡ºæŸ¥è¯¢çš„å­—æ®µï¼Œç„¶åå°†å…¶æ›¿æ¢ä¸ºcount(*)ã€‚*/
             $sql       = $this->get();
             $selectPOS = strpos($sql, 'SELECT') + strlen('SELECT');
             $fromPOS   = strpos($sql, 'FROM');
             $fields    = substr($sql, $selectPOS, $fromPOS - $selectPOS );
             $sql       = str_replace($fields, ' COUNT(*) AS recTotal ', $sql);
 
-            /* È¡µÃorder »òÕßlimitµÄÎ»ÖÃ£¬½«ºóÃæµÄÈ¥µô¡£*/
+            /* å–å¾—order æˆ–è€…limitçš„ä½ç½®ï¼Œå°†åé¢çš„å»æ‰ã€‚*/
             $subLength = strlen($sql);
             $orderPOS  = strripos($sql, 'order');
             $limitPOS  = strripos($sql , 'limit');
@@ -412,7 +412,7 @@ class dao
             $sql = substr($sql, 0, $subLength);
             self::$querys[] = $sql;
 
-            /* »ñµÃ¼ÇÂ¼×ÜÊı¡£*/
+            /* è·å¾—è®°å½•æ€»æ•°ã€‚*/
             try
             {
                 $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
@@ -429,13 +429,13 @@ class dao
         return $this;
     }
 
-    /* Ö´ĞĞsql²éÑ¯£¬·µ»ØÊÜÓ°ÏìµÄ¼ÇÂ¼Êı¡£autoComapnyÉè¶¨ÊÇ·ñ×Ô¶¯×·¼ÓcompanyµÄ²éÑ¯Ìõ¼ş¡£*/
+    /* æ‰§è¡ŒsqlæŸ¥è¯¢ï¼Œè¿”å›å—å½±å“çš„è®°å½•æ•°ã€‚autoComapnyè®¾å®šæ˜¯å¦è‡ªåŠ¨è¿½åŠ companyçš„æŸ¥è¯¢æ¡ä»¶ã€‚*/
     public function exec($autoCompany = true)
     {
-        /* Èç¹ûdao::$errors²»Îª¿Õ£¬·µ»ØÒ»¸ö¿ÕµÄstmt¶ÔÏó£¬ÕâÑùºóĞøµÄ·½·¨µ÷ÓÃ»¹¿ÉÒÔ¼ÌĞø¡£*/
+        /* å¦‚æœdao::$errorsä¸ä¸ºç©ºï¼Œè¿”å›ä¸€ä¸ªç©ºçš„stmtå¯¹è±¡ï¼Œè¿™æ ·åç»­çš„æ–¹æ³•è°ƒç”¨è¿˜å¯ä»¥ç»§ç»­ã€‚*/
         if(!empty(dao::$errors)) return new PDOStatement();
 
-        /* ´¦ÀíÒ»ÏÂSQLÓï¾ä¡£*/
+        /* å¤„ç†ä¸€ä¸‹SQLè¯­å¥ã€‚*/
         $sql = $this->processSQL($autoCompany);
         try
         {
@@ -448,9 +448,9 @@ class dao
         }
     }
 
-    //-------------------- Êı¾İ»ñÈ¡Ïà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- æ•°æ®è·å–ç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
 
-    /* ·µ»ØÒ»Ìõ¼ÇÂ¼£¬Èç¹ûÖ¸¶¨ÁË$field×Ö¶Î, ÔòÖ±½Ó·µ»Ø¸Ã×Ö¶Î¶ÔÓ¦µÄÖµ¡£*/
+    /* è¿”å›ä¸€æ¡è®°å½•ï¼Œå¦‚æœæŒ‡å®šäº†$fieldå­—æ®µ, åˆ™ç›´æ¥è¿”å›è¯¥å­—æ®µå¯¹åº”çš„å€¼ã€‚*/
     public function fetch($field = '', $autoCompany = true)
     {
         if(empty($field)) return $this->query($autoCompany)->fetch();
@@ -459,7 +459,7 @@ class dao
         if($result) return $result->$field;
     }
 
-    /* ·µ»ØÈ«²¿µÄ½á¹û¡£Èç¹ûÖ¸¶¨ÁË$keyField£¬ÔòÒÔkeyFieldµÄÖµ×÷Îªkey¡£*/
+    /* è¿”å›å…¨éƒ¨çš„ç»“æœã€‚å¦‚æœæŒ‡å®šäº†$keyFieldï¼Œåˆ™ä»¥keyFieldçš„å€¼ä½œä¸ºkeyã€‚*/
     public function fetchAll($keyField = '', $autoCompany = true)
     {
         $stmt = $this->query($autoCompany);
@@ -469,7 +469,7 @@ class dao
         return $rows;
     }
 
-    /* ·µ»Ø½á¹û²¢°´ÕÕÄ³¸ö×Ö¶Î½øĞĞ·Ö×é¡£*/
+    /* è¿”å›ç»“æœå¹¶æŒ‰ç…§æŸä¸ªå­—æ®µè¿›è¡Œåˆ†ç»„ã€‚*/
     public function fetchGroup($groupField, $keyField = '', $autoCompany = true)
     {
         $stmt = $this->query($autoCompany);
@@ -481,7 +481,7 @@ class dao
         return $rows;
     }
 
-    /* fetchPairs·½·¨£ºÈç¹ûÃ»ÓĞÖ¸¶¨keyºÍvalue×Ö¶Î£¬ÔòÈ¡ĞĞ×Ö¶ÎÀïÃæµÄµÚÒ»¸ö×÷Îªkey£¬×îºóÒ»¸ö×÷Îªvalue¡£*/
+    /* fetchPairsæ–¹æ³•ï¼šå¦‚æœæ²¡æœ‰æŒ‡å®škeyå’Œvalueå­—æ®µï¼Œåˆ™å–è¡Œå­—æ®µé‡Œé¢çš„ç¬¬ä¸€ä¸ªä½œä¸ºkeyï¼Œæœ€åä¸€ä¸ªä½œä¸ºvalueã€‚*/
     public function fetchPairs($keyField = '', $valueField = '', $autoCompany = true)
     {
         $pairs = array();
@@ -505,28 +505,28 @@ class dao
         return $pairs;
     }
 
-    /* »ñÈ¡×îºó²åÈëµÄid¡£*/
+    /* è·å–æœ€åæ’å…¥çš„idã€‚*/
     public function lastInsertID()
     {
         return $this->dbh->lastInsertID();
     }
 
-    //-------------------- ¸÷ÖÖÄ§Êõ·½·¨¡£--------------------//
+    //-------------------- å„ç§é­”æœ¯æ–¹æ³•ã€‚--------------------//
 
     /**
-     * Ä§Êõ·½·¨£¬¼®´ËÌá¹©¸÷ÖÖ±ãÀûµÄ²éÑ¯·½·¨¡£
+     * é­”æœ¯æ–¹æ³•ï¼Œç±æ­¤æä¾›å„ç§ä¾¿åˆ©çš„æŸ¥è¯¢æ–¹æ³•ã€‚
      * 
-     * @param string $funcName  ±»µ÷ÓÃµÄ·½·¨Ãû¡£
-     * @param array  $funcArgs  ´«ÈëµÄ²ÎÊıÁĞ±í¡£
+     * @param string $funcName  è¢«è°ƒç”¨çš„æ–¹æ³•åã€‚
+     * @param array  $funcArgs  ä¼ å…¥çš„å‚æ•°åˆ—è¡¨ã€‚
      * @access public
      * @return void
      */
     public function __call($funcName, $funcArgs)
     {
-        /* ½«funcName×ªÎªĞ¡Ğ´¡£*/
+        /* å°†funcNameè½¬ä¸ºå°å†™ã€‚*/
         $funcName = strtolower($funcName);
 
-        /* findByÀàµÄ·½·¨¡£*/
+        /* findByç±»çš„æ–¹æ³•ã€‚*/
         if(strpos($funcName, 'findby') !== false)
         {
             $this->setMode('magic');
@@ -541,16 +541,16 @@ class dao
                 $operator = $funcArgs[0];
                 $value    = $funcArgs[1];
             }
-            $this->sqlobj = sql::select('%s')->from('%s')->where($field, $operator, $value);    // Ê¹ÓÃÕ¼Î»·û£¬Ö´ĞĞ²éÑ¯Ö®Ç°Ìæ»»ÎªÏàÓ¦µÄ×Ö¶ÎºÍ±íÃû¡£
+            $this->sqlobj = sql::select('%s')->from('%s')->where($field, $operator, $value);    // ä½¿ç”¨å ä½ç¬¦ï¼Œæ‰§è¡ŒæŸ¥è¯¢ä¹‹å‰æ›¿æ¢ä¸ºç›¸åº”çš„å­—æ®µå’Œè¡¨åã€‚
             return $this;
         }
-        /* fetch10·½·¨£¬ÕæÕıµÄÊı¾İ²éÑ¯¡£*/
+        /* fetch10æ–¹æ³•ï¼ŒçœŸæ­£çš„æ•°æ®æŸ¥è¯¢ã€‚*/
         elseif(strpos($funcName, 'fetch') !== false)
         {
             $max  = str_replace('fetch', '', $funcName);
             $stmt = $this->query();
 
-            /* Éè¶¨ÁËkey×Ö¶Î¡£ */
+            /* è®¾å®šäº†keyå­—æ®µã€‚ */
             $rows = array();
             $key  = isset($funcArgs[0]) ? $funcArgs[0] : '';
             $i    = 0;
@@ -562,10 +562,10 @@ class dao
             }
             return $rows;
         }
-        /* ÆäÓàµÄ¶¼Ö±½Óµ÷ÓÃsqlÀàÀïÃæµÄ·½·¨¡£*/
+        /* å…¶ä½™çš„éƒ½ç›´æ¥è°ƒç”¨sqlç±»é‡Œé¢çš„æ–¹æ³•ã€‚*/
         else
         {
-            /* È¡SQLÀà·½·¨ÖĞ²ÎÊı¸öÊı×î´óÖµ£¬Éú³ÉÒ»¸ö×î´ó¼¯ºÏµÄ²ÎÊıÁĞ±í¡£¡£*/
+            /* å–SQLç±»æ–¹æ³•ä¸­å‚æ•°ä¸ªæ•°æœ€å¤§å€¼ï¼Œç”Ÿæˆä¸€ä¸ªæœ€å¤§é›†åˆçš„å‚æ•°åˆ—è¡¨ã€‚ã€‚*/
             for($i = 0; $i < SQL::MAX_ARGS; $i ++)
             {
                 ${"arg$i"} = isset($funcArgs[$i]) ? $funcArgs[$i] : null;
@@ -575,15 +575,15 @@ class dao
         }
     }
 
-    //-------------------- Êı¾İ¼ì²éÏà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- æ•°æ®æ£€æŸ¥ç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
     
-    /* °´ÕÕÄ³¸ö¹æÔò¼ì²éÖµÊÇ·ñ·ûºÏÒªÇó¡£*/
+    /* æŒ‰ç…§æŸä¸ªè§„åˆ™æ£€æŸ¥å€¼æ˜¯å¦ç¬¦åˆè¦æ±‚ã€‚*/
     public function check($fieldName, $funcName)
     {
-        /* Èç¹ûdata±äÁ¿ÀïÃæÃ»ÓĞÕâ¸ö×Ö¶Î£¬Ö±½Ó·µ»Ø¡£*/
+        /* å¦‚æœdataå˜é‡é‡Œé¢æ²¡æœ‰è¿™ä¸ªå­—æ®µï¼Œç›´æ¥è¿”å›ã€‚*/
         if(!isset($this->sqlobj->data->$fieldName)) return $this;
 
-        /* ÒıÓÃÈ«¾ÖµÄconfig, lang¡£*/
+        /* å¼•ç”¨å…¨å±€çš„config, langã€‚*/
         global $lang, $config, $app;
         $table = strtolower(str_replace($config->db->prefix, '', $this->table));
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
@@ -607,7 +607,7 @@ class dao
         }
         else
         {
-            /* È¡validateÀà·½·¨ÖĞ²ÎÊı¸öÊı×î´óÖµ£¬Éú³ÉÒ»¸ö×î´ó¼¯ºÏµÄ²ÎÊıÁĞ±í¡£¡£*/
+            /* å–validateç±»æ–¹æ³•ä¸­å‚æ•°ä¸ªæ•°æœ€å¤§å€¼ï¼Œç”Ÿæˆä¸€ä¸ªæœ€å¤§é›†åˆçš„å‚æ•°åˆ—è¡¨ã€‚ã€‚*/
             $funcArgs = func_get_args();
             unset($funcArgs[0]);
             unset($funcArgs[1]);
@@ -626,7 +626,7 @@ class dao
         return $this;
     }
 
-    /* Èç¹ûÂú×ãÄ³Ò»¸öÌõ¼ş£¬°´ÕÕÄ³¸ö¹æÔò¼ì²éÖµÊÇ·ñ·ûºÏÒªÇó¡£*/
+    /* å¦‚æœæ»¡è¶³æŸä¸€ä¸ªæ¡ä»¶ï¼ŒæŒ‰ç…§æŸä¸ªè§„åˆ™æ£€æŸ¥å€¼æ˜¯å¦ç¬¦åˆè¦æ±‚ã€‚*/
     public function checkIF($condition, $fieldName, $funcName)
     {
         if(!$condition) return $this;
@@ -639,7 +639,7 @@ class dao
         return $this;
     }
 
-    /* ÅúÁ¿¼ì²é¡£*/
+    /* æ‰¹é‡æ£€æŸ¥ã€‚*/
     public function batchCheck($fields, $funcName)
     {
         $fields = explode(',', str_replace(' ', '', $fields));
@@ -652,7 +652,7 @@ class dao
         return $this;
     }
 
-    /* ÅúÁ¿Ìõ¼ş¼ì²é¡£*/
+    /* æ‰¹é‡æ¡ä»¶æ£€æŸ¥ã€‚*/
     public function batchCheckIF($condition, $fields, $funcName)
     {
         if(!$condition) return $this;
@@ -666,7 +666,7 @@ class dao
         return $this;
     }
 
-    /* ×Ô¶¯¸ù¾İÊı¾İ¿âÖĞ±íµÄ×Ö¶Î¸ñÊ½½øĞĞ¼ì²é¡£*/
+    /* è‡ªåŠ¨æ ¹æ®æ•°æ®åº“ä¸­è¡¨çš„å­—æ®µæ ¼å¼è¿›è¡Œæ£€æŸ¥ã€‚*/
     public function autoCheck($skipFields = '')
     {
         $fields     = $this->getFieldsType();
@@ -674,7 +674,7 @@ class dao
 
         foreach($fields as $fieldName => $validater)
         {
-            if(strpos($skipFields, $fieldName) !== false) continue;    // ºöÂÔ¡£
+            if(strpos($skipFields, $fieldName) !== false) continue;    // å¿½ç•¥ã€‚
             if(!isset($this->sqlobj->data->$fieldName)) continue;
             if($validater['rule'] == 'skip') continue;
             $options = array();
@@ -688,14 +688,14 @@ class dao
         return $this;
     }
 
-    /* ¼ÇÂ¼´íÎó¡£*/
+    /* è®°å½•é”™è¯¯ã€‚*/
     public function logError($checkType, $fieldName, $fieldLabel, $funcArgs = array())
     {
         global $lang;
         $error    = $lang->error->$checkType;
         $replaces = array_merge(array($fieldLabel), $funcArgs);
 
-        /* Èç¹ûerror²»ÊÇÊı×é£¬Ö»ÊÇ×Ö·û´®£¬ÔòÑ­»·replace£¬ÒÀ´ÎÌæ»»%s¡£*/
+        /* å¦‚æœerrorä¸æ˜¯æ•°ç»„ï¼Œåªæ˜¯å­—ç¬¦ä¸²ï¼Œåˆ™å¾ªç¯replaceï¼Œä¾æ¬¡æ›¿æ¢%sã€‚*/
         if(!is_array($error))
         {
             foreach($replaces as $replace)
@@ -705,10 +705,10 @@ class dao
                 $error = substr($error, 0, $pos) . $replace . substr($error, $pos +2);
             }
         }
-        /* Èç¹ûerrorÊÇÒ»¸öÊı×é£¬Ôò´ÓÊı×éÖĞÌôÑ¡%s¸öÊıÓëreplaceÔªËØ¸öÊıÏàÍ¬µÄ¡£*/
+        /* å¦‚æœerroræ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œåˆ™ä»æ•°ç»„ä¸­æŒ‘é€‰%sä¸ªæ•°ä¸replaceå…ƒç´ ä¸ªæ•°ç›¸åŒçš„ã€‚*/
         else
         {
-            /* È¥µôreplaceÖĞ¿Õ°×µÄÔªËØ¡£*/
+            /* å»æ‰replaceä¸­ç©ºç™½çš„å…ƒç´ ã€‚*/
             foreach($replaces as $key => $value) if(is_null($value)) unset($replaces[$key]);
             $replacesCount = count($replaces);
             foreach($error as $errorString)
@@ -722,13 +722,13 @@ class dao
         dao::$errors[$fieldName][] = $error;
     }
 
-    /* ÅĞ¶ÏÕâ´Î²éÑ¯ÊÇ·ñÓĞ´íÎó¡£*/
+    /* åˆ¤æ–­è¿™æ¬¡æŸ¥è¯¢æ˜¯å¦æœ‰é”™è¯¯ã€‚*/
     public function isError()
     {
         return !empty(dao::$errors);
     }
 
-    /* ·µ»Øerror¡£*/
+    /* è¿”å›errorã€‚*/
     public function getError()
     {
         $errors = dao::$errors;
@@ -736,7 +736,7 @@ class dao
         return $errors;
     }
 
-    /* »ñµÃÄ³Ò»¸ö±íµÄ×Ö¶ÎÀàĞÍ¡£*/
+    /* è·å¾—æŸä¸€ä¸ªè¡¨çš„å­—æ®µç±»å‹ã€‚*/
     private function getFieldsType()
     {
         try
@@ -760,8 +760,8 @@ class dao
 
             if($type == 'enum' or $type == 'set')
             {
-                $rangeBegin  = $firstPOS + 2;  // ½«µÚÒ»¸öÒıºÅÈ¥µô¡£
-                $rangeEnd    = strrpos($rawField->type, ')') - 1; // ½«×îºóÒ»¸öÒıºÅÈ¥µô¡£
+                $rangeBegin  = $firstPOS + 2;  // å°†ç¬¬ä¸€ä¸ªå¼•å·å»æ‰ã€‚
+                $rangeEnd    = strrpos($rawField->type, ')') - 1; // å°†æœ€åä¸€ä¸ªå¼•å·å»æ‰ã€‚
                 $range       = substr($rawField->type, $rangeBegin, $rangeEnd - $rangeBegin);
                 $field['rule'] = 'reg';
                 $field['options']['reg']  = '/' . str_replace("','", '|', $range) . '/';
@@ -798,20 +798,20 @@ class dao
 }
 
 /**
- * SQL²éÑ¯·â×°Àà¡£
+ * SQLæŸ¥è¯¢å°è£…ç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class sql
 {
     /**
-     * ËùÓĞ·½·¨µÄ²ÎÊı¸öÊı×î´óÖµ¡£
+     * æ‰€æœ‰æ–¹æ³•çš„å‚æ•°ä¸ªæ•°æœ€å¤§å€¼ã€‚
      * 
      */
     const MAX_ARGS = 3;
 
     /**
-     * SQLÓï¾ä¡£
+     * SQLè¯­å¥ã€‚
      * 
      * @var string
      * @access private
@@ -819,7 +819,7 @@ class sql
     private $sql = '';
 
     /**
-     * È«¾ÖµÄ$dbh£¨Êı¾İ¿â·ÃÎÊ¾ä±ú£©¶ÔÏó¡£
+     * å…¨å±€çš„$dbhï¼ˆæ•°æ®åº“è®¿é—®å¥æŸ„ï¼‰å¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -827,7 +827,7 @@ class sql
     protected $dbh;
 
     /**
-     * INSERT»òÕßUPDATEÊ±¸³¸øµÄÊı¾İ¡£
+     * INSERTæˆ–è€…UPDATEæ—¶èµ‹ç»™çš„æ•°æ®ã€‚
      * 
      * @var mix
      * @access protected
@@ -835,7 +835,7 @@ class sql
     public $data;
 
     /**
-     * ÊÇ·ñÊÇÊ×´Îµ÷ÓÃset¡£
+     * æ˜¯å¦æ˜¯é¦–æ¬¡è°ƒç”¨setã€‚
      * 
      * @var bool    
      * @access private;
@@ -843,7 +843,7 @@ class sql
     private $isFirstSet = true;
 
     /**
-     * ÊÇ·ñÔÚÌõ¼şÅĞ¶ÏÖĞ¡£
+     * æ˜¯å¦åœ¨æ¡ä»¶åˆ¤æ–­ä¸­ã€‚
      * 
      * @var bool
      * @access private;
@@ -851,7 +851,7 @@ class sql
     private $inCondition = false;
 
     /**
-     * ÅĞ¶ÏÌõ¼şÊÇ·ñÎªture¡£
+     * åˆ¤æ–­æ¡ä»¶æ˜¯å¦ä¸ºtureã€‚
      * 
      * @var bool
      * @access private;
@@ -859,14 +859,14 @@ class sql
     private $conditionIsTrue = false;
 
     /**
-     * ÊÇ·ñ×Ô¶¯magic quote¡£
+     * æ˜¯å¦è‡ªåŠ¨magic quoteã€‚
      * 
      * @var bool
      * @access public
      */
      public $magicQuote; 
 
-    /* ¹¹Ôìº¯Êı¡£*/
+    /* æ„é€ å‡½æ•°ã€‚*/
     private function __construct($table = '')
     {
         global $dbh;
@@ -874,13 +874,13 @@ class sql
         $this->magicQuote = get_magic_quotes_gpc();
     }
 
-    /* ÊµÀı»¯·½·¨£¬Í¨¹ı¸Ã·½·¨ÊµÀı¶ÔÏó¡£*/
+    /* å®ä¾‹åŒ–æ–¹æ³•ï¼Œé€šè¿‡è¯¥æ–¹æ³•å®ä¾‹å¯¹è±¡ã€‚*/
     public function factory($table = '')
     {
         return new sql($table);
     }
 
-    /* ²éÑ¯Óï¾ä¿ªÊ¼¡£*/
+    /* æŸ¥è¯¢è¯­å¥å¼€å§‹ã€‚*/
     public function select($field = '*')
     {
         $sqlobj = self::factory();
@@ -888,7 +888,7 @@ class sql
         return $sqlobj;
     }
 
-    /* ¸üĞÂÓï¾ä¿ªÊ¼¡£*/
+    /* æ›´æ–°è¯­å¥å¼€å§‹ã€‚*/
     public function update($table)
     {
         $sqlobj = self::factory();
@@ -896,7 +896,7 @@ class sql
         return $sqlobj;
     }
 
-    /* ²åÈëÓï¾ä¿ªÊ¼¡£*/
+    /* æ’å…¥è¯­å¥å¼€å§‹ã€‚*/
     public function insert($table)
     {
         $sqlobj = self::factory();
@@ -904,7 +904,7 @@ class sql
         return $sqlobj;
     }
 
-    /* Ìæ»»Óï¾ä¿ªÊ¼¡£*/
+    /* æ›¿æ¢è¯­å¥å¼€å§‹ã€‚*/
     public function replace($table)
     {
         $sqlobj = self::factory();
@@ -912,7 +912,7 @@ class sql
         return $sqlobj;
     }
 
-    /* É¾³ıÓï¾ä¿ªÊ¼¡£*/
+    /* åˆ é™¤è¯­å¥å¼€å§‹ã€‚*/
     public function delete()
     {
         $sqlobj = self::factory();
@@ -920,30 +920,30 @@ class sql
         return $sqlobj;
     }
 
-    /* ¸ø¶¨Ò»¸ökey=>value½á¹¹µÄÊı×é»òÕß¶ÔÏó£¬Æ´×°³Ékey = valueµÄĞÎÊ½¡£*/
+    /* ç»™å®šä¸€ä¸ªkey=>valueç»“æ„çš„æ•°ç»„æˆ–è€…å¯¹è±¡ï¼Œæ‹¼è£…æˆkey = valueçš„å½¢å¼ã€‚*/
     public function data($data)
     {
         $this->data = $data;
         foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
-        $this->sql = rtrim($this->sql, ',');    // È¥µô×îºóÃæµÄ¶ººÅ¡£
+        $this->sql = rtrim($this->sql, ',');    // å»æ‰æœ€åé¢çš„é€—å·ã€‚
         return $this;
     }
 
-    /* ¼Ó×ó±ßµÄÀ¨»¡¡£*/
+    /* åŠ å·¦è¾¹çš„æ‹¬å¼§ã€‚*/
     public function markLeft($count = 1)
     {
         $this->sql .= str_repeat('(', $count);
         return $this;
     }
 
-    /* ¼ÓÓÒ±ßµÄÀ¨»¡¡£*/
+    /* åŠ å³è¾¹çš„æ‹¬å¼§ã€‚*/
     public function markRight($count = 1)
     {
         $this->sql .= str_repeat(')', $count);
         return $this;
     }
 
-    /* SET key=value¡£*/
+    /* SET key=valueã€‚*/
     public function set($set)
     {
         if($this->isFirstSet)
@@ -958,48 +958,48 @@ class sql
         return $this;
     }
 
-    /* Éè¶¨Òª²éÑ¯µÄ±íÃû¡£*/
+    /* è®¾å®šè¦æŸ¥è¯¢çš„è¡¨åã€‚*/
     public function from($table)
     {
         $this->sql .= "FROM $table";
         return $this;
     }
 
-    /* ÉèÖÃ±ğÃû¡£*/
+    /* è®¾ç½®åˆ«åã€‚*/
     public function alias($alias)
     {
         $this->sql .= " AS $alias ";
     }
 
-    /* Éè¶¨LEFT JOINÓï¾ä¡£*/
+    /* è®¾å®šLEFT JOINè¯­å¥ã€‚*/
     public function leftJoin($table)
     {
         $this->sql .= " LEFT JOIN $table";
         return $this;
     }
 
-    /* Éè¶¨ONÌõ¼ş¡£*/
+    /* è®¾å®šONæ¡ä»¶ã€‚*/
     public function on($condition)
     {
         $this->sql .= " ON $condition ";
         return $this;
     }
 
-    /* Ìõ¼şÅĞ¶Ï¿ªÊ¼¡£*/
+    /* æ¡ä»¶åˆ¤æ–­å¼€å§‹ã€‚*/
     public function onCaseOf($condition)
     {
         $this->inCondition = true;
         $this->conditionIsTrue = $condition;
     }
 
-    /* Ìõ¼şÅĞ¶Ï½áÊø¡£*/
+    /* æ¡ä»¶åˆ¤æ–­ç»“æŸã€‚*/
     public function endCase()
     {
         $this->inCondition = false;
         $this->conditionIsTrue = false;
     }
 
-    /* WHEREÓï¾ä²¿·Ö¿ªÊ¼¡£*/
+    /* WHEREè¯­å¥éƒ¨åˆ†å¼€å§‹ã€‚*/
     public function where($arg1, $arg2 = null, $arg3 = null)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1017,7 +1017,7 @@ class sql
         return $this;
     } 
 
-    /* ×·¼ÓANDÌõ¼ş¡£*/
+    /* è¿½åŠ ANDæ¡ä»¶ã€‚*/
     public function andWhere($condition)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1025,7 +1025,7 @@ class sql
         return $this;
     }
 
-    /* ×·¼ÓORÌõ¼ş¡£*/
+    /* è¿½åŠ ORæ¡ä»¶ã€‚*/
     public function orWhere($condition)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1033,7 +1033,7 @@ class sql
         return $this;
     }
 
-    /* µÈÓÚ¡£*/
+    /* ç­‰äºã€‚*/
     public function eq($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1041,7 +1041,7 @@ class sql
         return $this;
     }
 
-    /* ²»µÈÓÚ¡£*/
+    /* ä¸ç­‰äºã€‚*/
     public function ne($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1049,7 +1049,7 @@ class sql
         return $this;
     }
 
-    /* ´óÓÚ¡£*/
+    /* å¤§äºã€‚*/
     public function gt($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1057,7 +1057,7 @@ class sql
         return $this;
     }
 
-    /* Ğ¡ÓÚ¡£*/
+    /* å°äºã€‚*/
     public function lt($value)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1065,7 +1065,7 @@ class sql
         return $this;
     }
 
-    /* Éú³ÉbetweenÓï¾ä¡£*/
+    /* ç”Ÿæˆbetweenè¯­å¥ã€‚*/
     public function between($min, $max)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1073,7 +1073,7 @@ class sql
         return $this;
     }
 
-    /* Éú³É IN²¿·ÖÓï¾ä¡£*/
+    /* ç”Ÿæˆ INéƒ¨åˆ†è¯­å¥ã€‚*/
     public function in($ids)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1081,7 +1081,7 @@ class sql
         return $this;
     }
 
-    /* Éú³É NOTIN²¿·ÖÓï¾ä¡£*/
+    /* ç”Ÿæˆ NOTINéƒ¨åˆ†è¯­å¥ã€‚*/
     public function notin($ids)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1089,7 +1089,7 @@ class sql
         return $this;
     }
 
-    /* Éú³ÉLIKE²¿·ÖÓï¾ä¡£*/
+    /* ç”ŸæˆLIKEéƒ¨åˆ†è¯­å¥ã€‚*/
     public function like($string)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
@@ -1097,16 +1097,16 @@ class sql
         return $this;
     }
 
-    /* Éè¶¨ORDER BY¡£*/
+    /* è®¾å®šORDER BYã€‚*/
     public function orderBy($order)
     {
         $order = str_replace(array('|', '', '_'), ' ', $order);
-        $order = str_replace('left', '`left`', $order); // ´¦Àíleft¹Ø¼ü×Ö¡£
+        $order = str_replace('left', '`left`', $order); // å¤„ç†leftå…³é”®å­—ã€‚
         $this->sql .= " ORDER BY $order";
         return $this;
     }
 
-    /* Éè¶¨LIMIT¡£*/
+    /* è®¾å®šLIMITã€‚*/
     public function limit($limit)
     {
         if(empty($limit)) return $this;
@@ -1114,27 +1114,27 @@ class sql
         return $this;
     }
 
-    /* Éè¶¨GROUP BY¡£*/
+    /* è®¾å®šGROUP BYã€‚*/
     public function groupBy($groupBy)
     {
         $this->sql .= " GROUP BY $groupBy";
         return $this;
     }
 
-    /* Éè¶¨having¡£*/
+    /* è®¾å®šhavingã€‚*/
     public function having($having)
     {
         $this->sql .= " HAVING $having";
         return $this;
     }
 
-    /* ·µ»ØÆ´×°ºÃµÄÓï¾ä¡£*/
+    /* è¿”å›æ‹¼è£…å¥½çš„è¯­å¥ã€‚*/
     public function get()
     {
         return $this->sql;
     }
 
-    /* ×ªÒå¡£*/
+    /* è½¬ä¹‰ã€‚*/
     public function quote($value)
     {
         if($this->magicQuote) $value = stripslashes($value);
