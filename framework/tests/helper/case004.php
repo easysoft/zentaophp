@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 /**
- * ²âÊÔimport·½·¨
+ * æµ‹è¯•importæ–¹æ³•
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      chunsheng.wang <chunsheng@cnezsoft.com>
  * @package     Testing
  * @version     $Id$
@@ -12,23 +12,23 @@
  */
 include '../../helper.class.php';
 
-/* Ê×´Î°üº¬¡£*/
+/* é¦–æ¬¡åŒ…å«ã€‚*/
 helper::import('import1.php');
 printIncluded();
 
-/* ÖØ¸´°üº¬¡£*/
+/* é‡å¤åŒ…å«ã€‚*/
 helper::import('import1.php');
 printIncluded();
 
-/* °üº¬µÚ¶ş¸öÎÄ¼ş¡£*/
+/* åŒ…å«ç¬¬äºŒä¸ªæ–‡ä»¶ã€‚*/
 helper::import('import2.php');
 printIncluded();
 
-/* °üº¬²»´æÔÚµÄÎÄ¼ş¡£*/
+/* åŒ…å«ä¸å­˜åœ¨çš„æ–‡ä»¶ã€‚*/
 var_dump(helper::import('noexits.php'));
 
 /**
- * Ö»´òÓ¡°üº¬ÎÄ¼şµÄÎÄ¼şÃû¡£
+ * åªæ‰“å°åŒ…å«æ–‡ä»¶çš„æ–‡ä»¶åã€‚
  * 
  * @access public
  * @return void

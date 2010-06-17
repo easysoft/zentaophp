@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
 /**
- * Ä£ĞÍ»ùÀà¡£
+ * æ¨¡å‹åŸºç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class model
 {
     /**
-     * È«¾ÖµÄ$app¶ÔÏó¡£
+     * å…¨å±€çš„$appå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -37,7 +37,7 @@ class model
     protected $app;
 
     /**
-     * È«¾ÖµÄ$config¶ÔÏó¡£ 
+     * å…¨å±€çš„$configå¯¹è±¡ã€‚ 
      * 
      * @var object
      * @access protected
@@ -45,7 +45,7 @@ class model
     protected $config;
 
     /**
-     * È«¾ÖµÄ$lang¶ÔÏó¡£
+     * å…¨å±€çš„$langå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -53,7 +53,7 @@ class model
     protected $lang;
 
     /**
-     * È«¾ÖµÄ$dbh£¨Êı¾İ¿â·ÃÎÊ¾ä±ú£©¶ÔÏó¡£
+     * å…¨å±€çš„$dbhï¼ˆæ•°æ®åº“è®¿é—®å¥æŸ„ï¼‰å¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -61,7 +61,7 @@ class model
     protected $dbh;
 
     /**
-     * dao¶ÔÏó¡£
+     * daoå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -69,7 +69,7 @@ class model
     public $dao;
 
     /**
-     * POST¶ÔÏó¡£
+     * POSTå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -77,7 +77,7 @@ class model
     public $post;
 
     /**
-     * get¶ÔÏó¡£
+     * getå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -85,7 +85,7 @@ class model
     public $get;
 
     /**
-     * session¶ÔÏó¡£
+     * sessionå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -93,7 +93,7 @@ class model
     public $session;
 
     /**
-     * server¶ÔÏó¡£
+     * serverå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -101,7 +101,7 @@ class model
     public $server;
 
     /**
-     * cookie¶ÔÏó¡£
+     * cookieå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -109,7 +109,7 @@ class model
     public $cookie;
 
     /**
-     * global¶ÔÏó¡£
+     * globalå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -117,10 +117,10 @@ class model
     public $global;
 
     /**
-     * ¹¹Ôìº¯Êı£º
+     * æ„é€ å‡½æ•°ï¼š
      *
-     * 1. ÒıÓÃÈ«¾Ö±äÁ¿£¬Ê¹Ö®¿ÉÒÔÍ¨¹ı³ÉÔ±ÊôĞÔ·ÃÎÊ¡£
-     * 2. ÉèÖÃµ±Ç°Ä£¿éµÄÂ·¾¶¡¢ÅäÖÃ¡¢ÓïÑÔµÈĞÅÏ¢£¬²¢¼ÓÔØÏàÓ¦µÄÎÄ¼ş¡£
+     * 1. å¼•ç”¨å…¨å±€å˜é‡ï¼Œä½¿ä¹‹å¯ä»¥é€šè¿‡æˆå‘˜å±æ€§è®¿é—®ã€‚
+     * 2. è®¾ç½®å½“å‰æ¨¡å—çš„è·¯å¾„ã€é…ç½®ã€è¯­è¨€ç­‰ä¿¡æ¯ï¼Œå¹¶åŠ è½½ç›¸åº”çš„æ–‡ä»¶ã€‚
      * 
      * @access public
      * @return void
@@ -142,9 +142,9 @@ class model
     }
 
     /**
-     * ÉèÖÃÄ£¿éÃû£º½«ÀàÃûÖĞµÄmodelÌæ»»µô¼´ÎªÄ£¿éÃû¡£
-     * Ã»ÓĞÊ¹ÓÃ$app->getModule()·½·¨£¬ÒòÎªËü·µ»ØµÄÊÇµ±Ç°µ÷ÓÃµÄÄ£¿é¡£
-     * ¶øÔÚÒ»´ÎÇëÇóÖĞ£¬µ±Ç°Ä£¿éµÄcontrolÎÄ¼şºÜÓĞ¿ÉÄÜ»áµ÷ÓÃÆäËûÄ£¿éµÄmodel¡£
+     * è®¾ç½®æ¨¡å—åï¼šå°†ç±»åä¸­çš„modelæ›¿æ¢æ‰å³ä¸ºæ¨¡å—åã€‚
+     * æ²¡æœ‰ä½¿ç”¨$app->getModule()æ–¹æ³•ï¼Œå› ä¸ºå®ƒè¿”å›çš„æ˜¯å½“å‰è°ƒç”¨çš„æ¨¡å—ã€‚
+     * è€Œåœ¨ä¸€æ¬¡è¯·æ±‚ä¸­ï¼Œå½“å‰æ¨¡å—çš„controlæ–‡ä»¶å¾ˆæœ‰å¯èƒ½ä¼šè°ƒç”¨å…¶ä»–æ¨¡å—çš„modelã€‚
      * 
      * @access protected
      * @return void
@@ -158,7 +158,7 @@ class model
     }
 
     /**
-     * ÉèÖÃ³¬È«¾Ö±äÁ¿¡£
+     * è®¾ç½®è¶…å…¨å±€å˜é‡ã€‚
      * 
      * @access protected
      * @return void
@@ -174,9 +174,9 @@ class model
     }
 
     /**
-     * ¼ÓÔØÄ³Ò»¸öÄ£¿éµÄmodelÎÄ¼ş¡£
+     * åŠ è½½æŸä¸€ä¸ªæ¨¡å—çš„modelæ–‡ä»¶ã€‚
      * 
-     * @param   string  $moduleName     Ä£¿éÃû×Ö£¬Èç¹ûÎª¿Õ£¬ÔòÈ¡µ±Ç°µÄÄ£¿éÃû×÷ÎªmodelÃû¡£
+     * @param   string  $moduleName     æ¨¡å—åå­—ï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™å–å½“å‰çš„æ¨¡å—åä½œä¸ºmodelåã€‚
      * @access  public
      * @return  void
      */
@@ -194,10 +194,10 @@ class model
         return $this->$moduleName;
     }
 
-    //-------------------- Êı¾İ¿â²Ù×÷ÏàÓ¦µÄ·½·¨¡£--------------------//
+    //-------------------- æ•°æ®åº“æ“ä½œç›¸åº”çš„æ–¹æ³•ã€‚--------------------//
 
     /**
-     * ¼ÓÔØDAOÀà£¬²¢·µ»Ø¶ÔÏó¡£
+     * åŠ è½½DAOç±»ï¼Œå¹¶è¿”å›å¯¹è±¡ã€‚
      * 
      * @access private
      * @return void
@@ -207,7 +207,7 @@ class model
         $this->dao = $this->app->loadClass('dao');
     }
 
-    /* ½«Ò»Ìõ¼ÇÂ¼±ê¼ÇÎªÒÑÉ¾³ı¡£*/
+    /* å°†ä¸€æ¡è®°å½•æ ‡è®°ä¸ºå·²åˆ é™¤ã€‚*/
     public function delete($table, $id)
     {
         $this->dao->update($table)->set('deleted')->eq(1)->where('id')->eq($id)->exec();
@@ -215,7 +215,7 @@ class model
         $this->loadModel('action')->create($object, $id, 'deleted', '', $extra = ACTIONMODEL::CAN_UNDELETED);
     }
 
-    /* »¶Ó­ÒÑ¾­±ê¼ÇÎªÉ¾³ıµÄ¼ÇÂ¼¡£*/
+    /* æ¬¢è¿å·²ç»æ ‡è®°ä¸ºåˆ é™¤çš„è®°å½•ã€‚*/
     public function undelete($actionID)
     {
         $action = $this->loadModel('action')->getById($actionID);

@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
 /**
- * ¹¤¾ßÀà¶ÔÏó£¬´æ·Å×Å¸÷ÖÖÔÓÏîµÄ¹¤¾ß·½·¨¡£
+ * å·¥å…·ç±»å¯¹è±¡ï¼Œå­˜æ”¾ç€å„ç§æ‚é¡¹çš„å·¥å…·æ–¹æ³•ã€‚
  *
  * @package ZenTaoPHP
  */
 class helper
 {
     /**
-     * ÎªÒ»¸ö¶ÔÏóÉèÖÃÄ³Ò»¸öÊôĞÔ£¬ÆäÖĞkey¿ÉÒÔÊÇ¡°father.child¡±µÄĞÎÊ½¡£
+     * ä¸ºä¸€ä¸ªå¯¹è±¡è®¾ç½®æŸä¸€ä¸ªå±æ€§ï¼Œå…¶ä¸­keyå¯ä»¥æ˜¯â€œfather.childâ€çš„å½¢å¼ã€‚
      * 
      * <code>
      * <?php
@@ -37,9 +37,9 @@ class helper
      * helper::setMember('lang', 'db.user', 'chunsheng.wang');
      * ?>
      * </code>
-     * @param string    $objName    ¶ÔÏó±äÁ¿Ãû¡£
-     * @param string    $key        ÒªÉèÖÃµÄÊôĞÔ£¬¿ÉÒÔÊÇfather.childµÄĞÎÊ½¡£
-     * @param mixed     $value      ÒªÉèÖÃµÄÖµ¡£
+     * @param string    $objName    å¯¹è±¡å˜é‡åã€‚
+     * @param string    $key        è¦è®¾ç½®çš„å±æ€§ï¼Œå¯ä»¥æ˜¯father.childçš„å½¢å¼ã€‚
+     * @param mixed     $value      è¦è®¾ç½®çš„å€¼ã€‚
      * @static
      * @access public
      * @return void
@@ -55,19 +55,19 @@ class helper
     }
 
     /**
-     * Éú³ÉÄ³Ò»¸öÄ£¿éÄ³¸ö·½·¨µÄÁ´½Ó¡£
+     * ç”ŸæˆæŸä¸€ä¸ªæ¨¡å—æŸä¸ªæ–¹æ³•çš„é“¾æ¥ã€‚
      * 
-     * ÔÚcontrolÀàÖĞ¶Ô´Ë·½·¨½øĞĞÁË·â×°£¬¿ÉÒÔÔÚcontrol¶ÔÏóÖĞÖ±½Óµ÷ÓÃcreateLink·½·¨¡£
+     * åœ¨controlç±»ä¸­å¯¹æ­¤æ–¹æ³•è¿›è¡Œäº†å°è£…ï¼Œå¯ä»¥åœ¨controlå¯¹è±¡ä¸­ç›´æ¥è°ƒç”¨createLinkæ–¹æ³•ã€‚
      * <code>
      * <?php
      * helper::createLink('hello', 'index', 'var1=value1&var2=value2');
      * helper::createLink('hello', 'index', array('var1' => 'value1', 'var2' => 'value2');
      * ?>
      * </code>
-     * @param string    $moduleName     Ä£¿éÃû¡£
-     * @param string    $methodName     ·½·¨Ãû¡£
-     * @param mixed     $vars           Òª´«µİ¸ømethod·½·¨µÄ¸÷¸ö²ÎÊı£¬¿ÉÒÔÊÇÊı×é£¬Ò²¿ÉÒÔÊÇvar1=value2&var2=value2µÄĞÎÊ½¡£
-     * @param string    $viewType       À©Õ¹Ãû·½Ê½¡£
+     * @param string    $moduleName     æ¨¡å—åã€‚
+     * @param string    $methodName     æ–¹æ³•åã€‚
+     * @param mixed     $vars           è¦ä¼ é€’ç»™methodæ–¹æ³•çš„å„ä¸ªå‚æ•°ï¼Œå¯ä»¥æ˜¯æ•°ç»„ï¼Œä¹Ÿå¯ä»¥æ˜¯var1=value2&var2=value2çš„å½¢å¼ã€‚
+     * @param string    $viewType       æ‰©å±•åæ–¹å¼ã€‚
      * @static
      * @access public
      * @return string
@@ -87,7 +87,7 @@ class helper
 
         if(empty($viewType)) $viewType = $app->getViewType();
 
-        /* Èç¹û´«µİ½øÀ´µÄvars²»ÊÇÊı×é£¬³¢ÊÔ½«Æä½âÎö³ÉÊı×é¸ñÊ½¡£*/
+        /* å¦‚æœä¼ é€’è¿›æ¥çš„varsä¸æ˜¯æ•°ç»„ï¼Œå°è¯•å°†å…¶è§£ææˆæ•°ç»„æ ¼å¼ã€‚*/
         if(!is_array($vars)) parse_str($vars, $vars);
         if($config->requestType == 'PATH_INFO')
         {
@@ -100,7 +100,7 @@ class helper
             {
                 foreach($vars as $value) $link .= "{$config->requestFix}$value";
             }    
-            /* Èç¹û·ÃÎÊµÄÊÇ/index/index.html£¬¼ò»¯Îª/index.html¡£*/
+            /* å¦‚æœè®¿é—®çš„æ˜¯/index/index.htmlï¼Œç®€åŒ–ä¸º/index.htmlã€‚*/
             if($moduleName == $config->default->module and $methodName == $config->default->method) $link = $config->webRoot . 'index';
             $link .= '.' . $viewType;
         }
@@ -114,7 +114,7 @@ class helper
     }
 
     /**
-     * ½«Ò»¸öÊı×é×ª³É¶ÔÏó¸ñÊ½¡£´Ëº¯ÊıÖ»ÊÇ·µ»ØÓï¾ä£¬ĞèÒªeval¡£
+     * å°†ä¸€ä¸ªæ•°ç»„è½¬æˆå¯¹è±¡æ ¼å¼ã€‚æ­¤å‡½æ•°åªæ˜¯è¿”å›è¯­å¥ï¼Œéœ€è¦evalã€‚
      * 
      * <code>
      * <?php
@@ -123,10 +123,10 @@ class helper
      * print_r($configobj);
      * ?>
      * </code>
-     * @param array     $array          Òª×ª»»µÄÊı×é¡£
-     * @param string    $objName        Òª×ª»»³ÉµÄ¶ÔÏóµÄÃû×Ö¡£
-     * @param string    $memberPath     ³ÉÔ±±äÁ¿Â·¾¶£¬×î¿ªÊ¼Îª¿Õ£¬´Ó¸ù¿ªÊ¼¡£
-     * @param bool      $firstRun       ÊÇ·ñÊÇµÚÒ»´ÎÔËĞĞ¡£
+     * @param array     $array          è¦è½¬æ¢çš„æ•°ç»„ã€‚
+     * @param string    $objName        è¦è½¬æ¢æˆçš„å¯¹è±¡çš„åå­—ã€‚
+     * @param string    $memberPath     æˆå‘˜å˜é‡è·¯å¾„ï¼Œæœ€å¼€å§‹ä¸ºç©ºï¼Œä»æ ¹å¼€å§‹ã€‚
+     * @param bool      $firstRun       æ˜¯å¦æ˜¯ç¬¬ä¸€æ¬¡è¿è¡Œã€‚
      * @static
      * @access public
      * @return void
@@ -158,9 +158,9 @@ class helper
     }
 
     /**
-     * °üº¬Ò»¸öÎÄ¼ş¡£router.class.phpºÍcontrol.class.phpÖĞ°üº¬ÎÄ¼ş¶¼Í¨¹ı´Ëº¯ÊıÀ´µ÷ÓÃ£¬ÕâÑù±£Ö¤ÎÄ¼ş²»»áÖØ¸´¼ÓÔØ¡£
+     * åŒ…å«ä¸€ä¸ªæ–‡ä»¶ã€‚router.class.phpå’Œcontrol.class.phpä¸­åŒ…å«æ–‡ä»¶éƒ½é€šè¿‡æ­¤å‡½æ•°æ¥è°ƒç”¨ï¼Œè¿™æ ·ä¿è¯æ–‡ä»¶ä¸ä¼šé‡å¤åŠ è½½ã€‚
      * 
-     * @param string    $file   Òª°üº¬µÄÎÄ¼şµÄÂ·¾¶¡£ 
+     * @param string    $file   è¦åŒ…å«çš„æ–‡ä»¶çš„è·¯å¾„ã€‚ 
      * @static
      * @access public
      * @return void
@@ -179,9 +179,9 @@ class helper
     }
 
     /**
-     * ÉèÖÃmodelÎÄ¼ş¡£
+     * è®¾ç½®modelæ–‡ä»¶ã€‚
      * 
-     * @param   string      $moduleName     Ä£¿éÃû×Ö¡£
+     * @param   string      $moduleName     æ¨¡å—åå­—ã€‚
      * @access  private
      * @return void
      */
@@ -189,15 +189,15 @@ class helper
     {
         global $app;
 
-        /* Éè¶¨Ö÷modelÎÄ¼şºÍÀ©Õ¹Â·¾¶£¬²¢»ñµÃËùÓĞµÄÀ©Õ¹ÎÄ¼ş¡£*/
+        /* è®¾å®šä¸»modelæ–‡ä»¶å’Œæ‰©å±•è·¯å¾„ï¼Œå¹¶è·å¾—æ‰€æœ‰çš„æ‰©å±•æ–‡ä»¶ã€‚*/
         $mainModelFile = $app->getModulePath($moduleName) . 'model.php';
         $modelExtPath  = $app->getModuleExtPath($moduleName, 'model');
         $extFiles      = helper::ls($modelExtPath, '.php');
 
-        /* ²»´æÔÚÀ©Õ¹ÎÄ¼ş£¬·µ»ØÖ÷ÅäÖÃÎÄ¼ş¡£*/
+        /* ä¸å­˜åœ¨æ‰©å±•æ–‡ä»¶ï¼Œè¿”å›ä¸»é…ç½®æ–‡ä»¶ã€‚*/
         if(empty($extFiles)) return $mainModelFile;
 
-        /* ´æÔÚÀ©Õ¹ÎÄ¼ş£¬ÅĞ¶ÏÊÇ·ñĞèÒª¸üĞÂ¡£*/
+        /* å­˜åœ¨æ‰©å±•æ–‡ä»¶ï¼Œåˆ¤æ–­æ˜¯å¦éœ€è¦æ›´æ–°ã€‚*/
         $mergedModelFile = $app->getTmpRoot() . 'model' . $app->getPathFix() . $moduleName . '.php';
         $needUpdate      = false;
         $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
@@ -210,22 +210,22 @@ class helper
             }
         }
 
-        /* Èç¹û²»ĞèÒª¸üĞÂ£¬ÔòÖ±½Ó·µ»ØºÏ²¢Ö®ºóµÄmodelÎÄ¼ş¡£*/
+        /* å¦‚æœä¸éœ€è¦æ›´æ–°ï¼Œåˆ™ç›´æ¥è¿”å›åˆå¹¶ä¹‹åçš„modelæ–‡ä»¶ã€‚*/
         if(!$needUpdate) return $mergedModelFile;
 
         if($needUpdate)
         {
-            /* ¼ÓÔØÖ÷µÄmodelÎÄ¼ş£¬²¢»ñµÃÆä·½·¨ÁĞ±í¡£*/
+            /* åŠ è½½ä¸»çš„modelæ–‡ä»¶ï¼Œå¹¶è·å¾—å…¶æ–¹æ³•åˆ—è¡¨ã€‚*/
             helper::import($mainModelFile);
             $modelMethods = get_class_methods($moduleName . 'model');
             foreach($modelMethods as $key => $modelMethod) $modelMethods[$key] = strtolower($modelMethod);
 
-            /* ½«Ö÷modelÎÄ¼ş¶ÁÈëÊı×é¡£*/
+            /* å°†ä¸»modelæ–‡ä»¶è¯»å…¥æ•°ç»„ã€‚*/
             $modelLines   = explode("\n", rtrim(file_get_contents($mainModelFile)));
             $lines2Delete = array(count($modelLines) - 1);
             $lines2Append = array();
 
-            /* Ñ­»·´¦ÀíÃ¿¸öÀ©Õ¹·½·¨ÎÄ¼ş¡£*/
+            /* å¾ªç¯å¤„ç†æ¯ä¸ªæ‰©å±•æ–¹æ³•æ–‡ä»¶ã€‚*/
             foreach($extFiles as $extFile)
             {
                 $methodName = strtolower(basename($extFile, '.php'));
@@ -239,13 +239,13 @@ class helper
                 $lines2Append = array_merge($lines2Append, explode("\n", trim(file_get_contents($extFile))));
             }
 
-            /* Éú³ÉĞÂµÄmodelÎÄ¼ş¡£*/
+            /* ç”Ÿæˆæ–°çš„modelæ–‡ä»¶ã€‚*/
             $lines2Append[] = '}';
             foreach($lines2Delete as $lineNO) unset($modelLines[$lineNO]);
             $modelLines = array_merge($modelLines, $lines2Append);
             if(!is_dir(dirname($mergedModelFile))) mkdir(dirname($mergedModelFile));
             $modelLines = join("\n", $modelLines);
-            $modelLines = str_ireplace($moduleName . 'model', 'ext' . $moduleName . 'model', $modelLines); // ÀàÃûĞŞ¸Ä¡£
+            $modelLines = str_ireplace($moduleName . 'model', 'ext' . $moduleName . 'model', $modelLines); // ç±»åä¿®æ”¹ã€‚
             file_put_contents($mergedModelFile, $modelLines);
 
             return $mergedModelFile;
@@ -253,9 +253,9 @@ class helper
     }
 
     /**
-     * Éú³ÉSQL²éÑ¯ÖĞµÄIN(a,b,c)²¿·Ö´úÂë¡£
+     * ç”ŸæˆSQLæŸ¥è¯¢ä¸­çš„IN(a,b,c)éƒ¨åˆ†ä»£ç ã€‚
      * 
-     * @param   misc    $ids   idÁĞ±í£¬¿ÉÒÔÊÇÊı×é£¬Ò²¿ÉÒÔÊÇÊ¹ÓÃ¶ººÅ¸ô¿ªµÄ×Ö·û´®¡£ 
+     * @param   misc    $ids   idåˆ—è¡¨ï¼Œå¯ä»¥æ˜¯æ•°ç»„ï¼Œä¹Ÿå¯ä»¥æ˜¯ä½¿ç”¨é€—å·éš”å¼€çš„å­—ç¬¦ä¸²ã€‚ 
      * @static
      * @access  public
      * @return  string
@@ -267,9 +267,9 @@ class helper
     }
 
     /**
-     * Éú³É¶Ô¿ò¼Ü°²È«µÄbase64encode´®¡£
+     * ç”Ÿæˆå¯¹æ¡†æ¶å®‰å…¨çš„base64encodeä¸²ã€‚
      * 
-     * @param   string  $string   Òª±àÂëµÄ×Ö·û´®ÁĞ±í¡£
+     * @param   string  $string   è¦ç¼–ç çš„å­—ç¬¦ä¸²åˆ—è¡¨ã€‚
      * @static
      * @access  public
      * @return  string
@@ -280,9 +280,9 @@ class helper
     }
 
     /**
-     * ½âÂë¡£
+     * è§£ç ã€‚
      * 
-     * @param   string  $string   Òª½âÂëµÄ×Ö·û´®ÁĞ±í¡£
+     * @param   string  $string   è¦è§£ç çš„å­—ç¬¦ä¸²åˆ—è¡¨ã€‚
      * @static
      * @access  public
      * @return  string
@@ -293,10 +293,10 @@ class helper
     }
 
     /**
-     *  ¼ÆËãÁ½¸öÈÕÆÚµÄ²î¡£
+     *  è®¡ç®—ä¸¤ä¸ªæ—¥æœŸçš„å·®ã€‚
      * 
-     * @param   date  $date1   µÚÒ»¸öÊ±¼ä
-     * @param   date  $date2   µÚ¶ş¸öÊ±¼ä
+     * @param   date  $date1   ç¬¬ä¸€ä¸ªæ—¶é—´
+     * @param   date  $date2   ç¬¬äºŒä¸ªæ—¶é—´
      * @access  public
      * @return  string
      */
@@ -305,25 +305,25 @@ class helper
         return round((strtotime($date1) - strtotime($date2)) / 86400, 0);
     }
 
-    /* »ñµÃµ±Ç°µÄÊ±¼ä¡£*/
+    /* è·å¾—å½“å‰çš„æ—¶é—´ã€‚*/
     static public function now()
     {
         return date(DT_DATETIME1);
     }
 
-    /* »ñµÃ½ñÌìµÄÈÕÆÚ¡£*/
+    /* è·å¾—ä»Šå¤©çš„æ—¥æœŸã€‚*/
     static public function today()
     {
         return date(DT_DATE1);
     }
 
-    /* ÅĞ¶ÏÊÇ·ñ0000-00-00¸ñÊ½µÄÈÕÆÚ¡£*/
+    /* åˆ¤æ–­æ˜¯å¦0000-00-00æ ¼å¼çš„æ—¥æœŸã€‚*/
     static public function isZeroDate($date)
     {
         return substr($date, 0, 4) == '0000';
     }
 
-    /* »ñµÃÄ³Ò»¸öÄ¿Â¼ÏÂÃæº¬ÓĞÄ³¸öÌØÕ÷×Ö·û´®µÄËùÓĞÎÄ¼ş¡£*/
+    /* è·å¾—æŸä¸€ä¸ªç›®å½•ä¸‹é¢å«æœ‰æŸä¸ªç‰¹å¾å­—ç¬¦ä¸²çš„æ‰€æœ‰æ–‡ä»¶ã€‚*/
     static public function ls($dir, $pattern = '')
     {
         $files = array();
@@ -343,14 +343,14 @@ class helper
     }
 }
 
-/* ±ğÃûº¯Êı£¬Éú³É¶ÔÄÚ²¿·½·¨µÄÁ´½Ó¡£ */
+/* åˆ«åå‡½æ•°ï¼Œç”Ÿæˆå¯¹å†…éƒ¨æ–¹æ³•çš„é“¾æ¥ã€‚ */
 function inLink($methodName = 'index', $vars = '', $viewType = '')
 {
     global $app;
     return helper::createLink($app->getModuleName(), $methodName, $vars, $viewType);
 }
 
-/* Ñ­»·Ò»¸öÊı×é¡£*/
+/* å¾ªç¯ä¸€ä¸ªæ•°ç»„ã€‚*/
 function cycle($items)
 {
     static $i = 0;

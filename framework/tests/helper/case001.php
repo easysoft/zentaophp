@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 /**
- * ²âÊÔarray2Object·½·¨¡£
+ * æµ‹è¯•array2Objectæ–¹æ³•ã€‚
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓÐÏÞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      chunsheng.wang <chunsheng@cnezsoft.com>
  * @package     Testing
  * @version     $Id$

@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
 /**
- * Â·ÓÉÀà£¬Ò²ÊÇÕû¸ö¿ò¼Ü×îºËĞÄµÄÀà¡£
+ * è·¯ç”±ç±»ï¼Œä¹Ÿæ˜¯æ•´ä¸ªæ¡†æ¶æœ€æ ¸å¿ƒçš„ç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class router
 {
     /**
-     * ÎÄ¼şÏµÍ³µÄÂ·¾¶·Ö¸ô·û¡£
+     * æ–‡ä»¶ç³»ç»Ÿçš„è·¯å¾„åˆ†éš”ç¬¦ã€‚
      * 
      * @var string
      * @access private
@@ -37,7 +37,7 @@ class router
     private $pathFix;
 
     /**
-     * Ó¦ÓÃµÄ»ù×¼Â·¾¶¡£
+     * åº”ç”¨çš„åŸºå‡†è·¯å¾„ã€‚
      *
      * @var string
      * @access private
@@ -45,7 +45,7 @@ class router
     private $basePath;
 
     /**
-     * ¿ò¼Ü»ùÀàÎÄ¼şËùÔÚµÄÂ·¾¶¡£
+     * æ¡†æ¶åŸºç±»æ–‡ä»¶æ‰€åœ¨çš„è·¯å¾„ã€‚
      * 
      * @var string
      * @access private
@@ -53,7 +53,7 @@ class router
     private $frameRoot;
 
     /**
-     * ¿ò¼ÜËù´øµÄlibraryÄ¿Â¼¡£
+     * æ¡†æ¶æ‰€å¸¦çš„libraryç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -61,7 +61,7 @@ class router
     private $coreLibRoot;
 
     /**
-     * µ±Ç°Ó¦ÓÃ³ÌĞòËùÔÚµÄÄ¿Â¼¡£
+     * å½“å‰åº”ç”¨ç¨‹åºæ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -69,7 +69,7 @@ class router
     private $appRoot;
 
     /**
-     * Ó¦ÓÃ³ÌĞòµÄlibraryÄ¿Â¼¡£
+     * åº”ç”¨ç¨‹åºçš„libraryç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -77,7 +77,7 @@ class router
     private $appLibRoot;
 
     /**
-     * ÁÙÊ±ÎÄ¼şËùÔÚµÄÄ¿Â¼
+     * ä¸´æ—¶æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•
      * 
      * @var string
      * @access private
@@ -85,7 +85,7 @@ class router
     private $tmpRoot;
 
     /**
-     * »º´æÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * ç¼“å­˜æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -93,7 +93,7 @@ class router
     private $cacheRoot;
 
     /**
-     * ÈÕÖ¾ÎÄ¼şËùÔÚµÄÄ¿Â¼¡£
+     * æ—¥å¿—æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -101,7 +101,7 @@ class router
     private $logRoot;
 
     /**
-     * ÅäÖÃÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * é…ç½®æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -109,7 +109,7 @@ class router
     private $configRoot;
 
     /**
-     * ¸÷¸öÄ£¿éËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * å„ä¸ªæ¨¡å—æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -117,7 +117,7 @@ class router
     private $moduleRoot;
 
     /**
-     * Ö÷ÌâÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * ä¸»é¢˜æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -125,7 +125,7 @@ class router
     private $themeRoot;
 
     /**
-     * ÓÃ»§ËùÊ¹ÓÃµÄÓïÑÔ¡£
+     * ç”¨æˆ·æ‰€ä½¿ç”¨çš„è¯­è¨€ã€‚
      * 
      * @var string
      * @access private
@@ -133,7 +133,7 @@ class router
     private $clientLang;
 
     /**
-     * ÓÃ»§ËùÊ¹ÓÃµÄÖ÷Ìâ¡£
+     * ç”¨æˆ·æ‰€ä½¿ç”¨çš„ä¸»é¢˜ã€‚
      * 
      * @var string
      * @access private
@@ -141,7 +141,7 @@ class router
     private $clientTheme;
 
     /**
-     * µ±Ç°ĞèÒª¼ÓÔØµÄÄ£¿éÃû³Æ¡£
+     * å½“å‰éœ€è¦åŠ è½½çš„æ¨¡å—åç§°ã€‚
      * 
      * @var string
      * @access private
@@ -149,7 +149,7 @@ class router
     private $moduleName;
 
     /**
-     * µ±Ç°Ä£¿éµÄÀ©Õ¹Ä¿Â¼¡£
+     * å½“å‰æ¨¡å—çš„æ‰©å±•ç›®å½•ã€‚
      * 
      * @var string
      * @access private
@@ -157,7 +157,7 @@ class router
     private $moduleExtRoot;
 
     /**
-     * µ±Ç°Ä£¿éËù¶ÔÓ¦µÄ¿ØÖÆÆ÷ÎÄ¼ş¡£
+     * å½“å‰æ¨¡å—æ‰€å¯¹åº”çš„æ§åˆ¶å™¨æ–‡ä»¶ã€‚
      * 
      * @var string
      * @access private
@@ -165,7 +165,7 @@ class router
     private $controlFile;
 
     /**
-     * ĞèÒªµ÷ÓÃµÄ·½·¨¡£
+     * éœ€è¦è°ƒç”¨çš„æ–¹æ³•ã€‚
      * 
      * @var string
      * @access private
@@ -173,7 +173,7 @@ class router
     private $methodName;
 
     /**
-     * µ±Ç°Ä£¿éËù¶ÔÓ¦µÄÅÉÉú³öÀ´µÄactionÎÄ¼ş¡£
+     * å½“å‰æ¨¡å—æ‰€å¯¹åº”çš„æ´¾ç”Ÿå‡ºæ¥çš„actionæ–‡ä»¶ã€‚
      * 
      * @var string
      * @access private
@@ -181,7 +181,7 @@ class router
     private $extActionFile;
 
     /**
-     * µ±Ç°ÇëÇóµÄURI¡£
+     * å½“å‰è¯·æ±‚çš„URIã€‚
      * 
      * @var string
      * @access private
@@ -189,7 +189,7 @@ class router
     private $URI;
 
     /**
-     * Òª´«µİ¸ø¸øµ÷ÓÃ·½·¨µÄ²ÎÊı¡£
+     * è¦ä¼ é€’ç»™ç»™è°ƒç”¨æ–¹æ³•çš„å‚æ•°ã€‚
      * 
      * @var array
      * @access private
@@ -197,7 +197,7 @@ class router
     private $params;
 
     /**
-     * ÊÓÍ¼¸ñÊ½¡£
+     * è§†å›¾æ ¼å¼ã€‚
      * 
      * @var string
      * @access private
@@ -205,7 +205,7 @@ class router
     private $viewType;
 
     /**
-     * ÅäÖÃ¶ÔÏó¡£
+     * é…ç½®å¯¹è±¡ã€‚
      * 
      * @var string
      * @access private
@@ -213,7 +213,7 @@ class router
     public $config;
 
     /**
-     * ÓïÑÔ¶ÔÏó¡£
+     * è¯­è¨€å¯¹è±¡ã€‚
      * 
      * @var string
      * @access private
@@ -221,7 +221,7 @@ class router
     public $lang;
 
     /**
-     * Êı¾İ¿â·ÃÎÊ¶ÔÏó¡£
+     * æ•°æ®åº“è®¿é—®å¯¹è±¡ã€‚
      * 
      * @var string
      * @access private
@@ -229,7 +229,7 @@ class router
     public $dbh;
 
     /**
-     * POST¶ÔÏó¡£
+     * POSTå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -237,7 +237,7 @@ class router
     public $post;
 
     /**
-     * GET¶ÔÏó¡£
+     * GETå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -245,7 +245,7 @@ class router
     public $get;
 
     /**
-     * session¶ÔÏó¡£
+     * sessionå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -253,7 +253,7 @@ class router
     public $session;
 
     /**
-     * server¶ÔÏó¡£
+     * serverå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -261,7 +261,7 @@ class router
     public $server;
 
     /**
-     * cookie¶ÔÏó¡£
+     * cookieå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -270,7 +270,7 @@ class router
 
 
     /**
-     * global¶ÔÏó¡£
+     * globalå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -278,12 +278,12 @@ class router
     public $global;
 
     /**
-     * ¹¹Ôìº¯Êı¡£
+     * æ„é€ å‡½æ•°ã€‚
      * 
-     * Ö÷ÒªÍê³É¸÷¸öÂ·¾¶±äÁ¿µÄÉèÖÃ¡£×¢Òâ£¬¸Ã¹¹Ôìº¯ÊıÎªË½ÓĞº¯Êı£¬Ó¦µ±Ê¹ÓÃcreateApp·½·¨À´ÊµÀı»¯Â·ÓÉ¶ÔÏó¡£
+     * ä¸»è¦å®Œæˆå„ä¸ªè·¯å¾„å˜é‡çš„è®¾ç½®ã€‚æ³¨æ„ï¼Œè¯¥æ„é€ å‡½æ•°ä¸ºç§æœ‰å‡½æ•°ï¼Œåº”å½“ä½¿ç”¨createAppæ–¹æ³•æ¥å®ä¾‹åŒ–è·¯ç”±å¯¹è±¡ã€‚
      *
-     * @param string $appName   Ó¦ÓÃµÄÃû³Æ£¬Èç¹ûÃ»ÓĞÖ¸¶¨$appRoot±äÁ¿£¬ÏµÍ³»á¸ù¾İ$appNameÀ´¼ÆËãÓ¦ÓÃµÄ¸ùÄ¿Â¼¡£
-     * @param string $appRoot   Ó¦ÓÃËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * @param string $appName   åº”ç”¨çš„åç§°ï¼Œå¦‚æœæ²¡æœ‰æŒ‡å®š$appRootå˜é‡ï¼Œç³»ç»Ÿä¼šæ ¹æ®$appNameæ¥è®¡ç®—åº”ç”¨çš„æ ¹ç›®å½•ã€‚
+     * @param string $appRoot   åº”ç”¨æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * @access protected
      * @return void
      */
@@ -304,20 +304,20 @@ class router
     }
 
     /**
-     * Éú³ÉÒ»¸öÓ¦ÓÃ¡£
+     * ç”Ÿæˆä¸€ä¸ªåº”ç”¨ã€‚
      * 
      * <code>
      * <?php
      * $demo = router::createApp('demo');
      * ?>
-     * »òÕßÖ¸¶¨demoÓ¦ÓÃËùÔÚµÄÄ¿Â¼¡£
+     * æˆ–è€…æŒ‡å®šdemoåº”ç”¨æ‰€åœ¨çš„ç›®å½•ã€‚
      * <?php
      * $demo = router::createApp('demo', '/home/app/demo');
      * ?>
      * </code>
-     * @param string $appName   Ó¦ÓÃµÄÃû³Æ
-     * @param string $appRoot   Ó¦ÓÃËùÔÚµÄ¸ùÄ¿Â¼£¬¿ÉÒÔÎª¿Õ¡£
-     * @param string $className ¶ÔÏóÃû³Æ£¬µ±´ÓrouterÅÉÉúÒ»¸ö×ÓÀà£¬È»ºóµ÷ÓÃ¸Ã·½·¨Ê±£¬¿ÉÒÔÖ¸¶¨¸Ã²ÎÊı¡£
+     * @param string $appName   åº”ç”¨çš„åç§°
+     * @param string $appRoot   åº”ç”¨æ‰€åœ¨çš„æ ¹ç›®å½•ï¼Œå¯ä»¥ä¸ºç©ºã€‚
+     * @param string $className å¯¹è±¡åç§°ï¼Œå½“ä»routeræ´¾ç”Ÿä¸€ä¸ªå­ç±»ï¼Œç„¶åè°ƒç”¨è¯¥æ–¹æ³•æ—¶ï¼Œå¯ä»¥æŒ‡å®šè¯¥å‚æ•°ã€‚
      * @static
      * @access public
      * @return void
@@ -328,10 +328,10 @@ class router
         return new $className($appName, $appRoot);
     }
 
-    //-------------------- Â·¾¶Ïà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- è·¯å¾„ç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
 
     /**
-     * ÉèÖÃÂ·¾¶·Ö¸ô·û£¬·½±ãµ÷ÓÃ¡£
+     * è®¾ç½®è·¯å¾„åˆ†éš”ç¬¦ï¼Œæ–¹ä¾¿è°ƒç”¨ã€‚
      * 
      * @access protected
      * @return void
@@ -342,7 +342,7 @@ class router
     }
     
     /**
-     * ÉèÖÃÕû¸ö¿ò¼ÜËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®æ•´ä¸ªæ¡†æ¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      *
      * @access protected
      * @return void
@@ -353,7 +353,7 @@ class router
     }
     
     /**
-     * ÉèÖÃ¿ò¼ÜºËĞÄÀàÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®æ¡†æ¶æ ¸å¿ƒç±»æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -364,7 +364,7 @@ class router
     }
 
     /**
-     * ÉèÖÃcoreLibÎÄ¼şµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®coreLibæ–‡ä»¶çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -375,10 +375,10 @@ class router
     }
 
     /**
-     * ÉèÖÃÓ¦ÓÃ³ÌĞòËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®åº”ç”¨ç¨‹åºæ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      *
-     * Ä¬ÈÏÇé¿öÏÂÃæ¸ù¾İappNameÀ´½øĞĞ¼ÆËã£¬Èç¹ûÖ¸¶¨ÁËappRoot£¬Ö±½ÓÓÃÖ®¡£
-     * Í¨¹ıÕâÖÖ»úÖÆ£¬¿ò¼ÜºÍÓ¦ÓÃ¿ÉÒÔ·Ö¿ª²¿Êğ¡£
+     * é»˜è®¤æƒ…å†µä¸‹é¢æ ¹æ®appNameæ¥è¿›è¡Œè®¡ç®—ï¼Œå¦‚æœæŒ‡å®šäº†appRootï¼Œç›´æ¥ç”¨ä¹‹ã€‚
+     * é€šè¿‡è¿™ç§æœºåˆ¶ï¼Œæ¡†æ¶å’Œåº”ç”¨å¯ä»¥åˆ†å¼€éƒ¨ç½²ã€‚
      *
      * @param string $appName 
      * @param string $appRoot 
@@ -399,7 +399,7 @@ class router
     }
 
     /**
-     * ÉèÖÃappLibÎÄ¼şµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®appLibæ–‡ä»¶çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -410,7 +410,7 @@ class router
     }
 
     /**
-     * ÉèÖÃÁÙÊ±ÎÄ¼şËùÔÚµÄÄ¿Â¼¡£
+     * è®¾ç½®ä¸´æ—¶æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -421,7 +421,7 @@ class router
     }
 
     /**
-     * ÉèÖÃ»º´æÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®ç¼“å­˜æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -432,7 +432,7 @@ class router
     }
 
     /**
-     * ÉèÖÃÈÕÖ¾ÎÄ¼şËùÔÚµÄÄ¿Â¼¡£
+     * è®¾ç½®æ—¥å¿—æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -443,7 +443,7 @@ class router
     }
 
     /**
-     * ÉèÖÃÅäÖÃÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®é…ç½®æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -454,7 +454,7 @@ class router
     }
 
     /**
-     * ÉèÖÃmoduleËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®moduleæ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -465,7 +465,7 @@ class router
     }
 
     /**
-     * ÉèÖÃ¿Í»§¶ËÖ÷ÌâÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è®¾ç½®å®¢æˆ·ç«¯ä¸»é¢˜æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access protected
      * @return void
@@ -476,7 +476,7 @@ class router
     }
 
     /**
-     * ÉèÖÃ³¬È«¾Ö±äÁ¿¡£
+     * è®¾ç½®è¶…å…¨å±€å˜é‡ã€‚
      * 
      * @access protected
      * @return void
@@ -494,20 +494,20 @@ class router
         }
     }
 
-    /* ÉèÖÃdebug¼¶±ğ¡£*/
+    /* è®¾ç½®debugçº§åˆ«ã€‚*/
     public function setDebug()
     {
         isset($this->config->debug) and $this->config->debug ? error_reporting(E_ALL & ~ E_STRICT) : error_reporting(0);
     }
 
-    /* ÉèÖÃÊ±Çø¡£*/
+    /* è®¾ç½®æ—¶åŒºã€‚*/
     public function setTimezone()
     {
         if(isset($this->config->timezone)) date_default_timezone_set($this->config->timezone);
     }
 
     /**
-     * ·µ»ØÂ·¾¶·Ö¸ô·û¡£
+     * è¿”å›è·¯å¾„åˆ†éš”ç¬¦ã€‚
      * 
      * @access public
      * @return string
@@ -518,7 +518,7 @@ class router
     }
 
     /**
-     * ·µ»ØÕû¸ö¿ò¼ÜµÄËùÔÚµÄÄ¿Â¼¡£
+     * è¿”å›æ•´ä¸ªæ¡†æ¶çš„æ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -529,7 +529,7 @@ class router
     }
     
     /**
-     * ·µ»Ø¿ò¼ÜºËĞÄÀàÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›æ¡†æ¶æ ¸å¿ƒç±»æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -540,7 +540,7 @@ class router
     }
 
     /**
-     * ·µ»ØlibÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›libæ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -551,7 +551,7 @@ class router
     }
 
     /**
-     * ·µ»ØÓ¦ÓÃ³ÌĞòËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›åº”ç”¨ç¨‹åºæ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -562,7 +562,7 @@ class router
     }
     
     /**
-     * ·µ»ØappLibÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›appLibæ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -573,7 +573,7 @@ class router
     }
 
     /**
-     * ·µ»ØÁÙÊ±ÎÄ¼şËùÔÚµÄÄ¿Â¼¡£
+     * è¿”å›ä¸´æ—¶æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -584,7 +584,7 @@ class router
     } 
 
     /**
-     * ·µ»Ø»º´æÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›ç¼“å­˜æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -595,7 +595,7 @@ class router
     } 
 
     /**
-     * ·µ»ØÈÕÖ¾ÎÄ¼şËùÔÚµÄÄ¿Â¼¡£
+     * è¿”å›æ—¥å¿—æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -606,7 +606,7 @@ class router
     } 
 
     /**
-     * ·µ»ØÅäÖÃÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›é…ç½®æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -617,7 +617,7 @@ class router
     }
 
     /**
-     * ·µ»ØÄ£¿éÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›æ¨¡å—æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -628,7 +628,7 @@ class router
     }
 
     /**
-     * ·µ»ØÖ÷ÌâÎÄ¼şËùÔÚµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›ä¸»é¢˜æ–‡ä»¶æ‰€åœ¨çš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -638,18 +638,18 @@ class router
         return $this->themeRoot;
     }
 
-    //-------------------- ¿Í»§¶Ë»·¾³ÉèÖÃ¡£--------------------//
+    //-------------------- å®¢æˆ·ç«¯ç¯å¢ƒè®¾ç½®ã€‚--------------------//
 
     /**
-     * ÉèÖÃ¿Í»§¶ËËùÊ¹ÓÃµÄÓïÑÔ¡£
+     * è®¾ç½®å®¢æˆ·ç«¯æ‰€ä½¿ç”¨çš„è¯­è¨€ã€‚
      * 
-     * Èç¹ûÊÖ¹¤Ö¸¶¨ÁËÓïÑÔµÄÑ¡Ïî£¬ÔòÒÔÊÖ¹¤Ö¸¶¨ÎªÖ÷¡£
-     * È»ºóÔÙ²éÕÒsessionÀïÃæÊÇ·ñÓĞµÇ¼Ç£¬
-     * È»ºóÔÙ¿´cookieÀïÃæÊÇ·ñÓĞµÇ¼Ç¡£
-     * È»ºóÔÙ²é¿´ä¯ÀÀÆ÷Ö§³ÖµÄÓïÑÔ£¬
-     * Èç¹ûÍ¨¹ıÉÏÃæÈ¡³öµÄÓïÑÔÑ¡ÏîºÍÏµÍ³Ö§³ÖµÄ²»Æ¥Åä£¬ÔòÊ¹ÓÃÄ¬ÈÏµÄÓïÑÔ¡£
+     * å¦‚æœæ‰‹å·¥æŒ‡å®šäº†è¯­è¨€çš„é€‰é¡¹ï¼Œåˆ™ä»¥æ‰‹å·¥æŒ‡å®šä¸ºä¸»ã€‚
+     * ç„¶åå†æŸ¥æ‰¾sessioné‡Œé¢æ˜¯å¦æœ‰ç™»è®°ï¼Œ
+     * ç„¶åå†çœ‹cookieé‡Œé¢æ˜¯å¦æœ‰ç™»è®°ã€‚
+     * ç„¶åå†æŸ¥çœ‹æµè§ˆå™¨æ”¯æŒçš„è¯­è¨€ï¼Œ
+     * å¦‚æœé€šè¿‡ä¸Šé¢å–å‡ºçš„è¯­è¨€é€‰é¡¹å’Œç³»ç»Ÿæ”¯æŒçš„ä¸åŒ¹é…ï¼Œåˆ™ä½¿ç”¨é»˜è®¤çš„è¯­è¨€ã€‚
      *
-     * @param   string $lang  ĞÎÈçzh-cn|zh-tw|zh-hk|en¡£
+     * @param   string $lang  å½¢å¦‚zh-cn|zh-tw|zh-hk|enã€‚
      * @access  public
      * @return  void
      */
@@ -684,7 +684,7 @@ class router
     }
 
     /**
-     * ·µ»Ø¿Í»§¶ËÊ¹ÓÃµÄÓïÑÔ¡£
+     * è¿”å›å®¢æˆ·ç«¯ä½¿ç”¨çš„è¯­è¨€ã€‚
      * 
      * @access public
      * @return string
@@ -695,11 +695,11 @@ class router
     }
 
     /**
-     * ÉèÖÃ¿Í»§¶ËËùÊ¹ÓÃµÄÖ÷Ìâ¡£Âß¼­Í¬setClientLang();
+     * è®¾ç½®å®¢æˆ·ç«¯æ‰€ä½¿ç”¨çš„ä¸»é¢˜ã€‚é€»è¾‘åŒsetClientLang();
      *
-     * Ö÷Ìâ·ç¸ñËù¶ÔÓ¦µÄÑùÊ½±í¡¢Í¼Æ¬µÈÎÄ¼şÓ¦µ±´æ·ÅÔÚwww/theme/£¬·ÖÄ¿Â¼´æ·Å¡£Ä¿Â¼µÄÃû×Ö¾ÍÊÇ·ç¸ñµÄÃû×Ö¡£
+     * ä¸»é¢˜é£æ ¼æ‰€å¯¹åº”çš„æ ·å¼è¡¨ã€å›¾ç‰‡ç­‰æ–‡ä»¶åº”å½“å­˜æ”¾åœ¨www/theme/ï¼Œåˆ†ç›®å½•å­˜æ”¾ã€‚ç›®å½•çš„åå­—å°±æ˜¯é£æ ¼çš„åå­—ã€‚
      * 
-     * @param   string $theme   Ö÷Ìâ·ç¸ñ¡£
+     * @param   string $theme   ä¸»é¢˜é£æ ¼ã€‚
      * @access  public
      * @return  void
      */
@@ -734,7 +734,7 @@ class router
     }
 
     /**
-     * ·µ»Ø¿Í»§¶ËËùÊ¹ÓÃµÄÖ÷Ìâ¡£
+     * è¿”å›å®¢æˆ·ç«¯æ‰€ä½¿ç”¨çš„ä¸»é¢˜ã€‚
      * 
      * @access public
      * @return string
@@ -745,7 +745,7 @@ class router
     }
 
     /**
-     * ·µ»ØwebµÄ¸ùÄ¿Â¼¡£
+     * è¿”å›webçš„æ ¹ç›®å½•ã€‚
      * 
      * @access public
      * @return string
@@ -755,10 +755,10 @@ class router
         return $this->config->webRoot;
     }
 
-    //-------------------- ½âÎöÇëÇó¡£--------------------//
+    //-------------------- è§£æè¯·æ±‚ã€‚--------------------//
 
     /**
-     * ´¦ÀíÇëÇó£¬·ÖÎªPATH_INFOºÍGETÁ½ÖÖÄ£Ê½¡£
+     * å¤„ç†è¯·æ±‚ï¼Œåˆ†ä¸ºPATH_INFOå’ŒGETä¸¤ç§æ¨¡å¼ã€‚
      * 
      * @access public
      * @return void
@@ -782,7 +782,7 @@ class router
     }
 
     /**
-     * ´ÓÇëÇóÖĞµÃ³öPATH_INFOĞÅÏ¢¡£ 
+     * ä»è¯·æ±‚ä¸­å¾—å‡ºPATH_INFOä¿¡æ¯ã€‚ 
      * 
      * @access public
      * @return void
@@ -816,9 +816,9 @@ class router
     }
 
     /**
-     * ¸¨Öúº¯Êı£º´Óenv»òÕß_SERVER±äÁ¿ÖĞ»ñÈ¡Ä³¸öPATH_INFOµÄ±äÖÖ¡£
+     * è¾…åŠ©å‡½æ•°ï¼šä»envæˆ–è€…_SERVERå˜é‡ä¸­è·å–æŸä¸ªPATH_INFOçš„å˜ç§ã€‚
      * 
-     * @param   string  $varName     Ä¿Ç°Ö§³ÖPATH_INFO
+     * @param   string  $varName     ç›®å‰æ”¯æŒPATH_INFO
      * @access  private
      * @return  string
      */
@@ -830,7 +830,7 @@ class router
     }
 
     /**
-     * ½âÎöÍ¨¹ıGET·½Ê½´«µİ¹ıÀ´µÄ²ÎÊı¡£
+     * è§£æé€šè¿‡GETæ–¹å¼ä¼ é€’è¿‡æ¥çš„å‚æ•°ã€‚
      * 
      * @access private
      * @return void
@@ -853,7 +853,7 @@ class router
     }
     
     /**
-     * ·µ»Øµ±Ç°ÇëÇóµÄURI¡£
+     * è¿”å›å½“å‰è¯·æ±‚çš„URIã€‚
      * 
      * @access public
      * @return string
@@ -869,7 +869,7 @@ class router
     }
 
     /**
-     * ·µ»Øµ±Ç°ÇëÇóµÄviewType¡£
+     * è¿”å›å½“å‰è¯·æ±‚çš„viewTypeã€‚
      * 
      * @access public
      * @return string
@@ -879,14 +879,14 @@ class router
         return $this->viewType;
     }
 
-    //-------------------- Â·ÓÉÏà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- è·¯ç”±ç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
 
     /**
-     * ¼ÓÔØ¹«¹²µÄcommonÄ£¿é¡£
+     * åŠ è½½å…¬å…±çš„commonæ¨¡å—ã€‚
      *
-     * ¸Ã¹«¹²Ä£¿é¿ÉÒÔÀ´Íê³ÉÒ»Ğ©¹«ÓÃµÄÈÎÎñ£¬±ÈÈçÆô¶¯session£¬½øĞĞÓÃ»§È¨ÏŞÑéÖ¤µÈ¡£
-     * ¸Ã·½·¨Ã»ÓĞ×Ô¶¯µ÷ÓÃ£¬Èç¹ûĞèÒª£¬¿ÉÒÔÔÚrouterÎÄ¼şÖĞ×Ô¼º¼ÓÈë¸ÃÂß¼­¡£
-     * µ«ĞèÒª×¢ÒâµÄÊÇ¸Ã·½·¨µ÷ÓÃÓ¦µ±ÔÚlang, config, dbhµÈ¶ÔÏó¼ÓÔØÍê³ÉÖ®ºó¡£
+     * è¯¥å…¬å…±æ¨¡å—å¯ä»¥æ¥å®Œæˆä¸€äº›å…¬ç”¨çš„ä»»åŠ¡ï¼Œæ¯”å¦‚å¯åŠ¨sessionï¼Œè¿›è¡Œç”¨æˆ·æƒé™éªŒè¯ç­‰ã€‚
+     * è¯¥æ–¹æ³•æ²¡æœ‰è‡ªåŠ¨è°ƒç”¨ï¼Œå¦‚æœéœ€è¦ï¼Œå¯ä»¥åœ¨routeræ–‡ä»¶ä¸­è‡ªå·±åŠ å…¥è¯¥é€»è¾‘ã€‚
+     * ä½†éœ€è¦æ³¨æ„çš„æ˜¯è¯¥æ–¹æ³•è°ƒç”¨åº”å½“åœ¨lang, config, dbhç­‰å¯¹è±¡åŠ è½½å®Œæˆä¹‹åã€‚
      *
      * @access public
      * @return object
@@ -909,9 +909,9 @@ class router
     }
 
     /**
-     * ÉèÖÃÒªµ÷ÓÃµÄÄ£¿é¡£
+     * è®¾ç½®è¦è°ƒç”¨çš„æ¨¡å—ã€‚
      * 
-     * @param   string $moduleName  Ä£¿éÃû×Ö¡£
+     * @param   string $moduleName  æ¨¡å—åå­—ã€‚
      * @access  public
      * @return  void
      */
@@ -921,9 +921,9 @@ class router
     }
 
     /**
-     * ÉèÖÃÒª¼ÓÔØµÄ¿ØÖÆÆ÷ÎÄ¼ş¡£
+     * è®¾ç½®è¦åŠ è½½çš„æ§åˆ¶å™¨æ–‡ä»¶ã€‚
      * 
-     * @param   bool    $exitIfNone     Èç¹ûÃ»ÓĞ·¢ÏÖ¿ØÖÆÆ÷ÎÄ¼ş£¬ÊÇ·ñÍË³ö¡£Ä¬ÈÏÖµtrue¡£
+     * @param   bool    $exitIfNone     å¦‚æœæ²¡æœ‰å‘ç°æ§åˆ¶å™¨æ–‡ä»¶ï¼Œæ˜¯å¦é€€å‡ºã€‚é»˜è®¤å€¼trueã€‚
      * @access  public
      * @return  bool
      */
@@ -939,9 +939,9 @@ class router
     }
     
     /**
-     * ÉèÖÃÒªµ÷ÓÃµÄ·½·¨¡£
+     * è®¾ç½®è¦è°ƒç”¨çš„æ–¹æ³•ã€‚
      * 
-     * @param string $methodName    µ÷ÓÃµÄ·½·¨Ãû¡£ 
+     * @param string $methodName    è°ƒç”¨çš„æ–¹æ³•åã€‚ 
      * @access public
      * @return void
      */
@@ -950,21 +950,21 @@ class router
         $this->methodName = strtolower($methodName);
     }
 
-    /* »ñµÃÄ³Ò»¸öÄ£¿éµÄ¸ùÄ¿Â¼¡£*/
+    /* è·å¾—æŸä¸€ä¸ªæ¨¡å—çš„æ ¹ç›®å½•ã€‚*/
     public function getModulePath($moduleName = '')
     {
         if($moduleName == '') $moduleName = $this->moduleName;
         return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix;
     }
 
-    /* »ñµÃÄ³Ò»¸öÄ£¿é£¬Ä³ÖÖÀ©Õ¹µÄÄ¿Â¼¡£ext¿ÉÑ¡Öµ£ºcontrol, model, view, lang, config¡£*/
+    /* è·å¾—æŸä¸€ä¸ªæ¨¡å—ï¼ŒæŸç§æ‰©å±•çš„ç›®å½•ã€‚extå¯é€‰å€¼ï¼šcontrol, model, view, lang, configã€‚*/
     public function getModuleExtPath($moduleName, $ext)
     {
         return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix . 'opt' . $this->pathFix . $ext . $this->pathFix;
     }
 
     /**
-     * ÉèÖÃµ±Ç°µ÷ÓÃ·½·¨¶ÔÓ¦µÄÀ©Õ¹ÎÄ¼ş¡£
+     * è®¾ç½®å½“å‰è°ƒç”¨æ–¹æ³•å¯¹åº”çš„æ‰©å±•æ–‡ä»¶ã€‚
      * 
      * @access  public
      * @return  bool
@@ -977,7 +977,7 @@ class router
     }
 
     /**
-     * ¸ù¾İPATH_INFOĞÅÏ¢ÉèÖÃÂ·ÓÉ¡£
+     * æ ¹æ®PATH_INFOä¿¡æ¯è®¾ç½®è·¯ç”±ã€‚
      * 
      * @access public
      * @return void
@@ -986,7 +986,7 @@ class router
     {
         if(!empty($this->URI))
         {
-            /* URLÖĞº¬ÓĞ²ÎÊıĞÅÏ¢¡£*/
+            /* URLä¸­å«æœ‰å‚æ•°ä¿¡æ¯ã€‚*/
             if(strpos($this->URI, $this->config->requestFix) !== false)
             {
                 $items = explode($this->config->requestFix, $this->URI);
@@ -996,19 +996,19 @@ class router
             else
             {
                 $this->setModuleName($this->URI);
-                $this->setMethodName($this->config->default->method); // È¡Ä¬ÈÏµÄ·½·¨¡£
+                $this->setMethodName($this->config->default->method); // å–é»˜è®¤çš„æ–¹æ³•ã€‚
             }
         }
         else
         {    
-            $this->setModuleName($this->config->default->module);   // È¡Ä¬ÈÏµÄÄ£¿é¡£
-            $this->setMethodName($this->config->default->method);   // È¡Ä¬ÈÏµÄ·½·¨¡£
+            $this->setModuleName($this->config->default->module);   // å–é»˜è®¤çš„æ¨¡å—ã€‚
+            $this->setMethodName($this->config->default->method);   // å–é»˜è®¤çš„æ–¹æ³•ã€‚
         }
         $this->setControlFile();
     }
 
     /**
-     * Í¨¹ıGET±äÁ¿À´ÉèÖÃÂ·ÓÉĞÅÏ¢¡£
+     * é€šè¿‡GETå˜é‡æ¥è®¾ç½®è·¯ç”±ä¿¡æ¯ã€‚
      * 
      * @access public
      * @return void
@@ -1023,7 +1023,7 @@ class router
     }
 
     /**
-     * ¼ÓÔØÄ£¿é¡£
+     * åŠ è½½æ¨¡å—ã€‚
      * 
      * @access public
      * @return void
@@ -1033,19 +1033,19 @@ class router
         $moduleName = $this->moduleName;
         $methodName = $this->methodName;
 
-        /* ÉèÖÃÒª¼ÓÔØµÄÎÄ¼ş¡£*/
+        /* è®¾ç½®è¦åŠ è½½çš„æ–‡ä»¶ã€‚*/
         $file2Included = $this->setActionExtFile() ? $this->extActionFile : $this->controlFile;
         chdir(dirname($file2Included));
         include $file2Included;
 
-        /* ÉèÖÃÒªµ÷ÓÃµÄÀàµÄÃû³Æ¡£*/
+        /* è®¾ç½®è¦è°ƒç”¨çš„ç±»çš„åç§°ã€‚*/
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
         if(!class_exists($className)) $this->error("the control $className not found", __FILE__, __LINE__, $exit = true);
 
         $module = new $className();
         if(!method_exists($module, $methodName)) $this->error("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
 
-        /* »ñÈ¡·½·¨µÄ²ÎÊı¶¨Òå¡£*/
+        /* è·å–æ–¹æ³•çš„å‚æ•°å®šä¹‰ã€‚*/
         $defaultParams = array();
         $methodReflect = new reflectionMethod($moduleName, $methodName);
         foreach($methodReflect->getParameters() as $param)
@@ -1055,7 +1055,7 @@ class router
             $defaultParams[$name] = $default;
         }
 
-        /* ÉèÖÃ²ÎÊı¡£*/
+        /* è®¾ç½®å‚æ•°ã€‚*/
         if($this->config->requestType == 'PATH_INFO')
         {
             $this->setParamsByPathInfo($defaultParams);
@@ -1065,27 +1065,27 @@ class router
             $this->setParamsByGET($defaultParams);
         }
 
-        /* µ÷ÓÃÏàÓ¦µÄ·½·¨¡£*/
+        /* è°ƒç”¨ç›¸åº”çš„æ–¹æ³•ã€‚*/
         call_user_func_array(array(&$module, $methodName), $this->params);
         return $module;
     }
 
     /**
-     * Í¨¹ıPATH_INFOĞÅÏ¢À´ÉèÖÃĞèÒª´«µİ¸øcontrolÀà·½·¨µÄ²ÎÊı¡£
+     * é€šè¿‡PATH_INFOä¿¡æ¯æ¥è®¾ç½®éœ€è¦ä¼ é€’ç»™controlç±»æ–¹æ³•çš„å‚æ•°ã€‚
      * 
-     * @param   array $defaultParams    ·½·¨¶¨ÒåÖĞÄ¬ÈÏÖµÁĞ±í
+     * @param   array $defaultParams    æ–¹æ³•å®šä¹‰ä¸­é»˜è®¤å€¼åˆ—è¡¨
      * @access  public
      * @return  void
      */
     public function setParamsByPathInfo($defaultParams = array())
     {
-        /* ½«ÇëÇó´®°´ÕÕ·Ö¸î·û·Ö¿ª¡£*/
+        /* å°†è¯·æ±‚ä¸²æŒ‰ç…§åˆ†å‰²ç¬¦åˆ†å¼€ã€‚*/
         $items     = explode($this->config->requestFix, $this->URI);
         $itemCount = count($items);
 
         /**
-         * itemsÇ°ÃæÁ½¸öÔªËØ·Ö±ğÎªmoduleNameºÍmethodName£¬Òò´Ë´ÓµÚ¶ş¸öÔªËØ¿ªÊ¼¡£
-         * ·Ö±ğÎªcleanÄ£Ê½ºÍfullÄ£Ê½¡£
+         * itemså‰é¢ä¸¤ä¸ªå…ƒç´ åˆ†åˆ«ä¸ºmoduleNameå’ŒmethodNameï¼Œå› æ­¤ä»ç¬¬äºŒä¸ªå…ƒç´ å¼€å§‹ã€‚
+         * åˆ†åˆ«ä¸ºcleanæ¨¡å¼å’Œfullæ¨¡å¼ã€‚
          */ 
 
         $params = array();
@@ -1111,9 +1111,9 @@ class router
     }
 
     /**
-     * Í¨¹ıGET±äÁ¿ÉèÖÃĞèÒª´«µİ¸øcontrolÀà·ÃÎÊµÄ²ÎÊı¡£
+     * é€šè¿‡GETå˜é‡è®¾ç½®éœ€è¦ä¼ é€’ç»™controlç±»è®¿é—®çš„å‚æ•°ã€‚
      * 
-     * @param   array   $defaultParams  ·½·¨¶¨ÒåÖĞÄ¬ÈÏÖµÁĞ±í¡£
+     * @param   array   $defaultParams  æ–¹æ³•å®šä¹‰ä¸­é»˜è®¤å€¼åˆ—è¡¨ã€‚
      * @access  public
      * @return  void
      */
@@ -1126,16 +1126,16 @@ class router
     }
 
     /**
-     * ½«·½·¨¶¨ÒåÖĞµÄÄ¬ÈÏÖµÓëÓÃ»§ÇëÇóÖĞ´«µİµÄÖµºÏ²¢ÆğÀ´¡£
+     * å°†æ–¹æ³•å®šä¹‰ä¸­çš„é»˜è®¤å€¼ä¸ç”¨æˆ·è¯·æ±‚ä¸­ä¼ é€’çš„å€¼åˆå¹¶èµ·æ¥ã€‚
      *
-     * @param   array $defaultParams     ·½·¨¶¨ÒåÖĞµÄ²ÎÊıÄ¬ÈÏÖµÁĞ±í¡£
-     * @param   array $passedParams      ÓÃ»§ÇëÇóÖĞ´«µİµÄ²ÎÊıÁĞ±í¡£
+     * @param   array $defaultParams     æ–¹æ³•å®šä¹‰ä¸­çš„å‚æ•°é»˜è®¤å€¼åˆ—è¡¨ã€‚
+     * @param   array $passedParams      ç”¨æˆ·è¯·æ±‚ä¸­ä¼ é€’çš„å‚æ•°åˆ—è¡¨ã€‚
      * @access  private
      * @return  array
      */
     private function mergeParams($defaultParams, $passedParams)
     {
-        /* Èç¹û²ÎÊı´«µİÊÇ·ÇÑÏ¸ñÄ£Ê½£¬ÈÏÎªpassedParamsµÄË³ĞòºÍdefaultParamsÊÇÒ»ÖÂµÄ¡£*/
+        /* å¦‚æœå‚æ•°ä¼ é€’æ˜¯éä¸¥æ ¼æ¨¡å¼ï¼Œè®¤ä¸ºpassedParamsçš„é¡ºåºå’ŒdefaultParamsæ˜¯ä¸€è‡´çš„ã€‚*/
         if(!isset($this->config->strictParams) or $this->config->strictParams == false) 
         {
             $passedParams = array_values($passedParams);
@@ -1171,7 +1171,7 @@ class router
     }
  
     /**
-     * ·µ»Øµ±Ç°µ÷ÓÃµÄÄ£¿éÃû³Æ¡£
+     * è¿”å›å½“å‰è°ƒç”¨çš„æ¨¡å—åç§°ã€‚
      * 
      * @access public
      * @return string
@@ -1182,7 +1182,7 @@ class router
     }
 
     /**
-     * ·µ»ØcontrolÎÄ¼şÂ·¾¶¡£
+     * è¿”å›controlæ–‡ä»¶è·¯å¾„ã€‚
      * 
      * @access public
      * @return string
@@ -1193,7 +1193,7 @@ class router
     }
 
     /**
-     * ·µ»Øµ±Ç°µ÷ÓÃµÄcontrolµÄ·½·¨¡£
+     * è¿”å›å½“å‰è°ƒç”¨çš„controlçš„æ–¹æ³•ã€‚
      * 
      * @access public
      * @return string
@@ -1204,7 +1204,7 @@ class router
     }
 
     /**
-     * ·µ»Øµ±Ç°´«µİµÄ²ÎÊıÃû¡£
+     * è¿”å›å½“å‰ä¼ é€’çš„å‚æ•°åã€‚
      * 
      * @access public
      * @return string
@@ -1214,21 +1214,21 @@ class router
         return $this->params;
     }
 
-    //-------------------- ¹¤¾ßÀà·½·¨¡£-------------------//
+    //-------------------- å·¥å…·ç±»æ–¹æ³•ã€‚-------------------//
 
     /**
-     * ´íÎó´¦Àíº¯Êı¡£
+     * é”™è¯¯å¤„ç†å‡½æ•°ã€‚
      * 
-     * @param string    $message    ´íÎóĞÅÏ¢¡£
-     * @param string    $file       ·¢Éú´íÎóµÄÎÄ¼şÃû¡£
-     * @param int       $line       ·¢Éú´íÎóµÄĞĞºÅ¡£
-     * @param bool      $exit       ÊÇ·ñÖĞÖ¹³ÌĞò¡£
+     * @param string    $message    é”™è¯¯ä¿¡æ¯ã€‚
+     * @param string    $file       å‘ç”Ÿé”™è¯¯çš„æ–‡ä»¶åã€‚
+     * @param int       $line       å‘ç”Ÿé”™è¯¯çš„è¡Œå·ã€‚
+     * @param bool      $exit       æ˜¯å¦ä¸­æ­¢ç¨‹åºã€‚
      * @access public
      * @return void
      */
     public function error($message, $file, $line, $exit = false)
     {
-        /* ¼ÇÂ¼´íÎóĞÅÏ¢¡£*/
+        /* è®°å½•é”™è¯¯ä¿¡æ¯ã€‚*/
         $log = "ERROR: $message in $file on line $line";
         if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
         $trace = debug_backtrace();
@@ -1237,7 +1237,7 @@ class router
         $log .= ", last called by $file on $line through function $function.";
         error_log($log);
 
-        /* Èç¹ûĞèÒªÖÕÖ¹³ÌĞò£¬ÔòÏÔÊ¾µ½ÖÕ¶ËÓÃ»§µÄÆÁÄ»ÉÏ¡£*/
+        /* å¦‚æœéœ€è¦ç»ˆæ­¢ç¨‹åºï¼Œåˆ™æ˜¾ç¤ºåˆ°ç»ˆç«¯ç”¨æˆ·çš„å±å¹•ä¸Šã€‚*/
         if($exit)
         {
             if($this->config->debug) die("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body>$log</body></html>");
@@ -1246,27 +1246,27 @@ class router
     }
 
     /**
-     * ¼ÓÔØÄ³Ò»¸öÀàÎÄ¼ş¡£
+     * åŠ è½½æŸä¸€ä¸ªç±»æ–‡ä»¶ã€‚
      * 
-     * ¸Ã·½·¨»áÊ×ÏÈ³¢ÊÔ´ÓappLibRootÏÂÃæ²éÕÒ£¬È»ºóÔÙµ½coreLibRootÏÂÃæ²éÕÒ¡£
+     * è¯¥æ–¹æ³•ä¼šé¦–å…ˆå°è¯•ä»appLibRootä¸‹é¢æŸ¥æ‰¾ï¼Œç„¶åå†åˆ°coreLibRootä¸‹é¢æŸ¥æ‰¾ã€‚
      *
-     * @param mixed $className  ÀàÃû¡£ 
-     * @param mixed $static     ÊÇ·ñÎª¾²Ì¬Àà¡£
+     * @param mixed $className  ç±»åã€‚ 
+     * @param mixed $static     æ˜¯å¦ä¸ºé™æ€ç±»ã€‚
      * @access public
-     * @return object           ÒÔÀàÃûÎªÃûµÄ¶ÔÏó¡£
+     * @return object           ä»¥ç±»åä¸ºåçš„å¯¹è±¡ã€‚
      */
     public function loadClass($className, $static = false)
     {
         $className = strtolower($className);
 
-        /* ÏÈÊÔ×Å¼ÓÔØappLibRootÏÂÃæµÄÀàÎÄ¼ş¡£*/
+        /* å…ˆè¯•ç€åŠ è½½appLibRootä¸‹é¢çš„ç±»æ–‡ä»¶ã€‚*/
         $classFile = $this->appLibRoot . $className;
         if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
         $classFile .= '.class.php';
 
         if(!file_exists($classFile)) 
         {
-            /* ÔÙÊÔ×Å¼ÓÔØcoreLibRootÏÂÃæµÄÀàÎÄ¼ş¡£*/
+            /* å†è¯•ç€åŠ è½½coreLibRootä¸‹é¢çš„ç±»æ–‡ä»¶ã€‚*/
             $classFile = $this->coreLibRoot . $className;
             if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
             $classFile .= '.class.php';
@@ -1275,10 +1275,10 @@ class router
 
         helper::import($classFile);
 
-        /* Èç¹ûÊÇ¾²Ì¬ÀàµÄ»°£¬ÎŞĞèÊµÀı»¯£¬Ö±½ÓÍË³ö¡£*/
+        /* å¦‚æœæ˜¯é™æ€ç±»çš„è¯ï¼Œæ— éœ€å®ä¾‹åŒ–ï¼Œç›´æ¥é€€å‡ºã€‚*/
         if($static) return;
 
-        /* ÊµÀı»¯£¬Éú³É¶ÔÏó¡£*/
+        /* å®ä¾‹åŒ–ï¼Œç”Ÿæˆå¯¹è±¡ã€‚*/
         global $$className;
         if(!class_exists($className)) $this->error("the class $className not found in $classFile", __FILE__, __LINE__, $exit = true);
         if(!is_object($$className)) $$className = new $className();
@@ -1286,18 +1286,18 @@ class router
     }
 
     /**
-     * ¼ÓÔØÅäÖÃÎÄ¼ş£¬½«Æä×ª»»Îª¶ÔÏó£¬²¢·µ»Ø×÷ÎªÈ«¾ÖµÄÅäÖÃ¶ÔÏó¡£
+     * åŠ è½½é…ç½®æ–‡ä»¶ï¼Œå°†å…¶è½¬æ¢ä¸ºå¯¹è±¡ï¼Œå¹¶è¿”å›ä½œä¸ºå…¨å±€çš„é…ç½®å¯¹è±¡ã€‚
      * 
-     * Èç¹ûÄ£¿éµÄÃû×ÖÎªcommon£¬Ôò´ÓÅäÖÃµÄ¸ùÄ¿Â¼²éÕÒ£¬ÆäËûµÄÄ£¿éÔò´ÓÄ£¿éÂ·¾¶ÏÂÃæ²éÕÒ¡£
+     * å¦‚æœæ¨¡å—çš„åå­—ä¸ºcommonï¼Œåˆ™ä»é…ç½®çš„æ ¹ç›®å½•æŸ¥æ‰¾ï¼Œå…¶ä»–çš„æ¨¡å—åˆ™ä»æ¨¡å—è·¯å¾„ä¸‹é¢æŸ¥æ‰¾ã€‚
      *
-     * @param mixed $moduleName     Ä£¿éµÄÃû×Ö¡£
-     * @param bool  $exitIfNone     Èç¹ûÖ÷ÅäÖÃÎÄ¼ş²»´æÔÚ£¬ÊÇ·ñÍË³ö¡£
+     * @param mixed $moduleName     æ¨¡å—çš„åå­—ã€‚
+     * @param bool  $exitIfNone     å¦‚æœä¸»é…ç½®æ–‡ä»¶ä¸å­˜åœ¨ï¼Œæ˜¯å¦é€€å‡ºã€‚
      * @access public
      * @return object
      */
     public function loadConfig($moduleName, $exitIfNone = true)
     {
-        /* ÉèÖÃÄ£¿é¶ÔÓ¦µÄÖ÷ÅäÖÃÎÄ¼şºÍÀ©Õ¹ÅäÖÃÎÄ¼ş¡£*/
+        /* è®¾ç½®æ¨¡å—å¯¹åº”çš„ä¸»é…ç½®æ–‡ä»¶å’Œæ‰©å±•é…ç½®æ–‡ä»¶ã€‚*/
         if($moduleName == 'common')
         {
             $mainConfigFile = $this->configRoot . 'config.php';
@@ -1310,11 +1310,11 @@ class router
             $extConfigFiles = helper::ls($extConfigPath, '.php');
         }
 
-        /* Ö÷ÅäÖÃÎÄ¼ş²»´æÔÚ¡£*/
+        /* ä¸»é…ç½®æ–‡ä»¶ä¸å­˜åœ¨ã€‚*/
         if(!file_exists($mainConfigFile))
         {
             if($exitIfNone) self::error("config file $mainConfigFile not found", __FILE__, __LINE__, true);
-            if(empty($extConfigFiles)) return;  // Ã»ÓĞÀ©Õ¹ÅäÖÃÎÄ¼ş£¬ÍË³ö¡£
+            if(empty($extConfigFiles)) return;  // æ²¡æœ‰æ‰©å±•é…ç½®æ–‡ä»¶ï¼Œé€€å‡ºã€‚
             $configFiles = $extConfigFiles;
         }
         else
@@ -1336,7 +1336,7 @@ class router
     }
 
     /**
-     * ¼ÓÔØÓïÑÔÎÄ¼ş£¬½«Æä×ª»»Îª¶ÔÏó£¬²¢·µ»Ø×÷ÎªÈ«¾ÖµÄÓïÑÔ¶ÔÏó¡£
+     * åŠ è½½è¯­è¨€æ–‡ä»¶ï¼Œå°†å…¶è½¬æ¢ä¸ºå¯¹è±¡ï¼Œå¹¶è¿”å›ä½œä¸ºå…¨å±€çš„è¯­è¨€å¯¹è±¡ã€‚
      * 
      * @param mixed $moduleName 
      * @access public
@@ -1348,10 +1348,10 @@ class router
         $extLangPath  = $this->getModuleExtPath($moduleName, 'lang');
         $extLangFiles = helper::ls($extLangPath . $this->clientLang, '.php');
 
-        /* Ö÷ÅäÖÃÎÄ¼ş²»´æÔÚ¡£*/
+        /* ä¸»é…ç½®æ–‡ä»¶ä¸å­˜åœ¨ã€‚*/
         if(!file_exists($mainLangFile))
         {
-            if(empty($extLangFiles)) return;  // Ã»ÓĞÀ©Õ¹ÅäÖÃÎÄ¼ş£¬ÍË³ö¡£
+            if(empty($extLangFiles)) return;  // æ²¡æœ‰æ‰©å±•é…ç½®æ–‡ä»¶ï¼Œé€€å‡ºã€‚
             $langFiles = $extLangFiles;
         }
         else
@@ -1375,7 +1375,7 @@ class router
     }
 
     /**
-     * Á¬½Óµ½Êı¾İ¿â£¬·µ»Ø$dbh¶ÔÏó¡£
+     * è¿æ¥åˆ°æ•°æ®åº“ï¼Œè¿”å›$dbhå¯¹è±¡ã€‚
      * 
      * @access public
      * @return object
@@ -1406,22 +1406,22 @@ class router
 }
 
 /**
- * ÅäÖÃÀà¡£
+ * é…ç½®ç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class config
 { 
     /**
-     * ÉèÖÃ¶ÔÏóµÄÖµ¡£
+     * è®¾ç½®å¯¹è±¡çš„å€¼ã€‚
      * 
      * <code>
      * <?php
      * $config->set('db.user', 'wwccss'); 
      * ?>
      * </code>
-     * @param   string  $key    ÒªÉèÖÃµÄÊôĞÔ£¬¿ÉÒÔÊÇfather.childµÄĞÎÊ½¡£
-     * @param   mixed   $value  ÒªÉèÖÃµÄÖµ¡£
+     * @param   string  $key    è¦è®¾ç½®çš„å±æ€§ï¼Œå¯ä»¥æ˜¯father.childçš„å½¢å¼ã€‚
+     * @param   mixed   $value  è¦è®¾ç½®çš„å€¼ã€‚
      * @access  public
      * @return  void
      */
@@ -1432,22 +1432,22 @@ class config
 }
 
 /**
- * ÓïÑÔÀà¡£
+ * è¯­è¨€ç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class language 
 {
     /**
-     * ÉèÖÃ¶ÔÏóµÄÖµ¡£
+     * è®¾ç½®å¯¹è±¡çš„å€¼ã€‚
      * 
      * <code>
      * <?php
-     * $lang->set('version', '1.0°æ±¾'); 
+     * $lang->set('version', '1.0ç‰ˆæœ¬'); 
      * ?>
      * </code>
-     * @param   string  $key    ÒªÉèÖÃµÄÊôĞÔ£¬¿ÉÒÔÊÇfather.childµÄĞÎÊ½¡£
-     * @param   mixed   $value  ÒªÉèÖÃµÄÖµ¡£
+     * @param   string  $key    è¦è®¾ç½®çš„å±æ€§ï¼Œå¯ä»¥æ˜¯father.childçš„å½¢å¼ã€‚
+     * @param   mixed   $value  è¦è®¾ç½®çš„å€¼ã€‚
      * @access  public
      * @return  void
      */
@@ -1457,7 +1457,7 @@ class language
     }
 
     /**
-     * ´òÓ¡Ä³Ò»¸ö¶ÔÏóµÄÊôĞÔ¡£
+     * æ‰“å°æŸä¸€ä¸ªå¯¹è±¡çš„å±æ€§ã€‚
      */
     public function show($obj, $key)
     {
@@ -1467,19 +1467,19 @@ class language
 }
 
 /**
- * ³¬È«¾Ö±äÁ¿Àà¡£
+ * è¶…å…¨å±€å˜é‡ç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class super
 {
-    /* ¹¹Ôìº¯Êı¡£*/
+    /* æ„é€ å‡½æ•°ã€‚*/
     public function __construct($scope)
     {
         $this->scope = $scope;
     }
 
-    /* ÉèÖÃÊôĞÔ¡£*/
+    /* è®¾ç½®å±æ€§ã€‚*/
     public function set($key, $value)
     {
         if($this->scope == 'post')
@@ -1512,7 +1512,7 @@ class super
         }
     }
 
-    /* Ä§Êõ·½·¨¡£*/
+    /* é­”æœ¯æ–¹æ³•ã€‚*/
     public function __get($key)
     {
         if($this->scope == 'post')

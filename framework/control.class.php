@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
@@ -23,14 +23,14 @@
  */
 
 /**
- * ¿ØÖÆÆ÷»ùÀà¡£
+ * æ§åˆ¶å™¨åŸºç±»ã€‚
  * 
  * @package ZenTaoPHP
  */
 class control
 {
     /**
-     * È«¾ÖµÄ$app¶ÔÏó¡£
+     * å…¨å±€çš„$appå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -38,7 +38,7 @@ class control
     protected $app;
 
     /**
-     * È«¾ÖµÄ$config¶ÔÏó¡£ 
+     * å…¨å±€çš„$configå¯¹è±¡ã€‚ 
      * 
      * @var object
      * @access protected
@@ -46,7 +46,7 @@ class control
     protected $config;
 
     /**
-     * È«¾ÖµÄ$lang¶ÔÏó¡£
+     * å…¨å±€çš„$langå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -54,7 +54,7 @@ class control
     protected $lang;
 
     /**
-     * È«¾ÖµÄ$dbh£¨Êı¾İ¿â·ÃÎÊ¾ä±ú£©¶ÔÏó¡£
+     * å…¨å±€çš„$dbhï¼ˆæ•°æ®åº“è®¿é—®å¥æŸ„ï¼‰å¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -62,7 +62,7 @@ class control
     protected $dbh;
 
     /**
-     * dao¶ÔÏó¡£
+     * daoå¯¹è±¡ã€‚
      * 
      * @var object
      * @access protected
@@ -70,7 +70,7 @@ class control
     public $dao;
 
     /**
-     * POST¶ÔÏó¡£
+     * POSTå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -78,7 +78,7 @@ class control
     public $post;
 
     /**
-     * get¶ÔÏó¡£
+     * getå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -86,7 +86,7 @@ class control
     public $get;
 
     /**
-     * session¶ÔÏó¡£
+     * sessionå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -94,7 +94,7 @@ class control
     public $session;
 
     /**
-     * server¶ÔÏó¡£
+     * serverå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -102,7 +102,7 @@ class control
     public $server;
 
     /**
-     * cookie¶ÔÏó¡£
+     * cookieå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -110,7 +110,7 @@ class control
     public $cookie;
 
     /**
-     * global¶ÔÏó¡£
+     * globalå¯¹è±¡ã€‚
      * 
      * @var ojbect
      * @access public
@@ -118,7 +118,7 @@ class control
     public $global;
 
     /**
-     * ËùÊôÄ£¿éµÄÃû×Ö¡£
+     * æ‰€å±æ¨¡å—çš„åå­—ã€‚
      * 
      * @var string
      * @access protected
@@ -126,7 +126,7 @@ class control
     protected $moduleName;
 
     /**
-     * ¼ÇÂ¼¸³Öµµ½viewµÄËùÓĞ±äÁ¿¡£
+     * è®°å½•èµ‹å€¼åˆ°viewçš„æ‰€æœ‰å˜é‡ã€‚
      * 
      * @var object
      * @access public
@@ -134,7 +134,7 @@ class control
     public $view; 
 
     /**
-     * ÊÓÍ¼ÀàĞÍ
+     * è§†å›¾ç±»å‹
      * 
      * @var string
      * @access private
@@ -142,7 +142,7 @@ class control
     private $viewType;
 
     /**
-     * ÒªÊä³öµÄÄÚÈİ¡£
+     * è¦è¾“å‡ºçš„å†…å®¹ã€‚
      * 
      * @var string
      * @access private
@@ -150,7 +150,7 @@ class control
     private $output;
 
     /**
-     * Â·¾¶·Ö¸ô·û¡£
+     * è·¯å¾„åˆ†éš”ç¬¦ã€‚
      * 
      * @var string
      * @access protected
@@ -158,18 +158,18 @@ class control
     protected $pathFix;
 
     /**
-     * ¹¹Ôìº¯Êı£º
+     * æ„é€ å‡½æ•°ï¼š
      *
-     * 1. ÒıÓÃÈ«¾Ö¶ÔÏó£¬Ê¹Ö®¿ÉÒÔÍ¨¹ı³ÉÔ±±äÁ¿·ÃÎÊ¡£
-     * 2. ÉèÖÃÄ£¿éÏàÓ¦µÄÂ·¾¶ĞÅÏ¢£¬²¢¼ÓÔØ¶ÔÓ¦µÄmodelÎÄ¼ş¡£
-     * 3. ×Ô¶¯½«$langºÍ$config¸³Öµµ½Ä£°å¡£
+     * 1. å¼•ç”¨å…¨å±€å¯¹è±¡ï¼Œä½¿ä¹‹å¯ä»¥é€šè¿‡æˆå‘˜å˜é‡è®¿é—®ã€‚
+     * 2. è®¾ç½®æ¨¡å—ç›¸åº”çš„è·¯å¾„ä¿¡æ¯ï¼Œå¹¶åŠ è½½å¯¹åº”çš„modelæ–‡ä»¶ã€‚
+     * 3. è‡ªåŠ¨å°†$langå’Œ$configèµ‹å€¼åˆ°æ¨¡æ¿ã€‚
      * 
      * @access public
      * @return void
      */
     public function __construct($moduleName = '', $methodName = '')
     {
-        /* ÒıÓÃÈ«¾Ö¶ÔÏó£¬²¢¸³Öµ¡£*/
+        /* å¼•ç”¨å…¨å±€å¯¹è±¡ï¼Œå¹¶èµ‹å€¼ã€‚*/
         global $app, $config, $lang, $dbh;
         $this->app        = $app;
         $this->config     = $config;
@@ -181,10 +181,10 @@ class control
         $this->setModuleName($moduleName);
         $this->setMethodName($methodName);
 
-        /* ×Ô¶¯¼ÓÔØµ±Ç°Ä£¿éµÄmodelÎÄ¼ş¡£*/
+        /* è‡ªåŠ¨åŠ è½½å½“å‰æ¨¡å—çš„modelæ–‡ä»¶ã€‚*/
         $this->loadModel();
 
-        /* ×Ô¶¯½«$app, $configºÍ$lang¸³Öµµ½Ä£°åÖĞ¡£*/
+        /* è‡ªåŠ¨å°†$app, $configå’Œ$langèµ‹å€¼åˆ°æ¨¡æ¿ä¸­ã€‚*/
         $this->assign('app',    $app);
         $this->assign('lang',   $lang);
         $this->assign('config', $config);
@@ -192,30 +192,30 @@ class control
         if(isset($config->super2OBJ) and $config->super2OBJ) $this->setSuperVars();
     }
 
-    //-------------------- modelÏà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- modelç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
     //
-    /* ÉèÖÃÄ£¿éÃû¡£*/
+    /* è®¾ç½®æ¨¡å—åã€‚*/
     private function setModuleName($moduleName = '')
     {
         $this->moduleName = $moduleName ? strtolower($moduleName) : $this->app->getModuleName();
     }
 
-    /* ÉèÖÃ·½·¨Ãû¡£*/
+    /* è®¾ç½®æ–¹æ³•åã€‚*/
     private function setMethodName($methodName = '')
     {
         $this->methodName = $methodName ? strtolower($methodName) : $this->app->getMethodName();
     }
 
     /**
-     * ¼ÓÔØÄ³Ò»¸öÄ£¿éµÄmodelÎÄ¼ş¡£
+     * åŠ è½½æŸä¸€ä¸ªæ¨¡å—çš„modelæ–‡ä»¶ã€‚
      * 
-     * @param   string  $moduleName     Ä£¿éÃû×Ö£¬Èç¹ûÎª¿Õ£¬ÔòÈ¡µ±Ç°µÄÄ£¿éÃû×÷ÎªmodelÃû¡£
+     * @param   string  $moduleName     æ¨¡å—åå­—ï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™å–å½“å‰çš„æ¨¡å—åä½œä¸ºmodelåã€‚
      * @access  public
      * @return  void
      */
     public function loadModel($moduleName = '')
     {
-        /* Èç¹ûÃ»ÓĞÖ¸¶¨moduleÃû£¬ÔòÈ¡µ±Ç°¼ÓÔØµÄÄ£¿éµÄÃû×÷ÎªmodelÃû¡£*/
+        /* å¦‚æœæ²¡æœ‰æŒ‡å®šmoduleåï¼Œåˆ™å–å½“å‰åŠ è½½çš„æ¨¡å—çš„åä½œä¸ºmodelåã€‚*/
         if(empty($moduleName)) $moduleName = $this->moduleName;
         $modelFile = helper::setModelFile($moduleName);
         if(!file_exists($modelFile)) return false;
@@ -230,7 +230,7 @@ class control
     }
 
     /**
-     * ÉèÖÃ³¬È«¾Ö±äÁ¿¡£
+     * è®¾ç½®è¶…å…¨å±€å˜é‡ã€‚
      * 
      * @access protected
      * @return void
@@ -245,16 +245,16 @@ class control
         $this->global  = $this->app->global;
     }
 
-    //-------------------- ¼ÓÔØviewÏà¹ØµÄ·½·¨¡£--------------------//
+    //-------------------- åŠ è½½viewç›¸å…³çš„æ–¹æ³•ã€‚--------------------//
     /**
-     * ÉèÖÃÊÓÍ¼ÎÄ¼ş¡£
+     * è®¾ç½®è§†å›¾æ–‡ä»¶ã€‚
      * 
-     * Ä³Ò»¸ömoduleµÄ¿ØÖÆÆ÷¿ÉÒÔ¼ÓÔØÁíÍâÒ»¸ömoduleµÄÊÓÍ¼ÎÄ¼ş¡£
+     * æŸä¸€ä¸ªmoduleçš„æ§åˆ¶å™¨å¯ä»¥åŠ è½½å¦å¤–ä¸€ä¸ªmoduleçš„è§†å›¾æ–‡ä»¶ã€‚
      *
-     * @param string $moduleName    Ä£¿éÃû¡£
-     * @param string $methodName    ·½·¨Ãû¡£
+     * @param string $moduleName    æ¨¡å—åã€‚
+     * @param string $methodName    æ–¹æ³•åã€‚
      * @access private
-     * @return string               ¶ÔÓ¦µÄÊÓÍ¼ÎÄ¼ş¡£
+     * @return string               å¯¹åº”çš„è§†å›¾æ–‡ä»¶ã€‚
      */
     private function setViewFile($moduleName, $methodName)
     {
@@ -264,7 +264,7 @@ class control
         $modulePath  = $this->app->getModulePath($moduleName);
         $viewExtPath = $this->app->getModuleExtPath($moduleName, 'view');
 
-        /* Ö÷ÊÓÍ¼ÎÄ¼ş£¬À©Õ¹ÊÓÍ¼ÎÄ¼şºÍÀ©Õ¹¹³×ÓÎÄ¼ş¡£*/
+        /* ä¸»è§†å›¾æ–‡ä»¶ï¼Œæ‰©å±•è§†å›¾æ–‡ä»¶å’Œæ‰©å±•é’©å­æ–‡ä»¶ã€‚*/
         $mainViewFile = $modulePath . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
         $extViewFile  = $viewExtPath . $methodName . ".{$this->viewType}.php";
         $extHookFile  = $viewExtPath . $methodName . ".{$this->viewType}.hook.php";
@@ -276,10 +276,10 @@ class control
     }
 
     /**
-     * ¸³ÖµÒ»¸ö±äÁ¿µ½viewÊÓÍ¼¡£
+     * èµ‹å€¼ä¸€ä¸ªå˜é‡åˆ°viewè§†å›¾ã€‚
      * 
-     * @param   string  $name       ¸³Öµµ½ÊÓÍ¼ÎÄ¼şÖĞµÄ±äÁ¿Ãû¡£
-     * @param   mixed   $value      Ëù¶ÔÓ¦µÄÖµ¡£
+     * @param   string  $name       èµ‹å€¼åˆ°è§†å›¾æ–‡ä»¶ä¸­çš„å˜é‡åã€‚
+     * @param   mixed   $value      æ‰€å¯¹åº”çš„å€¼ã€‚
      * @access  public
      * @return  void
      */
@@ -289,7 +289,7 @@ class control
     }
 
     /**
-     * ÖØÖÃoutputÄÚÈİ¡£
+     * é‡ç½®outputå†…å®¹ã€‚
      * 
      * @access public
      * @return void
@@ -300,12 +300,12 @@ class control
     }
 
     /**
-     * ½âÎöÊÓÍ¼ÎÄ¼ş¡£
+     * è§£æè§†å›¾æ–‡ä»¶ã€‚
      *
-     * Èç¹ûÃ»ÓĞÖ¸¶¨Ä£¿éÃûºÍ·½·¨Ãû£¬ÔòÈ¡µ±Ç°Ä£¿éµÄµ±Ç°·½·¨¡£
+     * å¦‚æœæ²¡æœ‰æŒ‡å®šæ¨¡å—åå’Œæ–¹æ³•åï¼Œåˆ™å–å½“å‰æ¨¡å—çš„å½“å‰æ–¹æ³•ã€‚
      *
-     * @param string $moduleName    Ä£¿éÃû¡£
-     * @param string $methodName    ·½·¨Ãû¡£
+     * @param string $moduleName    æ¨¡å—åã€‚
+     * @param string $methodName    æ–¹æ³•åã€‚
      * @access public
      * @return void
      */
@@ -325,7 +325,7 @@ class control
         return $this->output;
     }
 
-    /* ½âÎöJSON¸ñÊ½µÄÊä³ö¡£*/
+    /* è§£æJSONæ ¼å¼çš„è¾“å‡ºã€‚*/
     private function parseJSON($moduleName, $methodName)
     {
         unset($this->view->app);
@@ -337,14 +337,14 @@ class control
         $this->output = json_encode($this->view);
     }
 
-    /* Ä¬ÈÏµÄÊä³ö¡£*/
+    /* é»˜è®¤çš„è¾“å‡ºã€‚*/
     private function parseDefault($moduleName, $methodName)
     {
-        /* ÉèÖÃÊÓÍ¼ÎÄ¼ş¡£*/
+        /* è®¾ç½®è§†å›¾æ–‡ä»¶ã€‚*/
         $viewFile = $this->setViewFile($moduleName, $methodName);
         if(is_array($viewFile)) extract($viewFile);
 
-        /* ÇĞ»»µ½ÊÓÍ¼ÎÄ¼şËùÔÚµÄÄ¿Â¼£¬ÒÔ±£Ö¤ÊÓÍ¼ÎÄ¼şÖĞµÄ°üº¬Â·¾¶ÓĞĞ§¡£*/
+        /* åˆ‡æ¢åˆ°è§†å›¾æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ï¼Œä»¥ä¿è¯è§†å›¾æ–‡ä»¶ä¸­çš„åŒ…å«è·¯å¾„æœ‰æ•ˆã€‚*/
         $currentPWD = getcwd();
         chdir(dirname($viewFile));
 
@@ -355,18 +355,18 @@ class control
         $this->output .= ob_get_contents();
         ob_end_clean();
 
-        /* ×îºó»¹ÒªÇĞ»»µ½Ô­À´µÄÄ¿Â¼¡£*/
+        /* æœ€åè¿˜è¦åˆ‡æ¢åˆ°åŸæ¥çš„ç›®å½•ã€‚*/
         chdir($currentPWD);
     }
 
     /**
-     * »ñÈ¡Ä³Ò»¸öÄ£¿éµÄÄ³Ò»¸ö·½·¨µÄÄÚÈİ¡£
+     * è·å–æŸä¸€ä¸ªæ¨¡å—çš„æŸä¸€ä¸ªæ–¹æ³•çš„å†…å®¹ã€‚
      * 
-     * Èç¹ûÃ»ÓĞÖ¸¶¨Ä£¿éÃû£¬ÔòÈ¡µ±Ç°Ä£¿éµ±Ç°·½·¨µÄÊÓÍ¼¡£Èç¹ûÖ¸¶¨ÁËÄ£¿éºÍ·½·¨£¬Ôòµ÷ÓÃ¶ÔÓ¦µÄÄ£¿é·½·¨µÄÊÓÍ¼ÄÚÈİ¡£
+     * å¦‚æœæ²¡æœ‰æŒ‡å®šæ¨¡å—åï¼Œåˆ™å–å½“å‰æ¨¡å—å½“å‰æ–¹æ³•çš„è§†å›¾ã€‚å¦‚æœæŒ‡å®šäº†æ¨¡å—å’Œæ–¹æ³•ï¼Œåˆ™è°ƒç”¨å¯¹åº”çš„æ¨¡å—æ–¹æ³•çš„è§†å›¾å†…å®¹ã€‚
      *
-     * @param   string  $moduleName    Ä£¿éÃû¡£
-     * @param   string  $methodName    ·½·¨Ãû¡£
-     * @param   array   $params        ·½·¨²ÎÊı¡£
+     * @param   string  $moduleName    æ¨¡å—åã€‚
+     * @param   string  $methodName    æ–¹æ³•åã€‚
+     * @param   array   $params        æ–¹æ³•å‚æ•°ã€‚
      * @access  public
      * @return  string
      */
@@ -380,27 +380,27 @@ class control
             return $this->output;
         }
 
-        /* ÉèÖÃ±»µ÷ÓÃµÄÄ£¿éµÄÂ·¾¶¼°ÏàÓ¦µÄÎÄ¼ş¡£*/
+        /* è®¾ç½®è¢«è°ƒç”¨çš„æ¨¡å—çš„è·¯å¾„åŠç›¸åº”çš„æ–‡ä»¶ã€‚*/
         $modulePath        = $this->app->getModulePath($moduleName);
         $moduleControlFile = $modulePath . 'control.php';
         $actionExtFile     = $this->app->getModuleExtPath($moduleName, 'control') . strtolower($methodName) . '.php';
         $file2Included     = file_exists($actionExtFile) ? $actionExtFile : $moduleControlFile;
 
-        /* ¼ÓÔØ¿ØÖÆÎÄ¼ş¡£*/
+        /* åŠ è½½æ§åˆ¶æ–‡ä»¶ã€‚*/
         if(!file_exists($file2Included)) $this->app->error("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
         $currentPWD = getcwd();
         chdir(dirname($file2Included));
         if($moduleName != $this->moduleName) helper::import($file2Included);
         
-        /* ÉèÖÃÒªµ÷ÓÃµÄÀàµÄÃû³Æ¡£*/
+        /* è®¾ç½®è¦è°ƒç”¨çš„ç±»çš„åç§°ã€‚*/
         $className = class_exists("ext$moduleName") ? "ext$moduleName" : $moduleName;
         if(!class_exists($className)) $this->app->error(" The class $className not found", __FILE__, __LINE__, $exit = true);
 
-        /* ´¦Àí²ÎÊı£¬Éú³É¶ÔÏó¡£*/
+        /* å¤„ç†å‚æ•°ï¼Œç”Ÿæˆå¯¹è±¡ã€‚*/
         if(!is_array($params)) parse_str($params, $params);
         $module = new $className($moduleName, $methodName);
 
-        /* µ÷ÓÃ·½·¨£¬»ñµÃÊä³ö¡£*/
+        /* è°ƒç”¨æ–¹æ³•ï¼Œè·å¾—è¾“å‡ºã€‚*/
         ob_start();
         call_user_func_array(array($module, $methodName), $params);
         $output = ob_get_contents();
@@ -412,10 +412,10 @@ class control
     }
 
     /**
-     * ÏÔÊ¾ÊÓÍ¼ÄÚÈİ¡£ 
+     * æ˜¾ç¤ºè§†å›¾å†…å®¹ã€‚ 
      * 
-     * @param   string  $moduleName    Ä£¿éÃû¡£
-     * @param   string  $methodName    ·½·¨Ãû¡£
+     * @param   string  $moduleName    æ¨¡å—åã€‚
+     * @param   string  $methodName    æ–¹æ³•åã€‚
      * @access  public
      * @return  void
      */
@@ -427,12 +427,12 @@ class control
     }
 
     /**
-     * Éú³ÉÄ³Ò»¸öÄ£¿éÄ³¸ö·½·¨µÄÁ´½Ó¡£
+     * ç”ŸæˆæŸä¸€ä¸ªæ¨¡å—æŸä¸ªæ–¹æ³•çš„é“¾æ¥ã€‚
      * 
-     * @param   string  $moduleName    Ä£¿éÃû¡£
-     * @param   string  $methodName    ·½·¨Ãû¡£
-     * @param   mixed   $vars          Òª´«µİµÄ²ÎÊı£¬¿ÉÒÔÊÇÊı×é£¬array('var1'=>'value1')¡£Ò²¿ÉÒÔÊÇvar1=value1&var2=value2µÄĞÎÊ½¡£
-     * @param   string  $viewType      ÊÓÍ¼¸ñÊ½¡£
+     * @param   string  $moduleName    æ¨¡å—åã€‚
+     * @param   string  $methodName    æ–¹æ³•åã€‚
+     * @param   mixed   $vars          è¦ä¼ é€’çš„å‚æ•°ï¼Œå¯ä»¥æ˜¯æ•°ç»„ï¼Œarray('var1'=>'value1')ã€‚ä¹Ÿå¯ä»¥æ˜¯var1=value1&var2=value2çš„å½¢å¼ã€‚
+     * @param   string  $viewType      è§†å›¾æ ¼å¼ã€‚
      * @access  public
      * @return  string
      */
@@ -443,11 +443,11 @@ class control
     }
 
     /**
-     * Éú³É¶Ô±¾Ä£¿éÄ³¸ö·½·¨µÄÁ´½Ó¡£
+     * ç”Ÿæˆå¯¹æœ¬æ¨¡å—æŸä¸ªæ–¹æ³•çš„é“¾æ¥ã€‚
      * 
-     * @param   string  $methodName    ·½·¨Ãû¡£
-     * @param   mixed   $vars          Òª´«µİµÄ²ÎÊı£¬¿ÉÒÔÊÇÊı×é£¬array('var1'=>'value1')¡£Ò²¿ÉÒÔÊÇvar1=value1&var2=value2µÄĞÎÊ½¡£
-     * @param   string  $viewType      ÊÓÍ¼¸ñÊ½¡£
+     * @param   string  $methodName    æ–¹æ³•åã€‚
+     * @param   mixed   $vars          è¦ä¼ é€’çš„å‚æ•°ï¼Œå¯ä»¥æ˜¯æ•°ç»„ï¼Œarray('var1'=>'value1')ã€‚ä¹Ÿå¯ä»¥æ˜¯var1=value1&var2=value2çš„å½¢å¼ã€‚
+     * @param   string  $viewType      è§†å›¾æ ¼å¼ã€‚
      * @access  public
      * @return  string
      */
@@ -457,9 +457,9 @@ class control
     }
 
     /**
-     * Ìø×ªµ½ÁíÍâÒ»¸öÒ³Ãæ¡£
+     * è·³è½¬åˆ°å¦å¤–ä¸€ä¸ªé¡µé¢ã€‚
      * 
-     * @param   string   $url   ÒªÌø×ªµÄurlµØÖ·¡£
+     * @param   string   $url   è¦è·³è½¬çš„urlåœ°å€ã€‚
      * @access  public
      * @return  void
      */

@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 /**
- * ²âÊÔsetMember·½·¨¡£
+ * æµ‹è¯•setMemberæ–¹æ³•ã€‚
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      chunsheng.wang <chunsheng@cnezsoft.com>
  * @package     Testing
  * @version     $Id$
@@ -13,27 +13,27 @@
 include '../../helper.class.php';
 $config = new stdClass();
 
-/* ²âÊÔÒ»Î¬ÊôĞÔµÄĞŞ¸Ä¡£*/
+/* æµ‹è¯•ä¸€ç»´å±æ€§çš„ä¿®æ”¹ã€‚*/
 $config->user = 'wwccss';
 helper::setMember('config', 'user', 'chunsheng');
 echo $config->user . "\n";
 
-/* ¸³ÖµµÄ±äÁ¿º¬ÓĞµ¥Ë«ÒıºÅ¡£*/
+/* èµ‹å€¼çš„å˜é‡å«æœ‰å•åŒå¼•å·ã€‚*/
 $config->name = 'wwccss';
 helper::setMember('config', 'name', "wang'chun\"sheng");
 echo $config->name . "\n";
 
-/* ¸³ÖµµÄ±äÁ¿ÎªÒ»¸öÊı×é¡£*/
+/* èµ‹å€¼çš„å˜é‡ä¸ºä¸€ä¸ªæ•°ç»„ã€‚*/
 $config->users = array(1,2,3);
 helper::setMember('config', 'users', array('a', 'b', 'c'));
 print_r($config->users);
 
-/* ¸³ÖµµÄ±äÁ¿ÎªÒ»¸ö¶ÔÏó¡£*/
+/* èµ‹å€¼çš„å˜é‡ä¸ºä¸€ä¸ªå¯¹è±¡ã€‚*/
 $config->obj = array(1,2,3);
 helper::setMember('config', 'obj', new stdClass());
 print_r($config->obj);
 
-/* ²âÊÔ¶şÎ¬ÊôĞÔµÄĞŞ¸Ä¡£*/
+/* æµ‹è¯•äºŒç»´å±æ€§çš„ä¿®æ”¹ã€‚*/
 $config->db->host = 'localhost';
 $config->db->user = 'wwccss';
 $config->db->param = array();

@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 /**
- * ²âÊÔcreateLink·½·¨
+ * æµ‹è¯•createLinkæ–¹æ³•
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓĞÏŞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 é’å²›æ˜“è½¯å¤©åˆ›ç½‘ç»œç§‘æŠ€æœ‰é™å…¬å¸(www.cnezsoft.com)
  * @author      chunsheng.wang <chunsheng@cnezsoft.com>
  * @package     Testing
  * @version     $Id$
@@ -12,11 +12,11 @@
  */
 include '../../helper.class.php';
 
-/* ÊµÀı»¯appµÄmock¶ÔÏó¡£*/
+/* å®ä¾‹åŒ–appçš„mockå¯¹è±¡ã€‚*/
 $app = new mockapp();
 $app->setViewType('html');
 
-/* ÉèÖÃcfgÅäÖÃ£¬²¢½«Æä×ª»»Îª$config¶ÔÏó¡£*/
+/* è®¾ç½®cfgé…ç½®ï¼Œå¹¶å°†å…¶è½¬æ¢ä¸º$configå¯¹è±¡ã€‚*/
 $cfg['webRoot'] = '/';
 $cfg['requestType'] = 'PATH_INFO';
 $cfg['requestFix'] = '/';
@@ -28,41 +28,41 @@ eval(helper::array2Object($cfg, 'config'));
 
 /* PATH_INFO + FULL*/
 $vars = array('k1' => 'v1', 'k2' => 'v2');
-echo helper::createLink('index') . "\n";               // Ö»ÓĞÄ£¿éÃû¡£
-echo helper::createLink('user', 'login') . "\n";       // Ôö¼Ó·½·¨Ãû¡£
-echo helper::createLink('user', 'view', $vars) . "\n"; // Ôö¼Ó²ÎÊı¡£
+echo helper::createLink('index') . "\n";               // åªæœ‰æ¨¡å—åã€‚
+echo helper::createLink('user', 'login') . "\n";       // å¢åŠ æ–¹æ³•åã€‚
+echo helper::createLink('user', 'view', $vars) . "\n"; // å¢åŠ å‚æ•°ã€‚
 $vars = 'k1=v1&k2=v2';
-echo helper::createLink('user', 'view', $vars) . "\n\n"; // ²ÎÊı¸Ä³ÉstrĞÎÊ½¡£
+echo helper::createLink('user', 'view', $vars) . "\n\n"; // å‚æ•°æ”¹æˆstrå½¢å¼ã€‚
 
 /* PATH_INFO + CLEAN */
 $config->pathType = 'clean';
 $vars = array('k1' => 'v1', 'k2' => 'v2');
-echo helper::createLink('index') . "\n";               // Ö»ÓĞÄ£¿éÃû¡£
-echo helper::createLink('user', 'login') . "\n";       // Ôö¼Ó·½·¨Ãû¡£
-echo helper::createLink('user', 'view', $vars) . "\n"; // Ôö¼Ó²ÎÊı¡£
+echo helper::createLink('index') . "\n";               // åªæœ‰æ¨¡å—åã€‚
+echo helper::createLink('user', 'login') . "\n";       // å¢åŠ æ–¹æ³•åã€‚
+echo helper::createLink('user', 'view', $vars) . "\n"; // å¢åŠ å‚æ•°ã€‚
 $vars = 'k1=v1&k2=v2';
-echo helper::createLink('user', 'view', $vars) . "\n\n"; // ²ÎÊı¸Ä³ÉstrĞÎÊ½¡£
+echo helper::createLink('user', 'view', $vars) . "\n\n"; // å‚æ•°æ”¹æˆstrå½¢å¼ã€‚
 
 /* PATH_INFO + CLEAN + REQUESTFIX */
 $config->requestFix = '-';
 $vars = array('k1' => 'v1', 'k2' => 'v2');
-echo helper::createLink('index') . "\n";               // Ö»ÓĞÄ£¿éÃû¡£
-echo helper::createLink('user', 'login') . "\n";       // Ôö¼Ó·½·¨Ãû¡£
-echo helper::createLink('user', 'view', $vars) . "\n"; // Ôö¼Ó²ÎÊı¡£
+echo helper::createLink('index') . "\n";               // åªæœ‰æ¨¡å—åã€‚
+echo helper::createLink('user', 'login') . "\n";       // å¢åŠ æ–¹æ³•åã€‚
+echo helper::createLink('user', 'view', $vars) . "\n"; // å¢åŠ å‚æ•°ã€‚
 $vars = 'k1=v1&k2=v2';
-echo helper::createLink('user', 'view', $vars) . "\n\n"; // ²ÎÊı¸Ä³ÉstrĞÎÊ½¡£
+echo helper::createLink('user', 'view', $vars) . "\n\n"; // å‚æ•°æ”¹æˆstrå½¢å¼ã€‚
 
 /* GET + CLEAN */
 $config->requestType = 'GET';
 $vars = array('k1' => 'v1', 'k2' => 'v2');
-echo helper::createLink('index') . "\n";               // Ö»ÓĞÄ£¿éÃû¡£
-echo helper::createLink('user', 'login') . "\n";       // Ôö¼Ó·½·¨Ãû¡£
-echo helper::createLink('user', 'view', $vars) . "\n"; // Ôö¼Ó²ÎÊı¡£
+echo helper::createLink('index') . "\n";               // åªæœ‰æ¨¡å—åã€‚
+echo helper::createLink('user', 'login') . "\n";       // å¢åŠ æ–¹æ³•åã€‚
+echo helper::createLink('user', 'view', $vars) . "\n"; // å¢åŠ å‚æ•°ã€‚
 $vars = 'k1=v1&k2=v2';
-echo helper::createLink('user', 'view', $vars) . "\n"; // ²ÎÊı¸Ä³ÉstrĞÎÊ½¡£
+echo helper::createLink('user', 'view', $vars) . "\n"; // å‚æ•°æ”¹æˆstrå½¢å¼ã€‚
 
 /**
- * appµÄmock¶ÔÏó¡£
+ * appçš„mockå¯¹è±¡ã€‚
  * 
  * @package Testing
  */
