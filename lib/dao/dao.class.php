@@ -476,7 +476,7 @@ class dao
         $rows = array();
         while($row = $stmt->fetch())
         {
-            empty($keyField) ?  $rows[$row->$groupField][] = $row : $rows[$groupField][$row->$keyField] = $row;
+            empty($keyField) ?  $rows[$row->$groupField][] = $row : $rows[$row->$groupField][$row->$keyField] = $row;
         }
         return $rows;
     }
