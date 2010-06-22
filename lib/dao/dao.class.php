@@ -986,14 +986,14 @@ class sql
     }
 
     /* 条件判断开始。*/
-    public function onCaseOf($condition)
+    public function beginIF($condition)
     {
         $this->inCondition = true;
         $this->conditionIsTrue = $condition;
     }
 
     /* 条件判断结束。*/
-    public function endCase()
+    public function endIF()
     {
         $this->inCondition = false;
         $this->conditionIsTrue = false;
