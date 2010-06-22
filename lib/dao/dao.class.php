@@ -993,7 +993,7 @@ class sql
     }
 
     /* 条件判断结束。*/
-    public function endIF()
+    public function fi()
     {
         $this->inCondition = false;
         $this->conditionIsTrue = false;
