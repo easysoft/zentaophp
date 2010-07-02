@@ -201,12 +201,20 @@ class helper
         $mergedModelFile = $app->getTmpRoot() . 'model' . $app->getPathFix() . $moduleName . '.php';
         $needUpdate      = false;
         $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
-        foreach($extFiles as $extFile)
+        
+        if(filemtime($mainModelFile) > $lastTime)
         {
-            if(filemtime($extFile) > $lastTime)
+            $needUpdate = true;
+        }
+        else
+        {
+            foreach($extFiles as $extFile)
             {
-                $needUpdate = true;
-                break;
+                if(filemtime($extFile) > $lastTime)
+                {
+                    $needUpdate = true;
+                    break;
+                }
             }
         }
 
