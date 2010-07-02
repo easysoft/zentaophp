@@ -229,7 +229,10 @@ class helper
             foreach($modelMethods as $key => $modelMethod) $modelMethods[$key] = strtolower($modelMethod);
 
             /* 将主model文件读入数组。*/
-            $modelLines   = explode("\n", rtrim(file_get_contents($mainModelFile)));
+            $modelLines = rtrim(file_get_contents($mainModelFile));
+            $modelLines = rtrim($modelLines, '?>');
+            $modelLines = rtrim($modelLines);
+            $modelLines = explode("\n", $modelLines);
             $lines2Delete = array(count($modelLines) - 1);
             $lines2Append = array();
 
