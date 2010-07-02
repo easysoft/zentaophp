@@ -334,7 +334,12 @@ class control
         unset($this->view->pager);
         unset($this->view->header);
         unset($this->view->position);
-        $this->output = json_encode($this->view);
+        unset($this->view->moduleTree);
+
+        $output['status'] = is_object($this->view) ? 'success' : 'fail';
+        $output['data']   = json_encode($this->view);
+        $output['md5']    = md5(json_encode($this->view));
+        $this->output     = json_encode($output);
     }
 
     /* 默认的输出。*/
