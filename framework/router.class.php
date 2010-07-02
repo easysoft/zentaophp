@@ -1336,6 +1336,20 @@ class router
         return $config;
     }
 
+    /* 将系统的配置参数输出为json格式，方便客户端调用。*/
+    public function exportConfig()
+    {
+        $view->version     = $this->config->version;
+        $view->requestType = $this->config->requestType;
+        $view->pathType    = $this->config->pathType;
+        $view->requestFix  = $this->config->requestFix;
+        $view->moduleVar   = $this->config->moduleVar;
+        $view->methodVar   = $this->config->methodVar;
+        $view->viewVar     = $this->config->viewVar;
+        $view->sessionVar  = $this->config->sessionVar;
+        echo json_encode($view);
+    }
+
     /**
      * 加载语言文件，将其转换为对象，并返回作为全局的语言对象。
      * 
