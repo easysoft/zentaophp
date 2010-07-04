@@ -352,6 +352,21 @@ class helper
         }
         return $files;
     }
+
+    /* 切换目录。*/
+    static function cd($path = '')
+    {
+        static $cwd = '';
+        if($path)
+        {
+            $cwd = getcwd();
+            chdir($path);
+        }
+        else
+        {
+            chdir($cwd);
+        }
+    }
 }
 
 /* 别名函数，生成对内部方法的链接。 */

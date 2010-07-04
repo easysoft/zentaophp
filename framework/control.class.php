@@ -275,6 +275,18 @@ class control
         return $viewFile;
     }
 
+    /* 加载某一个视图文件所对应的扩展视图文件。*/
+    public function getExtViewFile($viewFile)
+    {
+        $extPath     = dirname(dirname(realpath($viewFile))) . '/opt/view/';
+        $extViewFile = $extPath . basename($viewFile);
+        if(file_exists($extViewFile))
+        {
+            helper::cd($extPath);
+            return $extViewFile;
+        }
+    }
+
     /**
      * 赋值一个变量到view视图。
      * 
