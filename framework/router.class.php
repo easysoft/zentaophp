@@ -1047,7 +1047,7 @@ class router
 
         /* 获取方法的参数定义。*/
         $defaultParams = array();
-        $methodReflect = new reflectionMethod($moduleName, $methodName);
+        $methodReflect = new reflectionMethod($className, $methodName);
         foreach($methodReflect->getParameters() as $param)
         {
             $name    = $param->getName();
