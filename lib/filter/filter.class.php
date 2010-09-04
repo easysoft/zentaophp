@@ -210,7 +210,7 @@ class fixer
         $args   = func_get_args();
         foreach($fields as $fieldName)
         {
-            $this->data->$fieldName = isset($args[1]) ?  filter_var($this->data->$fieldname, FILTER_SANITIZE_ENCODE, $args[1]) : filter_var($this->data->$fieldname, FILTER_SANITIZE_ENCODE);
+            $this->data->$fieldName = isset($args[1]) ?  filter_var($this->data->$fieldName, FILTER_SANITIZE_ENCODED, $args[1]) : filter_var($this->data->$fieldName, FILTER_SANITIZE_ENCODED);
         }
         return $this;
     }
