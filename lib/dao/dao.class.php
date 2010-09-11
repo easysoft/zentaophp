@@ -29,6 +29,13 @@
  */
 class dao
 {
+    /* 解决autoCompany带来的sql关键字冲突的问题。*/
+    const WHERE   = 'wHeRe';
+    const GROUPBY = 'gRoUp bY';
+    const HAVING  = 'hAvInG';
+    const ORDERBY = 'oRdEr bY';
+    const LIMIT   = 'lImiT';
+
     /**
      * 全局的$app对象。
      * 
@@ -298,7 +305,7 @@ class dao
     /* 返回SQL语句。*/
     public function get()
     {
-        return $this->processSQL();
+        return $this->processKeywords($this->processSQL());
     }
 
     /* 打印SQL语句。*/
@@ -324,11 +331,11 @@ class dao
         if(isset($this->app->company) and $autoCompany and $this->table != '' and $this->table != TABLE_COMPANY and $this->method != 'insert' and $this->method != 'replace')
         {
             /* 获得where 和 order by的位置。*/
-            $wherePOS  = strripos($sql, 'where');
-            $groupPOS  = strripos($sql, 'group by');            // group by的位置。
-            $havingPOS = strrpos($sql, 'HAVING');               // having的位置。
-            $orderPOS  = strripos($sql, 'order by');            // order by的位置。
-            $limitPOS  = strrpos($sql, 'LIMIT');                // limit的位置。
+            $wherePOS  = strrpos($sql, DAO::WHERE);
+            $groupPOS  = strrpos($sql, DAO::GROUPBY);           // group by的位置。
+            $havingPOS = strrpos($sql, DAO::HAVING);            // having的位置。
+            $orderPOS  = strrpos($sql, DAO::ORDERBY);           // order by的位置。
+            $limitPOS  = strrpos($sql, DAO::LIMIT);             // limit的位置。
             $splitPOS  = $orderPOS ? $orderPOS : $limitPOS;     // order比limit靠前。
             $splitPOS  = $havingPOS? $havingPOS: $splitPOS;     // having比orer靠前。
             $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // group比having靠前。
@@ -356,8 +363,14 @@ class dao
                 $sql .= $wherePOS ? " AND $companyCondition" : " WHERE $companyCondition";
             }
         }
-        self::$querys[] = $sql;
+        self::$querys[] = $this->processKeywords($sql);
         return $sql;
+    }
+
+    /* 处理SQL关键字。*/
+    private function processKeywords($sql)
+    {
+        return str_replace(array(DAO::WHERE, DAO::GROUPBY, DAO::HAVING, DAO::ORDERBY, DAO::LIMIT), array('WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT'), $sql);
     }
 
     //-------------------- SQL查询相关的方法。--------------------//
@@ -1013,7 +1026,7 @@ class sql
             $condition = $arg1;
         }
 
-        $this->sql .= " WHERE $condition ";
+        $this->sql .= ' ' . DAO::WHERE ." $condition ";
         return $this;
     } 
 
@@ -1102,7 +1115,7 @@ class sql
     {
         $order = str_replace(array('|', '', '_'), ' ', $order);
         $order = str_replace('left', '`left`', $order); // 处理left关键字。
-        $this->sql .= " ORDER BY $order";
+        $this->sql .= ' ' . DAO::ORDERBY . " $order";
         return $this;
     }
 
@@ -1110,21 +1123,21 @@ class sql
     public function limit($limit)
     {
         if(empty($limit)) return $this;
-        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= " LIMIT $limit ";
+        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= ' ' . DAO::LIMIT . " $limit ";
         return $this;
     }
 
     /* 设定GROUP BY。*/
     public function groupBy($groupBy)
     {
-        $this->sql .= " GROUP BY $groupBy";
+        $this->sql .= ' ' . DAO::GROUPBY . " $groupBy";
         return $this;
     }
 
     /* 设定having。*/
     public function having($having)
     {
-        $this->sql .= " HAVING $having";
+        $this->sql .= ' ' . DAO::HAVING . " $having";
         return $this;
     }
 
