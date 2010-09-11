@@ -6,7 +6,7 @@
  * @author      chunsheng.wang <chunsheng@cnezsoft.com>
  * @package     Testing
  * @version     $Id$
- * @link        http://www.zentaoms.com
+ * @link        http://www.zentao.net
  * @license     http://opensource.org/licenses/lgpl-3.0.html LGPL
  */
 

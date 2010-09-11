@@ -19,7 +19,7 @@
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentaoms.com
+ * @link        http://www.zentao.net
  */
 /**
  * 路由类，也是整个框架最核心的类。

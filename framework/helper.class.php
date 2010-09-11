@@ -19,7 +19,7 @@
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentaoms.com
+ * @link        http://www.zentao.net
  */
 /**
  * 工具类对象，存放着各种杂项的工具方法。
