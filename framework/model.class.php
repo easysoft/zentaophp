@@ -215,7 +215,7 @@ class model
         $this->loadModel('action')->create($object, $id, 'deleted', '', $extra = ACTIONMODEL::CAN_UNDELETED);
     }
 
-    /* 欢迎已经标记为删除的记录。*/
+    /* 还原已经标记为删除的记录。*/
     public function undelete($actionID)
     {
         $action = $this->loadModel('action')->getById($actionID);
