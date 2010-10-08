@@ -247,7 +247,8 @@ class helper
                     $endLine      = $method->getEndLine() - 1;
                     $lines2Delete = array_merge($lines2Delete, range($startLine, $endLine));
                 }
-                $lines2Append = array_merge($lines2Append, explode("\n", trim(file_get_contents($extFile))));
+                $extLines     = explode("\n", ltrim(trim(file_get_contents($extFile)), '<?php'));
+                $lines2Append = array_merge($lines2Append, $extLines);
             }
 
             /* 生成新的model文件。*/
