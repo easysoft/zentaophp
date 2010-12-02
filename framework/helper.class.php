@@ -247,7 +247,7 @@ class helper
                     $endLine      = $method->getEndLine() - 1;
                     $lines2Delete = array_merge($lines2Delete, range($startLine, $endLine));
                 }
-                $extLines     = explode("\n", ltrim(trim(file_get_contents($extFile)), '<?php'));
+                $extLines     = explode("\n", str_replace('<?php', '', trim(file_get_contents($extFile))));
                 $lines2Append = array_merge($lines2Append, $extLines);
             }
 
