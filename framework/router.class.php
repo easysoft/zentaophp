@@ -1,35 +1,23 @@
 <?php
 /**
- * The router, config and lang class file of ZenTaoPHP.
+ * The router, config and lang class file of ZenTaoPMS.
  *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
- * @package     ZenTaoPHP
+ * @package     framework
  * @version     $Id$
  * @link        http://www.zentao.net
  */
 /**
- * 路由类，也是整个框架最核心的类。
+ * The router class.
  * 
- * @package ZenTaoPHP
+ * @package framework
  */
 class router
 {
     /**
-     * 文件系统的路径分隔符。
+     * The directory seperator.
      * 
      * @var string
      * @access private
@@ -37,7 +25,7 @@ class router
     private $pathFix;
 
     /**
-     * 应用的基准路径。
+     * The base path of the ZenTaoPMS framework.
      *
      * @var string
      * @access private
@@ -45,7 +33,7 @@ class router
     private $basePath;
 
     /**
-     * 框架基类文件所在的路径。
+     * The root directory of the framwork($this->basePath/framework)
      * 
      * @var string
      * @access private
@@ -53,7 +41,7 @@ class router
     private $frameRoot;
 
     /**
-     * 框架所带的library目录。
+     * The root directory of the core library($this->basePath/lib)
      * 
      * @var string
      * @access private
@@ -61,7 +49,7 @@ class router
     private $coreLibRoot;
 
     /**
-     * 当前应用程序所在的目录。
+     * The root directory of the app.
      * 
      * @var string
      * @access private
@@ -69,7 +57,7 @@ class router
     private $appRoot;
 
     /**
-     * 应用程序的library目录。
+     * The root directory of the app library($this->appRoot/lib).
      * 
      * @var string
      * @access private
@@ -77,7 +65,7 @@ class router
     private $appLibRoot;
 
     /**
-     * 临时文件所在的目录
+     * The root directory of temp.
      * 
      * @var string
      * @access private
@@ -85,7 +73,7 @@ class router
     private $tmpRoot;
 
     /**
-     * 缓存文件所在的根目录。
+     * The root directory of cache.
      * 
      * @var string
      * @access private
@@ -93,7 +81,7 @@ class router
     private $cacheRoot;
 
     /**
-     * 日志文件所在的目录。
+     * The root directory of log.
      * 
      * @var string
      * @access private
@@ -101,7 +89,7 @@ class router
     private $logRoot;
 
     /**
-     * 配置文件所在的根目录。
+     * The root directory of config.
      * 
      * @var string
      * @access private
@@ -109,7 +97,7 @@ class router
     private $configRoot;
 
     /**
-     * 各个模块所在的根目录。
+     * The root directory of module.
      * 
      * @var string
      * @access private
@@ -117,7 +105,7 @@ class router
     private $moduleRoot;
 
     /**
-     * 主题文件所在的根目录。
+     * The root directory of them.
      * 
      * @var string
      * @access private
@@ -125,7 +113,7 @@ class router
     private $themeRoot;
 
     /**
-     * 用户所使用的语言。
+     * The lang of the client user.
      * 
      * @var string
      * @access private
@@ -133,7 +121,7 @@ class router
     private $clientLang;
 
     /**
-     * 用户所使用的主题。
+     * The theme of the client user.
      * 
      * @var string
      * @access private
@@ -141,7 +129,15 @@ class router
     private $clientTheme;
 
     /**
-     * 当前需要加载的模块名称。
+     * The control object of current module.
+     * 
+     * @var string
+     * @access public
+     */
+    public $control;
+
+    /**
+     * The module name
      * 
      * @var string
      * @access private
@@ -149,15 +145,7 @@ class router
     private $moduleName;
 
     /**
-     * 当前模块的扩展目录。
-     * 
-     * @var string
-     * @access private
-     */
-    private $moduleExtRoot;
-
-    /**
-     * 当前模块所对应的控制器文件。
+     * The control file of the module current visiting.
      * 
      * @var string
      * @access private
@@ -165,7 +153,7 @@ class router
     private $controlFile;
 
     /**
-     * 需要调用的方法。
+     * The name of the method current visiting.
      * 
      * @var string
      * @access private
@@ -173,7 +161,7 @@ class router
     private $methodName;
 
     /**
-     * 当前模块所对应的派生出来的action文件。
+     * The action extension file of current method.
      * 
      * @var string
      * @access private
@@ -181,7 +169,7 @@ class router
     private $extActionFile;
 
     /**
-     * 当前请求的URI。
+     * The URI.
      * 
      * @var string
      * @access private
@@ -189,7 +177,7 @@ class router
     private $URI;
 
     /**
-     * 要传递给给调用方法的参数。
+     * The params passed in through url.
      * 
      * @var array
      * @access private
@@ -197,7 +185,7 @@ class router
     private $params;
 
     /**
-     * 视图格式。
+     * The view type.
      * 
      * @var string
      * @access private
@@ -205,23 +193,23 @@ class router
     private $viewType;
 
     /**
-     * 配置对象。
+     * The global $config object.
      * 
      * @var string
-     * @access private
+     * @access public
      */
     public $config;
 
     /**
-     * 语言对象。
+     * The global $lang object.
      * 
      * @var string
-     * @access private
+     * @access public
      */
     public $lang;
 
     /**
-     * 数据库访问对象。
+     * The global $dbh object, the database connection handler.
      * 
      * @var string
      * @access private
@@ -229,7 +217,7 @@ class router
     public $dbh;
 
     /**
-     * POST对象。
+     * The $post object, used to access the $_POST var.
      * 
      * @var ojbect
      * @access public
@@ -237,7 +225,7 @@ class router
     public $post;
 
     /**
-     * GET对象。
+     * The $get object, used to access the $_GET var.
      * 
      * @var ojbect
      * @access public
@@ -245,7 +233,7 @@ class router
     public $get;
 
     /**
-     * session对象。
+     * The $session object, used to access the $_SESSION var.
      * 
      * @var ojbect
      * @access public
@@ -253,7 +241,7 @@ class router
     public $session;
 
     /**
-     * server对象。
+     * The $server object, used to access the $_SERVER var.
      * 
      * @var ojbect
      * @access public
@@ -261,16 +249,15 @@ class router
     public $server;
 
     /**
-     * cookie对象。
+     * The $cookie object, used to access the $_COOKIE var.
      * 
      * @var ojbect
      * @access public
      */
     public $cookie;
 
-
     /**
-     * global对象。
+     * The $global object, used to access the $_GLOBAL var.
      * 
      * @var ojbect
      * @access public
@@ -278,12 +265,15 @@ class router
     public $global;
 
     /**
-     * 构造函数。
+     * The construct function.
      * 
-     * 主要完成各个路径变量的设置。注意，该构造函数为私有函数，应当使用createApp方法来实例化路由对象。
+     * Prepare all the paths, classes, super objects and so on.
+     * Notice: 
+     * 1. You should use the createApp() method to get an instance of the router.
+     * 2. If the $appRoot is empty, the framework will comput the appRoot according the $appName
      *
-     * @param string $appName   应用的名称，如果没有指定$appRoot变量，系统会根据$appName来计算应用的根目录。
-     * @param string $appRoot   应用所在的根目录。
+     * @param string $appName   the name of the app 
+     * @param string $appRoot   the root path of the app
      * @access protected
      * @return void
      */
@@ -301,26 +291,42 @@ class router
         $this->setConfigRoot();
         $this->setModuleRoot();
         $this->setThemeRoot();
+
+        $this->setSuperVars();
+
+        $this->loadConfig('common');
+        $this->setDebug();
+
+        $this->connectDB();
+
+        $this->setTimezone();
+        $this->setClientLang();
+        $this->loadLang('common');
+        $this->setClientTheme();
+
+        $this->loadClass('front',  $static = true);
+        $this->loadClass('filter', $static = true);
+        $this->loadClass('dao',    $static = true);
     }
 
     /**
-     * 生成一个应用。
+     * Create an application.
      * 
      * <code>
      * <?php
      * $demo = router::createApp('demo');
      * ?>
-     * 或者指定demo应用所在的目录。
+     * or specify the root path of the app. Thus the app and framework can be seperated.
      * <?php
      * $demo = router::createApp('demo', '/home/app/demo');
      * ?>
      * </code>
-     * @param string $appName   应用的名称
-     * @param string $appRoot   应用所在的根目录，可以为空。
-     * @param string $className 对象名称，当从router派生一个子类，然后调用该方法时，可以指定该参数。
+     * @param string $appName   the name of the app 
+     * @param string $appRoot   the root path of the app
+     * @param string $className the name of the router class. When extends a child, you should pass in the child router class name.
      * @static
      * @access public
-     * @return void
+     * @return object   the app object
      */
     public static function createApp($appName = 'demo', $appRoot = '', $className = 'router')
     {
@@ -328,10 +334,10 @@ class router
         return new $className($appName, $appRoot);
     }
 
-    //-------------------- 路径相关的方法。--------------------//
+    //-------------------- path related methods --------------------//
 
     /**
-     * 设置路径分隔符，方便调用。
+     * Set the path directory.
      * 
      * @access protected
      * @return void
@@ -342,7 +348,7 @@ class router
     }
     
     /**
-     * 设置整个框架所在的根目录。
+     * Set the base path.
      *
      * @access protected
      * @return void
@@ -353,7 +359,7 @@ class router
     }
     
     /**
-     * 设置框架核心类文件所在的根目录。
+     * Set the frame root.
      * 
      * @access protected
      * @return void
@@ -364,7 +370,7 @@ class router
     }
 
     /**
-     * 设置coreLib文件的根目录。
+     * Set the core library root.
      * 
      * @access protected
      * @return void
@@ -375,10 +381,7 @@ class router
     }
 
     /**
-     * 设置应用程序所在的根目录。
-     *
-     * 默认情况下面根据appName来进行计算，如果指定了appRoot，直接用之。
-     * 通过这种机制，框架和应用可以分开部署。
+     * Set the app root.
      *
      * @param string $appName 
      * @param string $appRoot 
@@ -399,7 +402,7 @@ class router
     }
 
     /**
-     * 设置appLib文件的根目录。
+     * Set the app lib root.
      * 
      * @access protected
      * @return void
@@ -410,7 +413,7 @@ class router
     }
 
     /**
-     * 设置临时文件所在的目录。
+     * Set the tmp root.
      * 
      * @access protected
      * @return void
@@ -421,7 +424,7 @@ class router
     }
 
     /**
-     * 设置缓存文件所在的根目录。
+     * Set the cache root.
      * 
      * @access protected
      * @return void
@@ -432,7 +435,7 @@ class router
     }
 
     /**
-     * 设置日志文件所在的目录。
+     * Set the log root.
      * 
      * @access protected
      * @return void
@@ -443,7 +446,7 @@ class router
     }
 
     /**
-     * 设置配置文件所在的根目录。
+     * Set the config root.
      * 
      * @access protected
      * @return void
@@ -454,7 +457,7 @@ class router
     }
 
     /**
-     * 设置module所在的根目录。
+     * Set the module root.
      * 
      * @access protected
      * @return void
@@ -465,7 +468,7 @@ class router
     }
 
     /**
-     * 设置客户端主题文件所在的根目录。
+     * Set the theme root.
      * 
      * @access protected
      * @return void
@@ -476,38 +479,49 @@ class router
     }
 
     /**
-     * 设置超全局变量。
+     * Set the super vars.
      * 
      * @access protected
      * @return void
      */
     public function setSuperVars()
     {
-        if(isset($this->config->super2OBJ) and $this->config->super2OBJ)
+        $this->post    = new super('post');
+        $this->get     = new super('get');
+        $this->server  = new super('server');
+        $this->cookie  = new super('cookie');
+        $this->session = new super('session');
+        $this->global  = new super('global');
+    }
+
+    /**
+     * set Debug 
+     * 
+     * @access public
+     * @return void
+     */
+    public function setDebug()
+    {
+        if(isset($this->config->debug) and $this->config->debug)
         {
-            $this->post    = new super('post');
-            $this->get     = new super('get');
-            $this->server  = new super('server');
-            $this->cookie  = new super('cookie');
-            $this->session = new super('session');
-            $this->global  = new super('global');
+            error_reporting(E_ALL & ~ E_STRICT);
+            register_shutdown_function('saveSQL');
         }
     }
 
-    /* 设置debug级别。*/
-    public function setDebug()
-    {
-        isset($this->config->debug) and $this->config->debug ? error_reporting(E_ALL & ~ E_STRICT) : error_reporting(0);
-    }
-
-    /* 设置时区。*/
+    /**
+     * Set the time zone according to the config.
+     * 
+     * @access public
+     * @return void
+     */
     public function setTimezone()
     {
         if(isset($this->config->timezone)) date_default_timezone_set($this->config->timezone);
     }
 
     /**
-     * 返回路径分隔符。
+     * Get the $pathFix var
      * 
      * @access public
      * @return string
@@ -518,7 +532,7 @@ class router
     }
 
     /**
-     * 返回整个框架的所在的目录。
+     * Get the $basePath var
      * 
      * @access public
      * @return string
@@ -529,7 +543,7 @@ class router
     }
     
     /**
-     * 返回框架核心类文件所在的根目录。
+     * Get the $frameRoot var
      * 
      * @access public
      * @return string
@@ -540,7 +554,7 @@ class router
     }
 
     /**
-     * 返回lib文件所在的根目录。
+     * Get the $coreLibRoot var
      * 
      * @access public
      * @return string
@@ -551,7 +565,7 @@ class router
     }
 
     /**
-     * 返回应用程序所在的根目录。
+     * Get the $appRoot var
      * 
      * @access public
      * @return string
@@ -562,7 +576,7 @@ class router
     }
     
     /**
-     * 返回appLib文件所在的根目录。
+     * Get the $appLibRoot var
      * 
      * @access public
      * @return string
@@ -573,7 +587,7 @@ class router
     }
 
     /**
-     * 返回临时文件所在的目录。
+     * Get the $tmpRoot var
      * 
      * @access public
      * @return string
@@ -584,7 +598,7 @@ class router
     } 
 
     /**
-     * 返回缓存文件所在的根目录。
+     * Get the $cacheRoot var
      * 
      * @access public
      * @return string
@@ -595,7 +609,7 @@ class router
     } 
 
     /**
-     * 返回日志文件所在的目录。
+     * Get the $logRoot var
      * 
      * @access public
      * @return string
@@ -606,7 +620,7 @@ class router
     } 
 
     /**
-     * 返回配置文件所在的根目录。
+     * Get the $configRoot var
      * 
      * @access public
      * @return string
@@ -617,7 +631,7 @@ class router
     }
 
     /**
-     * 返回模块文件所在的根目录。
+     * Get the $moduleRoot var
      * 
      * @access public
      * @return string
@@ -628,7 +642,7 @@ class router
     }
 
     /**
-     * 返回主题文件所在的根目录。
+     * Get the $themeRoot var
      * 
      * @access public
      * @return string
@@ -638,18 +652,14 @@ class router
         return $this->themeRoot;
     }
 
-    //-------------------- 客户端环境设置。--------------------//
+    //-------------------- Client environment related functions --------------------//
 
     /**
-     * 设置客户端所使用的语言。
+     * Set the language used by the client user.
      * 
-     * 如果手工指定了语言的选项，则以手工指定为主。
-     * 然后再查找session里面是否有登记，
-     * 然后再看cookie里面是否有登记。
-     * 然后再查看浏览器支持的语言，
-     * 如果通过上面取出的语言选项和系统支持的不匹配，则使用默认的语言。
+     * Using the order of method $lang param, session, cookie, browser and last the default lang.
      *
-     * @param   string $lang  形如zh-cn|zh-tw|zh-hk|en。
+     * @param   string $lang  zh-cn|zh-tw|zh-hk|en
      * @access  public
      * @return  void
      */
@@ -680,11 +690,11 @@ class router
         {
             $this->clientLang = $this->config->default->lang;
         }
-        setcookie('lang', $this->clientLang, $this->config->cookieLife, $this->config->cookiePath);
+        setcookie('lang', $this->clientLang, $this->config->cookieLife, $this->config->webRoot);
     }
 
     /**
-     * 返回客户端使用的语言。
+     * Get the $clientLang var.
      * 
      * @access public
      * @return string
@@ -695,11 +705,11 @@ class router
     }
 
     /**
-     * 设置客户端所使用的主题。逻辑同setClientLang();
+     * Set the them the client user usering. The logic is same as the clientLang.
      *
-     * 主题风格所对应的样式表、图片等文件应当存放在www/theme/，分目录存放。目录的名字就是风格的名字。
-     * 
-     * @param   string $theme   主题风格。
+     * The css and images files of an theme should saved at www/theme/$themeName
+     *
+     * @param   string $theme   
      * @access  public
      * @return  void
      */
@@ -730,12 +740,12 @@ class router
         {
             $this->clientTheme = $this->config->default->theme;
         }
-        setcookie('theme', $this->clientTheme, $this->config->cookieLife, $this->config->cookiePath);
+        setcookie('theme', $this->clientTheme, $this->config->cookieLife, $this->config->webRoot);
     }
 
     /**
-     * 返回客户端所使用的主题。
-     * 
+     * Get the $clientTheme var. 
+     *
      * @access public
      * @return string
      */
@@ -745,7 +755,7 @@ class router
     }
 
     /**
-     * 返回web的根目录。
+     * Get the $webRoot var.
      * 
      * @access public
      * @return string
@@ -755,10 +765,10 @@ class router
         return $this->config->webRoot;
     }
 
-    //-------------------- 解析请求。--------------------//
+    //-------------------- Request related methods. --------------------//
 
     /**
-     * 处理请求，分为PATH_INFO和GET两种模式。
+     * The entrance of parseing request. According to the requestType, call related methods.
      * 
      * @access public
      * @return void
@@ -782,7 +792,7 @@ class router
     }
 
     /**
-     * 从请求中得出PATH_INFO信息。 
+     * Parse PATH_INFO, get the $URI and $viewType.
      * 
      * @access public
      * @return void
@@ -816,11 +826,13 @@ class router
     }
 
     /**
-     * 辅助函数：从env或者_SERVER变量中获取某个PATH_INFO的变种。
+     * Get $PATH_INFO from $_SERVER or $_ENV by the pathinfo var name.
+     *
+     * Mostly, the var name of PATH_INFO is  PATH_INFO, but may be ORIG_PATH_INFO.
      * 
-     * @param   string  $varName     目前支持PATH_INFO
+     * @param   string  $varName    PATH_INFO, ORIG_PATH_INFO
      * @access  private
-     * @return  string
+     * @return  string the PATH_INFO
      */
     private function getPathInfo($varName)
     {
@@ -830,7 +842,7 @@ class router
     }
 
     /**
-     * 解析通过GET方式传递过来的参数。
+     * Parse GET, get $URI and $viewType.
      * 
      * @access private
      * @return void
@@ -853,8 +865,9 @@ class router
     }
     
     /**
-     * 返回当前请求的URI。
+     * Get the $URL
      * 
+     * @param  bool $full  true, the URI contains the webRoot, else only hte URI.
      * @access public
      * @return string
      */
@@ -869,7 +882,7 @@ class router
     }
 
     /**
-     * 返回当前请求的viewType。
+     * Get the $viewType var.
      * 
      * @access public
      * @return string
@@ -879,17 +892,17 @@ class router
         return $this->viewType;
     }
 
-    //-------------------- 路由相关的方法。--------------------//
+    //-------------------- Routing related methods.--------------------//
 
     /**
-     * 加载公共的common模块。
+     * Load the common module
      *
-     * 该公共模块可以来完成一些公用的任务，比如启动session，进行用户权限验证等。
-     * 该方法没有自动调用，如果需要，可以在router文件中自己加入该逻辑。
-     * 但需要注意的是该方法调用应当在lang, config, dbh等对象加载完成之后。
+     *  The common module is a special module, which can be used to do some common things. For examle:
+     *  start session, check priviledge and so on.
+     *  This method should called manually in the router file(www/index.php) after the $lang, $config, $dbh loadde.
      *
      * @access public
-     * @return object
+     * @return object|bool  the common control object or false if not exits.
      */
     public function loadCommon()
     {
@@ -909,9 +922,9 @@ class router
     }
 
     /**
-     * 设置要调用的模块。
+     * Set the name of the module to be called.
      * 
-     * @param   string $moduleName  模块名字。
+     * @param   string $moduleName  the module name
      * @access  public
      * @return  void
      */
@@ -921,9 +934,9 @@ class router
     }
 
     /**
-     * 设置要加载的控制器文件。
+     * Set the control file of the module to be called.
      * 
-     * @param   bool    $exitIfNone     如果没有发现控制器文件，是否退出。默认值true。
+     * @param   bool    $exitIfNone     If control file not foundde, how to do. True, die the whole app. false, log error.
      * @access  public
      * @return  bool
      */
@@ -934,14 +947,14 @@ class router
         {
             $this->error("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
             return false;
-        }    
+        }
         return true;
     }
     
     /**
-     * 设置要调用的方法。
+     * Set the name of the method calling.
      * 
-     * @param string $methodName    调用的方法名。 
+     * @param string $methodName 
      * @access public
      * @return void
      */
@@ -950,21 +963,34 @@ class router
         $this->methodName = strtolower($methodName);
     }
 
-    /* 获得某一个模块的根目录。*/
+    /**
+     * Get the path of one module.
+     * 
+     * @param  string $moduleName    the module name
+     * @access public
+     * @return string the module path
+     */
     public function getModulePath($moduleName = '')
     {
         if($moduleName == '') $moduleName = $this->moduleName;
         return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix;
     }
 
-    /* 获得某一个模块，某种扩展的目录。ext可选值：control, model, view, lang, config。*/
+    /**
+     * Get extension path of one module.
+     * 
+     * @param   string $moduleName     the module name
+     * @param   string $ext            the extension type, can be control|model|view|lang|config
+     * @access  public
+     * @return  string the extension path.
+     */
     public function getModuleExtPath($moduleName, $ext)
     {
         return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix . 'opt' . $this->pathFix . $ext . $this->pathFix;
     }
 
     /**
-     * 设置当前调用方法对应的扩展文件。
+     * Set the action extension file.
      * 
      * @access  public
      * @return  bool
@@ -977,8 +1003,12 @@ class router
     }
 
     /**
-     * 根据PATH_INFO信息设置路由。
+     * Set the route according to PATH_INFO.
      * 
+     * 1. set the module name.
+     * 2. set the method name.
+     * 3. set the control file.
+     *
      * @access public
      * @return void
      */
@@ -986,30 +1016,35 @@ class router
     {
         if(!empty($this->URI))
         {
-            /* URL中含有参数信息。*/
+            /* There's the request seperator, split the URI by it. */
             if(strpos($this->URI, $this->config->requestFix) !== false)
             {
                 $items = explode($this->config->requestFix, $this->URI);
                 $this->setModuleName($items[0]);
                 $this->setMethodName($items[1]);
             }    
+            /* No reqeust seperator, use the default method name. */
             else
             {
                 $this->setModuleName($this->URI);
-                $this->setMethodName($this->config->default->method); // 取默认的方法。
+                $this->setMethodName($this->config->default->method);
             }
         }
         else
         {    
-            $this->setModuleName($this->config->default->module);   // 取默认的模块。
-            $this->setMethodName($this->config->default->method);   // 取默认的方法。
+            $this->setModuleName($this->config->default->module);   // use the default module.
+            $this->setMethodName($this->config->default->method);   // use the default method.
         }
         $this->setControlFile();
     }
 
     /**
-     * 通过GET变量来设置路由信息。
+     * Set the route according to GET.
      * 
+     * 1. set the module name.
+     * 2. set the method name.
+     * 3. set the control file.
+     *
      * @access public
      * @return void
      */
@@ -1023,31 +1058,38 @@ class router
     }
 
     /**
-     * 加载模块。
+     * Load a module.
+     *
+     * 1. include the control file or the extension action file.
+     * 2. create the control object.
+     * 3. set the params passed in through url.
+     * 4. call the method by call_user_function_array
      * 
      * @access public
-     * @return void
+     * @return bool|object  if the module object of die.
      */
     public function loadModule()
     {
         $moduleName = $this->moduleName;
         $methodName = $this->methodName;
 
-        /* 设置要加载的文件。*/
+        /* Include the contror file of the module. */
         $file2Included = $this->setActionExtFile() ? $this->extActionFile : $this->controlFile;
         chdir(dirname($file2Included));
         include $file2Included;
 
-        /* 设置要调用的类的名称。*/
+        /* Set the class name of the control. */
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
         if(!class_exists($className)) $this->error("the control $className not found", __FILE__, __LINE__, $exit = true);
 
+        /* Create a instance of the control. */
         $module = new $className();
         if(!method_exists($module, $methodName)) $this->error("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
+        $this->control = $module;
 
-        /* 获取方法的参数定义。*/
+        /* Get the default setings of the method to be called useing the reflecting. */
         $defaultParams = array();
-        $methodReflect = new reflectionMethod($className, $methodName);
+        $methodReflect = new reflectionMethod($moduleName, $methodName);
         foreach($methodReflect->getParameters() as $param)
         {
             $name    = $param->getName();
@@ -1055,7 +1097,7 @@ class router
             $defaultParams[$name] = $default;
         }
 
-        /* 设置参数。*/
+        /* Set params according PATH_INFO or GET. */
         if($this->config->requestType == 'PATH_INFO')
         {
             $this->setParamsByPathInfo($defaultParams);
@@ -1065,39 +1107,37 @@ class router
             $this->setParamsByGET($defaultParams);
         }
 
-        /* 调用相应的方法。*/
+        /* Call the method. */
         call_user_func_array(array(&$module, $methodName), $this->params);
         return $module;
     }
 
     /**
-     * 通过PATH_INFO信息来设置需要传递给control类方法的参数。
+     * Set the params by PATH_INFO
      * 
-     * @param   array $defaultParams    方法定义中默认值列表
+     * @param   array $defaultParams the default settings of the params.
      * @access  public
      * @return  void
      */
     public function setParamsByPathInfo($defaultParams = array())
     {
-        /* 将请求串按照分割符分开。*/
+        /* Spit the URI. */
         $items     = explode($this->config->requestFix, $this->URI);
         $itemCount = count($items);
 
-        /**
-         * items前面两个元素分别为moduleName和methodName，因此从第二个元素开始。
-         * 分别为clean模式和full模式。
-         */ 
-
         $params = array();
+        /* The clean mode, only passed in values, no keys. */
         if($this->config->pathType == 'clean')
         {
+            /* The first two item is moduleName and methodName. So the params should begin at 2.*/
             for($i = 2; $i < $itemCount; $i ++)
             {
-                $key = key($defaultParams);
+                $key = key($defaultParams);     // Get key from the $defaultParams.
                 $params[$key] = $items[$i];
                 next($defaultParams);
             }
         }
+        /* The full mode, both key and value passed in. */
         elseif($this->config->pathType == 'full')
         {
             for($i = 2; $i < $itemCount; $i += 2)
@@ -1111,14 +1151,15 @@ class router
     }
 
     /**
-     * 通过GET变量设置需要传递给control类访问的参数。
+     * Set the params by GET.
      * 
-     * @param   array   $defaultParams  方法定义中默认值列表。
+     * @param   array $defaultParams the default settings of the params.
      * @access  public
      * @return  void
      */
     public function setParamsByGET($defaultParams)
     {
+        /* Unset the moduleVar, methodVar, viewVar and session var, all the left are the params. */
         unset($_GET[$this->config->moduleVar]);
         unset($_GET[$this->config->methodVar]);
         unset($_GET[$this->config->viewVar]);
@@ -1127,16 +1168,16 @@ class router
     }
 
     /**
-     * 将方法定义中的默认值与用户请求中传递的值合并起来。
+     * Merge the params passed in and the default params. Thus the params which have default values needn't pass value, just like a function.
      *
-     * @param   array $defaultParams     方法定义中的参数默认值列表。
-     * @param   array $passedParams      用户请求中传递的参数列表。
+     * @param   array $defaultParams     the default params defined by the method.
+     * @param   array $passedParams      the params passed in through url.
      * @access  private
-     * @return  array
+     * @return  array the merged params.
      */
     private function mergeParams($defaultParams, $passedParams)
     {
-        /* 如果参数传递是非严格模式，认为passedParams的顺序和defaultParams是一致的。*/
+        /* If the not strict mode, the keys of passed params and defaaul params msut be the same. */
         if(!isset($this->config->strictParams) or $this->config->strictParams == false) 
         {
             $passedParams = array_values($passedParams);
@@ -1154,6 +1195,7 @@ class router
                 $i ++;
             }
         }
+        /* If in strict mode, the keys of the passed params must be the same with the default params, but order can be different. */
         else
         {
             foreach($defaultParams as $key => $defaultValue)
@@ -1172,7 +1214,7 @@ class router
     }
  
     /**
-     * 返回当前调用的模块名称。
+     * Get the $moduleName var.
      * 
      * @access public
      * @return string
@@ -1183,7 +1225,7 @@ class router
     }
 
     /**
-     * 返回control文件路径。
+     * Get the $controlFile var.
      * 
      * @access public
      * @return string
@@ -1194,7 +1236,7 @@ class router
     }
 
     /**
-     * 返回当前调用的control的方法。
+     * Get the $methodName var.
      * 
      * @access public
      * @return string
@@ -1205,7 +1247,7 @@ class router
     }
 
     /**
-     * 返回当前传递的参数名。
+     * Get the $param var.
      * 
      * @access public
      * @return string
@@ -1215,21 +1257,21 @@ class router
         return $this->params;
     }
 
-    //-------------------- 工具类方法。-------------------//
-
+    //-------------------- Tool methods.------------------//
+    
     /**
-     * 错误处理函数。
+     * The error handler.
      * 
-     * @param string    $message    错误信息。
-     * @param string    $file       发生错误的文件名。
-     * @param int       $line       发生错误的行号。
-     * @param bool      $exit       是否中止程序。
+     * @param string    $message    error message
+     * @param string    $file       the file error occers
+     * @param int       $line       the line error occers
+     * @param bool      $exit       exit the program or not
      * @access public
      * @return void
      */
     public function error($message, $file, $line, $exit = false)
     {
-        /* 记录错误信息。*/
+        /* Log the error info. */
         $log = "ERROR: $message in $file on line $line";
         if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
         $trace = debug_backtrace();
@@ -1238,7 +1280,7 @@ class router
         $log .= ", last called by $file on $line through function $function.";
         error_log($log);
 
-        /* 如果需要终止程序，则显示到终端用户的屏幕上。*/
+        /* If exit, output the error. */
         if($exit)
         {
             if($this->config->debug) die("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body>$log</body></html>");
@@ -1247,27 +1289,27 @@ class router
     }
 
     /**
-     * 加载某一个类文件。
+     * Load a class file.
      * 
-     * 该方法会首先尝试从appLibRoot下面查找，然后再到coreLibRoot下面查找。
+     * First search in $appLibRoot, then $coreLibRoot.
      *
-     * @param mixed $className  类名。 
-     * @param mixed $static     是否为静态类。
-     * @access public
-     * @return object           以类名为名的对象。
+     * @param   string $className  the class name
+     * @param   bool   $static     statis class or not
+     * @access  public
+     * @return  object|bool the instance of the class or just true.
      */
     public function loadClass($className, $static = false)
     {
         $className = strtolower($className);
 
-        /* 先试着加载appLibRoot下面的类文件。*/
+        /* Search in $appLibRoot. */
         $classFile = $this->appLibRoot . $className;
         if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
         $classFile .= '.class.php';
 
         if(!file_exists($classFile)) 
         {
-            /* 再试着加载coreLibRoot下面的类文件。*/
+            /* Search in $coreLibRoot. */
             $classFile = $this->coreLibRoot . $className;
             if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
             $classFile .= '.class.php';
@@ -1276,10 +1318,10 @@ class router
 
         helper::import($classFile);
 
-        /* 如果是静态类的话，无需实例化，直接退出。*/
-        if($static) return;
+        /* If staitc, return. */
+        if($static) return true;
 
-        /* 实例化，生成对象。*/
+        /* Instance it. */
         global $$className;
         if(!class_exists($className)) $this->error("the class $className not found in $classFile", __FILE__, __LINE__, $exit = true);
         if(!is_object($$className)) $$className = new $className();
@@ -1287,35 +1329,38 @@ class router
     }
 
     /**
-     * 加载配置文件，将其转换为对象，并返回作为全局的配置对象。
+     * Load config and return it as the global config object.
      * 
-     * 如果模块的名字为common，则从配置的根目录查找，其他的模块则从模块路径下面查找。
+     * If the module is common, search in $configRoot, else in $modulePath.
      *
-     * @param mixed $moduleName     模块的名字。
-     * @param bool  $exitIfNone     如果主配置文件不存在，是否退出。
-     * @access public
-     * @return object
+     * @param   string $moduleName     module name
+     * @param   bool  $exitIfNone     exit or not
+     * @access  public
+     * @return  object|bool the config object or false.
      */
     public function loadConfig($moduleName, $exitIfNone = true)
     {
-        /* 设置模块对应的主配置文件和扩展配置文件。*/
+        $extConfigFiles = array();
+
+        /* Set the main config file and extension config file. */
         if($moduleName == 'common')
         {
             $mainConfigFile = $this->configRoot . 'config.php';
-            $extConfigFiles = array();
+            $myConfig       = $this->configRoot . 'my.php';
+            if(file_exists($myConfig)) $extConfigFiles[] = $myConfig;
         }
         else
         {
-            $mainConfigFile = $this->moduleRoot . $moduleName . $this->pathFix . 'config.php';
+            $mainConfigFile = $this->getModulePath($moduleName) . 'config.php';
             $extConfigPath  = $this->getModuleExtPath($moduleName, 'config');
             $extConfigFiles = helper::ls($extConfigPath, '.php');
         }
 
-        /* 主配置文件不存在。*/
+        /* Set the files to include. */
         if(!file_exists($mainConfigFile))
         {
             if($exitIfNone) self::error("config file $mainConfigFile not found", __FILE__, __LINE__, true);
-            if(empty($extConfigFiles)) return;  // 没有扩展配置文件，退出。
+            if(empty($extConfigFiles)) return false;  //  and no extension file, exit.
             $configFiles = $extConfigFiles;
         }
         else
@@ -1332,11 +1377,18 @@ class router
             include $configFile;
             $loadedConfigs[] = $configFile;
         }
+
         $this->config = $config;
+
         return $config;
     }
 
-    /* 将系统的配置参数输出为json格式，方便客户端调用。*/
+    /**
+     * Export the config params to the client, thus the client can adjust it's logic according the config.
+     * 
+     * @access public
+     * @return void
+     */
     public function exportConfig()
     {
         $view->version     = $this->config->version;
@@ -1349,24 +1401,25 @@ class router
         $view->sessionVar  = $this->config->sessionVar;
         echo json_encode($view);
     }
-
+    
     /**
-     * 加载语言文件，将其转换为对象，并返回作为全局的语言对象。
+     * Load lang and return it as the global lang object.
      * 
-     * @param mixed $moduleName 
-     * @access public
-     * @return void
+     * @param   string $moduleName     the module name
+     * @access  public
+     * @return  bool|ojbect the lang object or false.
      */
     public function loadLang($moduleName)
     {
-        $mainLangFile = $this->moduleRoot . $moduleName . $this->pathFix . 'lang' . $this->pathFix . $this->clientLang . '.php';
+        $modulePath   = $this->getModulePath($moduleName);
+        $mainLangFile = $modulePath . 'lang' . $this->pathFix . $this->clientLang . '.php';
         $extLangPath  = $this->getModuleExtPath($moduleName, 'lang');
         $extLangFiles = helper::ls($extLangPath . $this->clientLang, '.php');
 
-        /* 主配置文件不存在。*/
+        /* Set the files to includ. */
         if(!file_exists($mainLangFile))
         {
-            if(empty($extLangFiles)) return;  // 没有扩展配置文件，退出。
+            if(empty($extLangFiles)) return false;  // also no extension file.
             $langFiles = $extLangFiles;
         }
         else
@@ -1390,15 +1443,16 @@ class router
     }
 
     /**
-     * 连接到数据库，返回$dbh对象。
+     * Connect to database.
      * 
      * @access public
-     * @return object
+     * @return object|bool the database handler.
      */
     public function connectDB()
     {
-        global $config;
+        global $config, $dbh;
         if(!isset($config->db->driver)) self::error('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
+        if(!isset($config->db->user)) return false;
         if($config->db->driver == 'mysql')
         {
             $dsn = "mysql:host={$config->db->host}; port={$config->db->port}; dbname={$config->db->name}";
@@ -1421,22 +1475,22 @@ class router
 }
 
 /**
- * 配置类。
+ * The config class.
  * 
- * @package ZenTaoPHP
+ * @package framework
  */
 class config
 { 
     /**
-     * 设置对象的值。
+     * Set the value of a member. the member can be the foramt like db.user.
      * 
      * <code>
      * <?php
      * $config->set('db.user', 'wwccss'); 
      * ?>
      * </code>
-     * @param   string  $key    要设置的属性，可以是father.child的形式。
-     * @param   mixed   $value  要设置的值。
+     * @param   string  $key    the key of the member
+     * @param   mixed   $value  the value
      * @access  public
      * @return  void
      */
@@ -1447,22 +1501,22 @@ class config
 }
 
 /**
- * 语言类。
+ * The lang class.
  * 
- * @package ZenTaoPHP
+ * @package framework
  */
 class language 
 {
     /**
-     * 设置对象的值。
+     * Set the value of a member. the member can be the foramt like db.user.
      * 
      * <code>
      * <?php
-     * $lang->set('version', '1.0版本'); 
+     * $lang->set('version', '1.0); 
      * ?>
      * </code>
-     * @param   string  $key    要设置的属性，可以是father.child的形式。
-     * @param   mixed   $value  要设置的值。
+     * @param   string  $key    the key of the member, can be father.child
+     * @param   mixed   $value  the value
      * @access  public
      * @return  void
      */
@@ -1472,7 +1526,12 @@ class language
     }
 
     /**
-     * 打印某一个对象的属性。
+     * Show a member 
+     * 
+     * @param   object $obj    the object
+     * @param   string $key    the key
+     * @access  public
+     * @return  void
      */
     public function show($obj, $key)
     {
@@ -1482,19 +1541,32 @@ class language
 }
 
 /**
- * 超全局变量类。
+ * The super object class.
  * 
- * @package ZenTaoPHP
+ * @package framework
  */
 class super
 {
-    /* 构造函数。*/
+    /**
+     * Construct, set the var scope.
+     * 
+     * @param   string $scope  the score, can be server, post, get, cookie, session, global
+     * @access  public
+     * @return  void
+     */
     public function __construct($scope)
     {
         $this->scope = $scope;
     }
 
-    /* 设置属性。*/
+    /**
+     * Set one member value. 
+     * 
+     * @param   string    the key
+     * @param   mixed $value  the value
+     * @access  public
+     * @return  void
+     */
     public function set($key, $value)
     {
         if($this->scope == 'post')
@@ -1527,7 +1599,13 @@ class super
         }
     }
 
-    /* 魔术方法。*/
+    /**
+     * The magic get method.
+     * 
+     * @param  string $key    the key
+     * @access public
+     * @return mixed|bool return the value of the key or false.
+     */
     public function __get($key)
     {
         if($this->scope == 'post')
@@ -1542,6 +1620,8 @@ class super
         }
         elseif($this->scope == 'server')
         {
+            if(isset($_SERVER[$key])) return $_SERVER[$key];
+            $key = strtoupper($key);
             if(isset($_SERVER[$key])) return $_SERVER[$key];
             return false;
         }
@@ -1570,5 +1650,21 @@ class super
             return false;
         }
     }
-}
 
+    /**
+     * Print the structure.
+     * 
+     * @access public
+     * @return void
+     */
+    public function a()
+    {
+        if($this->scope == 'post')    a($_POST);
+        if($this->scope == 'get')     a($_GET);
+        if($this->scope == 'server')  a($_SERVER);
+        if($this->scope == 'cookie')  a($_COOKIE);
+        if($this->scope == 'session') a($_SESSION);
+        if($this->scope == 'env')     a($_ENV);
+        if($this->scope == 'global')  a($GLOBAL);
+    }
+}

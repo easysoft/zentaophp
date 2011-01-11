@@ -1,35 +1,23 @@
 <?php
 /**
- * The model class file of ZenTaoPHP.
+ * The model class file of ZenTaoPMS.
  *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
- * @package     ZenTaoPHP
+ * @package     framework
  * @version     $Id$
  * @link        http://www.zentao.net
  */
 /**
- * 模型基类。
+ * The base class of model.
  * 
- * @package ZenTaoPHP
+ * @package framework
  */
 class model
 {
     /**
-     * 全局的$app对象。
+     * The global $app object.
      * 
      * @var object
      * @access protected
@@ -37,7 +25,7 @@ class model
     protected $app;
 
     /**
-     * 全局的$config对象。 
+     * The global $config object.
      * 
      * @var object
      * @access protected
@@ -45,7 +33,7 @@ class model
     protected $config;
 
     /**
-     * 全局的$lang对象。
+     * The global $lang object.
      * 
      * @var object
      * @access protected
@@ -53,7 +41,7 @@ class model
     protected $lang;
 
     /**
-     * 全局的$dbh（数据库访问句柄）对象。
+     * The global $dbh object, the database connection handler.
      * 
      * @var object
      * @access protected
@@ -61,7 +49,7 @@ class model
     protected $dbh;
 
     /**
-     * dao对象。
+     * The $dao object, used to access or update database.
      * 
      * @var object
      * @access protected
@@ -69,7 +57,7 @@ class model
     public $dao;
 
     /**
-     * POST对象。
+     * The $post object, used to access the $_POST var.
      * 
      * @var ojbect
      * @access public
@@ -77,7 +65,7 @@ class model
     public $post;
 
     /**
-     * get对象。
+     * The $get object, used to access the $_GET var.
      * 
      * @var ojbect
      * @access public
@@ -85,7 +73,7 @@ class model
     public $get;
 
     /**
-     * session对象。
+     * The $sesion object, used to access the $_SESSION var.
      * 
      * @var ojbect
      * @access public
@@ -93,7 +81,7 @@ class model
     public $session;
 
     /**
-     * server对象。
+     * The $server object, used to access the $_SERVER var.
      * 
      * @var ojbect
      * @access public
@@ -101,7 +89,7 @@ class model
     public $server;
 
     /**
-     * cookie对象。
+     * The $cookie object, used to access the $_COOKIE var.
      * 
      * @var ojbect
      * @access public
@@ -109,7 +97,7 @@ class model
     public $cookie;
 
     /**
-     * global对象。
+     * The $global object, used to access the $_GLOBAL var.
      * 
      * @var ojbect
      * @access public
@@ -117,10 +105,10 @@ class model
     public $global;
 
     /**
-     * 构造函数：
+     * The construct function.
      *
-     * 1. 引用全局变量，使之可以通过成员属性访问。
-     * 2. 设置当前模块的路径、配置、语言等信息，并加载相应的文件。
+     * 1. global the global vars, refer them by the class member such as $this->app.
+     * 2. set the pathes, config, lang of current module
      * 
      * @access public
      * @return void
@@ -137,17 +125,19 @@ class model
         $this->app->loadLang($moduleName,   $exit = false);
         $this->app->loadConfig($moduleName, $exit = false);
      
-        if(isset($config->db->dao)   and $config->db->dao)   $this->loadDAO();
-        if(isset($config->super2OBJ) and $config->super2OBJ) $this->setSuperVars();
+        $this->loadDAO();
+        $this->setSuperVars();
     }
 
     /**
-     * 设置模块名：将类名中的model替换掉即为模块名。
-     * 没有使用$app->getModule()方法，因为它返回的是当前调用的模块。
-     * 而在一次请求中，当前模块的control文件很有可能会调用其他模块的model。
+     * Get the module name of this model. Not the module user visiting.
+     *
+     * This method replace the 'ext' and 'model' string from the model class name, thus get the module name.
+     * Not useing $app->getModuleName() because it return the module user is visiting. But one module can be
+     * loaded by loadModel() so we must get the module name of thie model.
      * 
      * @access protected
-     * @return void
+     * @return string the module name.
      */
     protected function getModuleName()
     {
@@ -158,7 +148,7 @@ class model
     }
 
     /**
-     * 设置超全局变量。
+     * Set the super vars.
      * 
      * @access protected
      * @return void
@@ -174,11 +164,11 @@ class model
     }
 
     /**
-     * 加载某一个模块的model文件。
+     * Load the model of one module. After loaded, can use $this->modulename to visit the model object.
      * 
-     * @param   string  $moduleName     模块名字，如果为空，则取当前的模块名作为model名。
+     * @param   string  $moduleName
      * @access  public
-     * @return  void
+     * @return  object|bool  the model object or false if model file not exists.
      */
     public function loadModel($moduleName)
     {
@@ -194,10 +184,10 @@ class model
         return $this->$moduleName;
     }
 
-    //-------------------- 数据库操作相应的方法。--------------------//
+    //-------------------- DAO related method s--------------------//
 
     /**
-     * 加载DAO类，并返回对象。
+     * Load DAO.
      * 
      * @access private
      * @return void
@@ -207,7 +197,14 @@ class model
         $this->dao = $this->app->loadClass('dao');
     }
 
-    /* 将一条记录标记为已删除。*/
+    /**
+     * Delete one record.
+     * 
+     * @param  string    $table  the table name
+     * @param  string    $id     the id value of the record to be deleted
+     * @access public
+     * @return void
+     */
     public function delete($table, $id)
     {
         $this->dao->update($table)->set('deleted')->eq(1)->where('id')->eq($id)->exec();
@@ -215,7 +212,13 @@ class model
         $this->loadModel('action')->create($object, $id, 'deleted', '', $extra = ACTIONMODEL::CAN_UNDELETED);
     }
 
-    /* 还原已经标记为删除的记录。*/
+    /**
+     * Undelete an record.
+     * 
+     * @param  int      $actionID 
+     * @access public
+     * @return void
+     */
     public function undelete($actionID)
     {
         $action = $this->loadModel('action')->getById($actionID);
