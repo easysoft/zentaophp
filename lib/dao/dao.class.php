@@ -1265,7 +1265,7 @@ class sql
             $condition = $arg1;
         }
 
-        $this->sql .= ' ' . DAO::WHERE ." $condition ";
+        $this->sql .= " WHERE $condition ";
         return $this;
     } 
 
@@ -1423,7 +1423,7 @@ class sql
     {
         $order = str_replace(array('|', '', '_'), ' ', $order);
         $order = str_replace('left', '`left`', $order); // process the left to `left`.
-        $this->sql .= ' ' . DAO::ORDERBY . " $order";
+        $this->sql .= " ORDER BY $order";
         return $this;
     }
 
@@ -1437,7 +1437,7 @@ class sql
     public function limit($limit)
     {
         if(empty($limit)) return $this;
-        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= ' ' . DAO::LIMIT . " $limit ";
+        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= " LIMIT $limit ";
         return $this;
     }
 
@@ -1450,7 +1450,7 @@ class sql
      */
     public function groupBy($groupBy)
     {
-        $this->sql .= ' ' . DAO::GROUPBY . " $groupBy";
+        $this->sql .= " GROUP BY $groupBy";
         return $this;
     }
 
@@ -1463,7 +1463,7 @@ class sql
      */
     public function having($having)
     {
-        $this->sql .= ' ' . DAO::HAVING . " $having";
+        $this->sql .= " HAVING $having";
         return $this;
     }
 
