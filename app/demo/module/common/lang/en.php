@@ -9,7 +9,8 @@
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentaoms.com
+ * @link        http://www.zentao.net
  */
 $lang->welcome = 'Welcome to use ZenTaoPHP framework.';
 $lang->runInfo = "<div>Time: %s ms, Memory: %s KB, SQL: %s.  </div>";
+$lang->save    = 'Save';

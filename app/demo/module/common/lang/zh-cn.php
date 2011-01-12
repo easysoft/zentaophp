@@ -9,7 +9,8 @@
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentaoms.com
+ * @link        http://www.zentao.net
  */
 $lang->welcome = '欢迎使用ZenTaoPHP框架。';
 $lang->runInfo = "<div>时间: %s 毫秒, 内存: %s KB, 查询: %s.  </div>";
+$lang->save    = '保存';

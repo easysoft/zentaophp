@@ -7,7 +7,7 @@
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
- * @link        http://www.zentaoms.com/
+ * @link        http://www.zentao.net
  */
 $lang->index->index = 'Home';
 $lang->index->blog  = 'View the simple blog demo';
