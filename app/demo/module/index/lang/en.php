@@ -10,3 +10,4 @@
  * @link        http://www.zentaoms.com/
  */
 $lang->index->index = 'Home';
+$lang->index->blog  = 'View the simple blog demo';

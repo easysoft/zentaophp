@@ -2,22 +2,8 @@
 /**
  * The control file of index module of ZenTaoPHP.
  *
- * When requests the root of a website, this index module will be called.
- *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
@@ -25,17 +11,26 @@
  */
 class index extends control
 {
-    /* 构造函数。*/
+    /**
+     * The construct function.
+     * 
+     * @access public
+     * @return void
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /* index方法，也是默认的方法。*/
+    /**
+     * The index page.
+     * 
+     * @access public
+     * @return void
+     */
     public function index()
     {
-        $header['title'] = $this->lang->welcome;
-        $this->assign('header',  $header);
+        $this->view->header->title = $this->lang->welcome;
         $this->display();
     }
 }

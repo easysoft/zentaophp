@@ -11,3 +11,4 @@
  * @link        http://www.zentaoms.com
  */
 $lang->index->index = '首页';
+$lang->index->blog  = '查看简单的博客实例';
