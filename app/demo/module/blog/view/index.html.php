@@ -1,20 +1,21 @@
 <?php
 /**
- * The html template file of index method of hello module of ZenTaoPHP.
+ * The html template file of index method of blog module of ZenTaoPHP.
  *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  */
 ?>
-<?php include '../../common/header.html.php';?>
+<?php include '../../common/view/header.html.php';?>
 <table align='center'> 
   <tr>
-    <th><?php echo $lang->hello->id;?></th>  
-    <th><?php echo $lang->hello->title;?></th>  
-    <th><?php echo $lang->hello->date;?></th>  
-    <th><?php echo $lang->hello->action;?></th>  
+    <th><?php echo $lang->blog->id;?></th>  
+    <th><?php echo $lang->blog->title;?></th>  
+    <th><?php echo $lang->blog->date;?></th>  
+    <th><?php echo $lang->blog->action;?></th>  
   </tr>
   <?php foreach($articles as $article):?>
   <tr>
@@ -23,13 +24,9 @@
     <td><?php echo $article->date;?></td>
     <td>
       <?php
-      $vars     = array('id' => $article->id);
-      $viewLink = $this->createLink($this->moduleName, 'view', $vars);
-      $delLink  = $this->createLink($this->moduleName, 'del',  $vars);
-      $editLink = $this->createLink($this->moduleName, 'edit', $vars);
-      echo html::a($viewLink, $lang->hello->view);
-      echo html::a($editLink, $lang->hello->edit);
-      echo html::a($delLink, $lang->hello->del);
+      echo html::a($this->createLink('blog', 'view',   "id=$article->id"), $lang->blog->view);
+      echo html::a($this->createLink('blog', 'edit',   "id=$article->id"), $lang->blog->edit);
+      echo html::a($this->createLink('blog', 'delete', "id=$article->id"), $lang->blog->delete);
       ?>
     </td>
   </tr>  
@@ -37,10 +34,10 @@
   <tr>
     <td colspan='4'>
       <?php 
-      echo html::a(inlink('add'), $lang->hello->add);
+      echo html::a(inlink('create'), $lang->blog->add);
       echo html::a($this->createLink('index', 'index'), $lang->index->index);
       ?>
     </td>
   </tr>  
 </table>
-<?php include '../../common/footer.html.php';?>
+<?php include '../../common/view/footer.html.php';?>

@@ -1,69 +1,76 @@
 <?php
 /**
- * The model file of hello module of ZenTaoPHP.
+ * The model file of blog module of ZenTaoPHP.
  *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  */
 ?>
 <?php
-class helloModel extends model
+class blogModel extends model
 {
-    public function __construct()
+    /**
+     * Get article lists.
+     * 
+     * @access public
+     * @return array
+     */
+    public function getList()
     {
-        parent::__construct();
+        return $this->dao->select('*')->from('blog')->orderBy('id desc')->fetchAll();
     }
 
-    function getList()
+    /**
+     * Get an article.
+     * 
+     * @param  int    $id 
+     * @access public
+     * @return object
+     */
+    public function getById($id)
     {
-        $sql      = "SELECT * FROM blog";
-        $stmt     = $this->dbh->query($sql);
-        $articles = $stmt->fetchAll();
-        return $articles;
+        return $this->dao->findById($id)->from('blog')->fetch();
     }
 
-    function getInfo($id)
+    /**
+     * Create an article.
+     * 
+     * @access public
+     * @return void
+     */
+    public function create()
     {
-        $id      = (int)$id;
-        $sql     = "SELECT * FROM blog WHERE id = '$id'";
-        $stmt    = $this->dbh->query($sql);
-        $article = $stmt->fetch();
-        return $article;
+        $article = fixer::input('post')->specialchars('title, content')->add('date', date('Y-m-d H:i:s'))->get();
+        $this->dao->insert('blog')->data($article)->exec();
+        return $this->dao->lastInsertID();
     }
 
-    function delArticle($id)
+    /**
+     * Update an article.
+     * 
+     * @param  int    $articleID 
+     * @access public
+     * @return void
+     */
+    public function update($articleID)
     {
-        $id  = (int)$id;
-        $sql = "DELETE FROM blog WHERE id = '$id' LIMIT 1";
-        return $this->dbh->exec($sql);
-    }
-    
-    function add($title, $content)
-    {
-        if(empty($title) or empty($content)) return false;
-        $sql = "INSERT INTO blog (title, content, date) VALUES('$title', '$content', NOW())";
-        return $this->dbh->exec($sql);
+        $article = fixer::input('post')->specialchars('title, content')->get();
+        $this->dao->update('blog')->data($article)->where('id')->eq($articleID)->exec();
     }
 
-    function save($id, $title, $content)
+
+    /**
+     * Delete an article.
+     * 
+     * @param  int    $id 
+     * @access public
+     * @return void
+     */
+    public function delete($id)
     {
-        if(empty($id) or empty($title) or empty($content)) return false;
-        $sql = "UPDATE blog SET title = '$title', content = '$content' WHERE id = '$id'";
-        return $this->dbh->exec($sql);
+        $this->dao->delete()->from('blog')->where('id')->eq($id)->exec();
     }
 }

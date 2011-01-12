@@ -1,33 +1,21 @@
 <?php
 /**
- * The hello module english file of ZenTaoPHP.
+ * The blog module english file of ZenTaoPHP.
  *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
-$lang->page    = 'ZenTaoPHP Hello World';
-$lang->id      = 'id';
-$lang->title   = 'title';
-$lang->date    = 'date';
-$lang->content = 'content';
-$lang->action  = 'action';
-$lang->view    = 'view';
-$lang->add     = 'add';
-$lang->edit    = 'edit';
-$lang->del     = 'del';
+$lang->blog->index   = 'Index';
+$lang->blog->view    = 'View';
+$lang->blog->add     = 'Add';
+$lang->blog->edit    = 'Edit';
+$lang->blog->delete  = 'Delete';
+$lang->blog->id      = 'Id';
+$lang->blog->title   = 'Title';
+$lang->blog->date    = 'Date';
+$lang->blog->content = 'Content';
+$lang->blog->action  = 'Action';

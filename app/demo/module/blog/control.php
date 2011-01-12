@@ -11,6 +11,12 @@
  */
 class blog extends control
 {
+    /**
+     * The construct function.
+     * 
+     * @access public
+     * @return void
+     */
     public function __construct()
     {
         parent::__construct();
@@ -31,7 +37,47 @@ class blog extends control
     }
 
     /**
-     * View a blog.
+     * Create an article.
+     * 
+     * @access public
+     * @return void
+     */
+    public function create()
+    {
+        if(!empty($_POST))
+        {
+            $blogID = $this->blog->create();
+            $this->locate(inlink('index'));
+        }
+
+        $this->view->header->title = $this->lang->blog->add;
+        $this->display();
+    }
+
+   /**
+     * Update an article.
+     * 
+     * @param  int    $id 
+     * @access public
+     * @return void
+     */
+    public function edit($id)
+    {
+        if(!empty($_POST))
+        {
+            $this->blog->update($id);
+            $this->locate(inlink('view', "id=$id"));
+        }
+        else
+        {
+            $this->view->header->title = $this->lang->blog->edit;
+            $this->view->article       = $this->blog->getByID($id);
+            $this->display();
+        }
+    }
+
+    /**
+     * View an article.
      * 
      * @param  int    $id 
      * @access public
@@ -40,50 +86,22 @@ class blog extends control
     public function view($id)
     {
         $this->view->header->title = $this->lang->blog->view;
-        $this->view->article       = $this->blog->getInfo($id);
+        $this->view->article       = $this->blog->getByID($id);
         $this->display();
     }
 
-    public function del($id)
+    /**
+     * Delete an article.
+     * 
+     * @param  int    $id 
+     * @access public
+     * @return void
+     */
+    public function delete($id)
     {
-        $this->blog->delArticle($id);
-        header("location: " . $this->createLink($this->moduleName));
+        $this->blog->delete($id);
+        $this->locate(inlink('index'));
     }
 
-    public function edit($id)
-    {
-        if(empty($_POST))
-        {
-            $header['title'] = $this->lang->page;
-            $article = $this->blog->getInfo($id);
-            $this->assign('header', $header);
-            $this->assign('article', $article);
-            $this->display();
-        }
-        else
-        {
-            $title   = filter_var($_POST['title'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
-            $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
-            $id      = (int)$id;
-            $this->blog->save($id, $title, $content);
-            header("location: " . $this->createLink($this->moduleName));
-        }
-    }
-
-    public function add()
-    {
-        if(empty($_POST))
-        {
-            $header['title'] = $this->lang->page;
-            $this->assign('header', $header);
-            $this->display();
-        }
-        else
-        {
-            $title   = filter_var($_POST['title'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
-            $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
-            $this->blog->add($title, $content);
-            header("location: " . $this->createLink($this->moduleName));
-        }
-    }
+ 
 }
