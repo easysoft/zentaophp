@@ -2,55 +2,51 @@
 /**
  * The config file of ZenTaoPHP.
  *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
+ * Don't modify this file directly, copy the item to my.php and change it.
  *
- * @copyright   Copyright 2009-2010 ÇàµºÒ×ÈíÌì´´ÍøÂç¿Æ¼¼ÓÐÏÞ¹«Ë¾(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
- * @package     ZenTaoPHP
+ * @package     config
  * @version     $Id$
- * @link        http://www.zentaoms.com
+ * @link        http://www.zentao.net
  */
-$config->version     = '1.0.STABLE.090620'; // °æ±¾ºÅ£¬ÇÐÎðÐÞ¸Ä¡£
-$config->debug       = true;              // ÊÇ·ñ´ò¿ªdebug¹¦ÄÜ¡£
-$config->webRoot     = '/';               // webÍøÕ¾µÄ¸ùÄ¿Â¼¡£
-$config->encoding    = 'UTF-8';           // ÍøÕ¾µÄ±àÂë¡£
-$config->cookiePath  = '/';               // cookieµÄÓÐÐ§Â·¾¶¡£
-$config->cookieLife  = time() + 2592000;  // cookieµÄÉúÃüÖÜÆÚ¡£
+/* Basic settings. */
+$config->version     = '2.0';             // The version of zentaophp. Don't change it.
+$config->encoding    = 'UTF-8';           // The encoding of znetaopms.
+$config->cookieLife  = time() + 2592000;  // The cookie life time.
+$config->timezone    = 'Asia/Shanghai';   // The time zone setting, for more see http://www.php.net/manual/en/timezones.php
 
-$config->requestType = 'PATH_INFO';       // ÈçºÎ»ñÈ¡µ±Ç°ÇëÇóµÄÐÅÏ¢£¬¿ÉÑ¡Öµ£ºPATH_INFO|GET
-$config->pathType    = 'clean';           // requestType=PATH_INFO: ÇëÇóurlµÄ¸ñÊ½£¬¿ÉÑ¡ÖµÎªfull|clean£¬full¸ñÊ½»á´øÓÐ²ÎÊýÃû³Æ£¬cleanÔòÖ»ÓÐÈ¡Öµ¡£
-$config->requestFix  = '/';               // requestType=PATH_INFO: ÇëÇóurlµÄ·Ö¸ô·û£¬¿ÉÑ¡ÖµÎªÐ±Ïß¡¢ÏÂ»®Ïß¡¢¼õºÅ¡£ºóÃæÁ½ÖÖÐÎÊ½ÓÐÖúÓÚSEO¡£
-$config->moduleVar   = 'm';               // requestType=GET: Ä£¿é±äÁ¿Ãû¡£
-$config->methodVar   = 'f';               // requestType=GET: ·½·¨±äÁ¿Ãû¡£
-$config->viewVar     = 't';               // requestType=GET: Ä£°å±äÁ¿Ãû¡£
+/* The request settings. */
+$config->requestType = 'PATH_INFO';       // The request type: PATH_INFO|GET, if PATH_INFO, must use url rewrite.
+$config->pathType    = 'clean';           // If the request type is PATH_INFO, the path type.
+$config->requestFix  = '-';               // The divider in the url when PATH_INFO.
+$config->moduleVar   = 'm';               // requestType=GET: the module var name.
+$config->methodVar   = 'f';               // requestType=GET: the method var name.
+$config->viewVar     = 't';               // requestType=GET: the view var name.
+$config->sessionVar  = 'sid';             // requestType=GET: the session var name.
 
-$config->views       = ',html,xml,json,txt,csv,doc,pdf,'; // Ö§³ÖµÄÊÓÍ¼ÁÐ±í¡£
-$config->langs       = 'zh-cn,zh-tw,zh-hk,en';            // Ö§³ÖµÄÓïÑÔÁÐ±í¡£
-$config->themes      = 'default';                         // Ö§³ÖµÄÖ÷ÌâÁÐ±í¡£
+/* Views and themes. */
+$config->views  = ',html,json,';          // Supported view formats.
+$config->themes = 'default';              // Supported themes.
 
-$config->default->view   = 'html';                      // Ä¬ÈÏµÄÊÓÍ¼¸ñÊ½¡£
-$config->default->lang   = 'zh-cn';                     // Ä¬ÈÏµÄÓïÑÔ¡£
-$config->default->theme  = 'default';                   // Ä¬ÈÏµÄÖ÷Ìâ¡£
-$config->default->module = 'index';                     // Ä¬ÈÏµÄÄ£¿é¡£µ±ÇëÇóÖÐÃ»ÓÐÖ¸¶¨Ä£¿éÊ±£¬¼ÓÔØ¸ÃÄ£¿é¡£
-$config->default->method = 'index';                     // Ä¬ÈÏµÄ·½·¨¡£µ±ÇëÇóÖÐÃ»ÓÐÖ¸¶¨·½·¨»òÕßÖ¸¶¨µÄ·½·¨²»´æÔÚÊ±£¬µ÷ÓÃ¸Ã·½·¨¡£
+/* Supported languages. */
+$config->langs['zh-cn'] = 'ä¸­æ–‡ç®€ä½“';
+$config->langs['en']    = 'English';
 
-$config->db->errorMode  = PDO::ERRMODE_WARNING;         // PDOµÄ´íÎóÄ£Ê½: PDO::ERRMODE_SILENT|PDO::ERRMODE_WARNING|PDO::ERRMODE_EXCEPTION
-$config->db->persistant = false;                        // ÊÇ·ñ´ò¿ª³Ö¾ÃÁ¬½Ó¡£
-$config->db->driver     = 'mysql';                      // pdoµÄÇý¶¯ÀàÐÍ£¬Ä¿Ç°ÔÝÊ±Ö»Ö§³Ömysql¡£
-$config->db->host       = 'localhost';                  // mysqlÖ÷»ú¡£
-$config->db->port       = '3306';                       // mysqlÖ÷»ú¶Ë¿ÚºÅ¡£
-$config->db->name       = 'zentao';                     // Êý¾Ý¿âÃû³Æ¡£
-$config->db->user       = 'root';                       // Êý¾Ý¿âÓÃ»§Ãû¡£
-$config->db->password   = '';                           // ÃÜÂë¡£
-$config->db->encoding   = 'UTF8';                       // Êý¾Ý¿âµÄ±àÂë¡£
+/* Default settings. */
+$config->default->view   = 'html';        // Default view.
+$config->default->lang   = 'en';          // Default language.
+$config->default->theme  = 'default';     // Default theme.
+$config->default->module = 'index';       // Default module.
+$config->default->method = 'index';       // Default method.
+
+/* Database settings. */
+$config->db->persistant = false;           // Pconnect or not.
+$config->db->driver     = 'mysql';         // Must be MySQL. Don't support other database server yet.
+$config->db->encoding   = 'UTF8';          // Encoding of database.
+$config->db->strictMode = false;           // Turn off the strict mode of MySQL.
+
+/* Include the custom config file. */
+$myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
+if(file_exists($myConfig)) include $myConfig;
