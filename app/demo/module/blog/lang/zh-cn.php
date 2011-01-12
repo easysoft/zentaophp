@@ -23,13 +23,16 @@
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
-$lang->page    = 'ZenTaoPHP演示';
-$lang->id      = '编号';
-$lang->title   = '标题';
-$lang->date    = '日期';
-$lang->content = '内容';
-$lang->action  = '操作';
-$lang->view    = '查看';
-$lang->add     = '添加';
-$lang->edit    = '编辑';
-$lang->del     = '删除';
+$lang->hello->index   = '演示首页';
+$lang->hello->view    = '详情页面';
+$lang->hello->add     = '添加页面';
+$lang->hello->edit    = '编辑页面';
+$lang->hello->id      = '编号';
+$lang->hello->title   = '标题';
+$lang->hello->date    = '日期';
+$lang->hello->content = '内容';
+$lang->hello->action  = '操作';
+$lang->hello->view    = '查看';
+$lang->hello->add     = '添加';
+$lang->hello->edit    = '编辑';
+$lang->hello->del     = '删除';

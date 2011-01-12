@@ -1,54 +1,52 @@
 <?php
 /**
- * The control file of hello module of ZenTaoPHP.
+ * The control file of blog module of ZenTaoPHP.
  *
- * ZenTaoPHP is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * ZenTaoPHP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with ZenTaoPHP.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @copyright   Copyright 2009-2010 青岛易软天创网络科技有限公司(www.cnezsoft.com)
+ * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
+ * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
  * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
  * @package     ZenTaoPHP
  * @version     $Id$
  * @link        http://www.zentaoms.com
  */
-class hello extends control
+class blog extends control
 {
     public function __construct()
     {
         parent::__construct();
+        $this->app->loadLang('index');
     }
 
+    /**
+     * The index page of blog module.
+     * 
+     * @access public
+     * @return void
+     */
     public function index()
     {
-        $articles = $this->hello->getList();
-        $header['title'] = $this->lang->page;
-        $this->assign('header',   $header);
-        $this->assign('articles', $articles);
+        $this->view->header->title = $this->lang->blog->index;
+        $this->view->articles      = $this->blog->getList();
         $this->display();
     }
 
+    /**
+     * View a blog.
+     * 
+     * @param  int    $id 
+     * @access public
+     * @return void
+     */
     public function view($id)
     {
-        $article = $this->hello->getInfo($id);
-        $header['title'] = $this->lang->page;
-        $this->assign('header',  $header);
-        $this->assign('article', $article);
+        $this->view->header->title = $this->lang->blog->view;
+        $this->view->article       = $this->blog->getInfo($id);
         $this->display();
     }
 
     public function del($id)
     {
-        $this->hello->delArticle($id);
+        $this->blog->delArticle($id);
         header("location: " . $this->createLink($this->moduleName));
     }
 
@@ -57,7 +55,7 @@ class hello extends control
         if(empty($_POST))
         {
             $header['title'] = $this->lang->page;
-            $article = $this->hello->getInfo($id);
+            $article = $this->blog->getInfo($id);
             $this->assign('header', $header);
             $this->assign('article', $article);
             $this->display();
@@ -67,7 +65,7 @@ class hello extends control
             $title   = filter_var($_POST['title'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
             $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
             $id      = (int)$id;
-            $this->hello->save($id, $title, $content);
+            $this->blog->save($id, $title, $content);
             header("location: " . $this->createLink($this->moduleName));
         }
     }
@@ -84,7 +82,7 @@ class hello extends control
         {
             $title   = filter_var($_POST['title'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
             $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING | FILTER_SANITIZE_MAGIC_QUOTES);
-            $this->hello->add($title, $content);
+            $this->blog->add($title, $content);
             header("location: " . $this->createLink($this->moduleName));
         }
     }
