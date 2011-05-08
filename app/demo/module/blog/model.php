@@ -19,9 +19,9 @@ class blogModel extends model
      * @access public
      * @return array
      */
-    public function getList()
+    public function getList($pager = null)
     {
-        return $this->dao->select('*')->from('blog')->orderBy('id desc')->fetchAll();
+        return $this->dao->select('*')->from('blog')->orderBy('id desc')->page($pager)->fetchAll();
     }
 
     /**
@@ -61,7 +61,6 @@ class blogModel extends model
         $article = fixer::input('post')->specialchars('title, content')->get();
         $this->dao->update('blog')->data($article)->where('id')->eq($articleID)->exec();
     }
-
 
     /**
      * Delete an article.

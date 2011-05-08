@@ -3,3 +3,4 @@ body  {font-size: 12px; background:white}
 table {border-collapse: collapse;}
 table, th, tr, td {border:1px solid #e4d4de}
 th, td{padding:5px}
+.a-center{text-align:center}

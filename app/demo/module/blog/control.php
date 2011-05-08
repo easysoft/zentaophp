@@ -29,10 +29,14 @@ class blog extends control
      * @access public
      * @return void
      */
-    public function index()
+    public function index($recTotal = 0, $recPerPage = 20, $pageID = 0)
     {
+        $this->app->loadClass('pager');
+        $pager = new pager($recTotal, $recPerPage, $pageID);
+
         $this->view->header->title = $this->lang->blog->index;
-        $this->view->articles      = $this->blog->getList();
+        $this->view->articles      = $this->blog->getList($pager);
+        $this->view->pager         = $pager;
         $this->display();
     }
 

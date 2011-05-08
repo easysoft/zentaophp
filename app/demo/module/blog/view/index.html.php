@@ -37,6 +37,7 @@
       <?php 
       echo html::a(inlink('create'), $lang->blog->add);
       echo html::a($this->createLink('index', 'index'), $lang->index->index);
+      $pager->show();
       ?>
     </td>
   </tr>  
