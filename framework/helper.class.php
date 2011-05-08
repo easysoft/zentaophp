@@ -2,13 +2,14 @@
 /**
  * The helper class file of ZenTaoPMS.
  *
- * @copyright   Copyright 2009-2010 QingDao Nature Easy Soft Network Technology Co,LTD (www.cnezsoft.com)
- * @license     LGPL (http://www.gnu.org/licenses/lgpl.html)
- * @author      Chunsheng Wang <chunsheng@cnezsoft.com>
- * @package     framework
- * @version     $Id$
- * @link        http://www.zentao.net
+ * The author disclaims copyright to this source code.  In place of
+ * a legal notice, here is a blessing:
+ * 
+ *  May you do good and not evil.
+ *  May you find forgiveness for yourself and forgive others.
+ *  May you share freely, never taking more than you give.
  */
+
 /**
  * The helper class, contains the tool functions.
  *
@@ -16,32 +17,6 @@
  */
 class helper
 {
-    /**
-     * Set the member's value of one object.
-     * <code>
-     * <?php
-     * $lang->db->user = 'wwccss';
-     * helper::setMember('lang', 'db.user', 'chunsheng.wang');
-     * ?>
-     * </code>
-     * @param string    $objName    the var name of the object.
-     * @param string    $key        the key of the member, can be parent.child.
-     * @param mixed     $value      the value to be set.
-     * @static
-     * @access public
-     * @return bool
-     */
-    static public function setMember($objName, $key, $value)
-    {
-        global $$objName;
-        if(!is_object($$objName) or empty($key)) return false;
-        $key   = str_replace('.', '->', $key);
-        $value = serialize($value);
-        $code  = ("\$${objName}->{$key}=unserialize(<<<EOT\n$value\nEOT\n);");
-        eval($code);
-        return true;
-    }
-
     /**
      * Create a link to a module's method.
      * 
