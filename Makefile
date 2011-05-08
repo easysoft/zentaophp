@@ -29,8 +29,6 @@ zip:
 	cp -fr app zentaophp
 	cp -fr framework zentaophp
 	cp -fr lib zentaophp
-	cp doc/COPY* zentaophp
-	cp doc/README zentaophp
 	rm -fr zentaophp/app/pms
 	rm -fr zentaophp/app/cli
 	rm -fr zentaophp/framework/tests
@@ -39,5 +37,5 @@ zip:
 	zip -r -9 ZenTaoPHP.$(VERSION).zip zentaophp
 	rm -fr zentaophp
 ztphpdoc:
-	phpdoc -d framework,lib -t ztphpapi -o HTML:frames:phphtmllib -ti ZenTaoPHP¿ò¼ÜAPI²Î¿¼ÊÖ²á -s on -pp on -i *test*
-	phpdoc -d framework,lib -t ztphpapi.chm -o chm:default:default -ti ZenTaoPHP¿ò¼ÜAPI²Î¿¼ÊÖ²á -s on -pp on -i *test*
+	phpdoc -d framework,lib -t ztphpapi -o HTML:frames:phphtmllib -ti "zentaophp framework help" -s on -pp on -i *test*
+	phpdoc -d framework,lib -t ztphpapi.chm -o chm:default:default -ti "zentaophp framework help" -s on -pp on -i *test*

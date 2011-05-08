@@ -10,24 +10,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
    ZenTaoPHP is a lite, flexible MVC framework with high performance.
  </description>
  <lead>
-  <name>chunsheng.wang</name>
-  <user>chunsheng.wang</user>
-  <email>chunsheng@cnezsoft.com</email>
+  <name>public domain</name>
+  <user>public domain</user>
   <active>yes</active>
  </lead>
- <date>2010-01-03</date>
+ <date>2011-05-08</date>
  <time>09:00:00</time>
  <version>
-  <release>1.3.0</release>
+  <release>2.1.0</release>
   <api>1.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
- <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
- <notes>This is the first release.
- </notes>
+ <license>public domain</license>
+ <notes>This is the 2.1 release.</notes>
  <contents>
   <dir name="/">
    <!--
@@ -54,6 +52,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <dir name="lib/pager/">
     <file baseinstalldir="zentao" name="pager.class.php"  role="php" />
    </dir>
+   <dir name="lib/front/">
+    <file baseinstalldir="zentao" name="front.class.php"  role="php" />
+   </dir>
+
 
    <!--
    <dir name="app/cli/">
