@@ -1,6 +1,6 @@
 <?php
 /**
- * The helper class file of ZenTaoPMS.
+ * The helper class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -9,7 +9,6 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-
 /**
  * The helper class, contains the tool functions.
  *
@@ -38,15 +37,7 @@ class helper
     static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '')
     {
         global $app, $config;
-
-        $link = $config->webRoot;
-        if($config->requestType == 'GET')
-        {
-            if(strpos($_SERVER['SCRIPT_NAME'], 'index.php') === false)
-            {
-                $link = $_SERVER['SCRIPT_NAME'];
-            }
-        }
+        $link = $config->requestType == 'PATH_INFO' ? $config->webRoot : $_SERVER['PHP_SELF'];
 
         /* Set the view type and vars. */
         if(empty($viewType)) $viewType = $app->getViewType();
@@ -101,7 +92,7 @@ class helper
      */
     static public function import($file)
     {
-        if(!file_exists($file)) return false;
+        if(!is_file($file)) return false;
         static $includedFiles = array();
         if(!isset($includedFiles[$file]))
         {
@@ -109,7 +100,7 @@ class helper
             $includedFiles[$file] = true;
             return true;
         }
-        return false;
+        return true;
     }
 
     /**

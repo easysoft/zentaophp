@@ -1,6 +1,6 @@
 <?php
 /**
- * The router, config and lang class file of ZenTaoPMS.
+ * The router, config and lang class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -132,7 +132,7 @@ class router
     /**
      * The control object of current module.
      * 
-     * @var string
+     * @var object
      * @access public
      */
     public $control;
@@ -196,7 +196,7 @@ class router
     /**
      * The global $config object.
      * 
-     * @var string
+     * @var object
      * @access public
      */
     public $config;
@@ -204,7 +204,7 @@ class router
     /**
      * The global $lang object.
      * 
-     * @var string
+     * @var object
      * @access public
      */
     public $lang;
@@ -212,10 +212,18 @@ class router
     /**
      * The global $dbh object, the database connection handler.
      * 
-     * @var string
+     * @var object
      * @access private
      */
     public $dbh;
+
+    /**
+     * The slave database handler.
+     * 
+     * @var object
+     * @access private
+     */
+    public $slaveDBH;
 
     /**
      * The $post object, used to access the $_POST var.
@@ -680,7 +688,14 @@ class router
         }    
         elseif(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
         {
-            $this->clientLang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ','));
+            if(strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ',') === false)
+            {
+                $this->clientLang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+            }
+            else
+            {
+                $this->clientLang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ','));
+            }
         }
         if(!empty($this->clientLang))
         {
@@ -692,6 +707,7 @@ class router
             $this->clientLang = $this->config->default->lang;
         }
         setcookie('lang', $this->clientLang, $this->config->cookieLife, $this->config->webRoot);
+        if(!isset($_COOKIE['lang'])) $_COOKIE['lang'] = $this->clientLang;
     }
 
     /**
@@ -742,6 +758,7 @@ class router
             $this->clientTheme = $this->config->default->theme;
         }
         setcookie('theme', $this->clientTheme, $this->config->cookieLife, $this->config->webRoot);
+        if(!isset($_COOKIE['theme'])) $_COOKIE['theme'] = $this->clientTheme;
     }
 
     /**
@@ -944,7 +961,7 @@ class router
     public function setControlFile($exitIfNone = true)
     {
         $this->controlFile = $this->moduleRoot . $this->moduleName . $this->pathFix . 'control.php';
-        if(!file_exists($this->controlFile))
+        if(!is_file($this->controlFile))
         {
             $this->error("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
             return false;
@@ -987,7 +1004,7 @@ class router
      */
     public function getModuleExtPath($moduleName, $ext)
     {
-        return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix . 'opt' . $this->pathFix . $ext . $this->pathFix;
+        return $this->getModuleRoot() . strtolower(trim($moduleName)) . $this->pathFix . 'ext' . $this->pathFix . $ext . $this->pathFix;
     }
 
     /**
@@ -1090,7 +1107,7 @@ class router
 
         /* Get the default setings of the method to be called useing the reflecting. */
         $defaultParams = array();
-        $methodReflect = new reflectionMethod($moduleName, $methodName);
+        $methodReflect = new reflectionMethod($className, $methodName);
         foreach($methodReflect->getParameters() as $param)
         {
             $name    = $param->getName();
@@ -1308,16 +1325,14 @@ class router
         if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
         $classFile .= '.class.php';
 
-        if(!file_exists($classFile)) 
+        if(!helper::import($classFile))
         {
             /* Search in $coreLibRoot. */
             $classFile = $this->coreLibRoot . $className;
             if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
             $classFile .= '.class.php';
-            if(!file_exists($classFile)) $this->error("class file $classFile not found", __FILE__, __LINE__, $exit = true);
+            if(!helper::import($classFile)) $this->error("class file $classFile not found", __FILE__, __LINE__, $exit = true);
         }
-
-        helper::import($classFile);
 
         /* If staitc, return. */
         if($static) return true;
@@ -1348,7 +1363,7 @@ class router
         {
             $mainConfigFile = $this->configRoot . 'config.php';
             $myConfig       = $this->configRoot . 'my.php';
-            if(file_exists($myConfig)) $extConfigFiles[] = $myConfig;
+            if(is_file($myConfig)) $extConfigFiles[] = $myConfig;
         }
         else
         {
@@ -1358,7 +1373,7 @@ class router
         }
 
         /* Set the files to include. */
-        if(!file_exists($mainConfigFile))
+        if(!is_file($mainConfigFile))
         {
             if($exitIfNone) self::error("config file $mainConfigFile not found", __FILE__, __LINE__, true);
             if(empty($extConfigFiles)) return false;  //  and no extension file, exit.
@@ -1418,7 +1433,7 @@ class router
         $extLangFiles = helper::ls($extLangPath . $this->clientLang, '.php');
 
         /* Set the files to includ. */
-        if(!file_exists($mainLangFile))
+        if(!is_file($mainLangFile))
         {
             if(empty($extLangFiles)) return false;  // also no extension file.
             $langFiles = $extLangFiles;
@@ -1447,25 +1462,43 @@ class router
      * Connect to database.
      * 
      * @access public
-     * @return object|bool the database handler.
+     * @return void
      */
     public function connectDB()
     {
-        global $config, $dbh;
-        if(!isset($config->db->driver)) self::error('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
-        if(!isset($config->db->user)) return false;
-        if($config->db->driver == 'mysql')
+        global $config, $dbh, $slaveDBH;
+
+        if(isset($config->db->host))      $this->dbh      = $dbh      = $this->connectByPDO($config->db);
+        if(isset($config->slaveDB->host)) $this->slaveDBH = $slaveDBH = $this->connectByPDO($config->slaveDB);
+    }
+
+    /**
+     * Connect database by PDO.
+     * 
+     * @param  object    $params    the database params.
+     * @access private
+     * @return object|bool
+     */
+    private function connectByPDO($params)
+    {
+        if(!isset($params->driver)) self::error('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
+        if(!isset($params->user)) return false;
+        if($params->driver == 'mysql')
         {
-            $dsn = "mysql:host={$config->db->host}; port={$config->db->port}; dbname={$config->db->name}";
+            $dsn = "mysql:host={$params->host}; port={$params->port}; dbname={$params->name}";
         }    
         try 
         {
-            $dbh = new PDO($dsn, $config->db->user, $config->db->password, array(PDO::ATTR_PERSISTENT => $config->db->persistant));
+            $dbh = new PDO($dsn, $params->user, $params->password, array(PDO::ATTR_PERSISTENT => $params->persistant));
             $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
             $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $dbh->exec("SET NAMES {$config->db->encoding}");
-            if(isset($config->db->strictMode) and $config->db->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
-            $this->dbh = $dbh;
+            $dbh->exec("SET NAMES {$params->encoding}");
+            if(isset($params->strictMode) and $params->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
+            if(isset($params->checkCentOS) and $params->checkCentOS and helper::isCentOS())
+            {
+                $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+                $dbh->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+            }
             return $dbh;
         }
         catch (PDOException $exception)

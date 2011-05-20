@@ -1,6 +1,6 @@
 <?php
 /**
- * The model class file of ZenTaoPMS.
+ * The model class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -175,17 +175,14 @@ class model
     {
         if(empty($moduleName)) return false;
         $modelFile = helper::setModelFile($moduleName);
-        if(!file_exists($modelFile)) return false;
 
-        helper::import($modelFile);
+        if(!helper::import($modelFile)) return false;
         $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
 
         $this->$moduleName = new $modelClass();
         return $this->$moduleName;
     }
-
-    //-------------------- DAO related method s--------------------//
 
     /**
      * Load DAO.

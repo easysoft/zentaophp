@@ -1,6 +1,6 @@
 <?php
 /**
- * The control class file of ZenTaoPMS.
+ * The control class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -9,7 +9,6 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-
 /**
  * The base class of control.
  * 
@@ -217,7 +216,7 @@ class control
         $modelFile = helper::setModelFile($moduleName);
 
         /* If no model file, try load config. */
-        if(!file_exists($modelFile)) 
+        if(!helper::import($modelFile)) 
         {
             $this->app->loadConfig($moduleName, false);
             $this->app->loadLang($moduleName);
@@ -225,7 +224,6 @@ class control
             return false;
         }
 
-        helper::import($modelFile);
         $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
         if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
 
@@ -274,7 +272,7 @@ class control
         $extHookFiles = helper::ls($viewExtPath, '.hook.php');
 
         $viewFile = file_exists($extViewFile) ? $extViewFile : $mainViewFile;
-        if(!file_exists($viewFile)) $this->app->error("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
+        if(!is_file($viewFile)) $this->app->error("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
         if(!empty($extHookFiles)) return array('viewFile' => $viewFile, 'hookFiles' => $extHookFiles);
         return $viewFile;
     }
@@ -288,7 +286,7 @@ class control
      */
     public function getExtViewFile($viewFile)
     {
-        $extPath     = dirname(dirname(realpath($viewFile))) . '/opt/view/';
+        $extPath     = dirname(dirname(realpath($viewFile))) . '/ext/view/';
         $extViewFile = $extPath . basename($viewFile);
         if(file_exists($extViewFile))
         {
@@ -296,6 +294,50 @@ class control
             return $extViewFile;
         }
         return false;
+    }
+
+    /**
+     * Get css code for a method. 
+     * 
+     * @param  string    $moduleName 
+     * @param  string    $methodName 
+     * @access private
+     * @return string
+     */
+    private function getCSS($moduleName, $methodName)
+    {
+        $moduleName = strtolower(trim($moduleName));
+        $methodName = strtolower(trim($methodName));
+        $modulePath = $this->app->getModulePath($moduleName);
+
+        $css = '';
+        $mainCssFile   = $modulePath . 'css' . $this->pathFix . 'common.css';
+        $methodCssFile = $modulePath . 'css' . $this->pathFix . $methodName . '.css';
+        if(file_exists($mainCssFile))   $css .= file_get_contents($mainCssFile);
+        if(is_file($methodCssFile))     $css .= file_get_contents($methodCssFile);
+        return $css;
+    }
+
+    /**
+     * Get js code for a method. 
+     * 
+     * @param  string    $moduleName 
+     * @param  string    $methodName 
+     * @access private
+     * @return string
+     */
+    private function getJS($moduleName, $methodName)
+    {
+        $moduleName = strtolower(trim($moduleName));
+        $methodName = strtolower(trim($methodName));
+        $modulePath = $this->app->getModulePath($moduleName);
+
+        $js = '';
+        $mainJsFile   = $modulePath . 'js' . $this->pathFix . 'common.js';
+        $methodJsFile = $modulePath . 'js' . $this->pathFix . $methodName . '.js';
+        if(file_exists($mainJsFile))   $js .= file_get_contents($mainJsFile);
+        if(is_file($methodJsFile))     $js .= file_get_contents($methodJsFile);
+        return $js;
     }
 
     /**
@@ -384,6 +426,12 @@ class control
         $viewFile = $this->setViewFile($moduleName, $methodName);
         if(is_array($viewFile)) extract($viewFile);
 
+        /* Get css and js. */
+        $css = $this->getCSS($moduleName, $methodName);
+        $js  = $this->getJS($moduleName, $methodName);
+        if($css) $this->view->pageCss = $css;
+        if($js)  $this->view->pageJS  = $js;
+
         /* Change the dir to the view file to keep the relative pathes work. */
         $currentPWD = getcwd();
         chdir(dirname($viewFile));
@@ -427,13 +475,13 @@ class control
         $file2Included     = file_exists($actionExtFile) ? $actionExtFile : $moduleControlFile;
 
         /* Load the control file. */
-        if(!file_exists($file2Included)) $this->app->error("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
+        if(!is_file($file2Included)) $this->app->error("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
         $currentPWD = getcwd();
         chdir(dirname($file2Included));
         if($moduleName != $this->moduleName) helper::import($file2Included);
         
         /* Set the name of the class to be called. */
-        $className = class_exists("ext$moduleName") ? "ext$moduleName" : $moduleName;
+        $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
         if(!class_exists($className)) $this->app->error(" The class $className not found", __FILE__, __LINE__, $exit = true);
 
         /* Parse the params, create the $module control object. */
@@ -464,7 +512,6 @@ class control
     {
         if(empty($this->output)) $this->parse($moduleName, $methodName);
         echo $this->output;
-        if($this->viewType == 'json') die();
     }
 
     /**
