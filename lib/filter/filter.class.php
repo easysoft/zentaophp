@@ -1,6 +1,6 @@
 <?php
 /**
- * The validater and fixer class file of ZenTaoPMS.
+ * The validater and fixer class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -212,7 +212,7 @@ class validater
      */
     public static function checkAccount($var)
     {
-        return self::checkREG($var, '|[a-zA-Z0-9._]{3}|');
+        return self::checkREG($var, '|^[a-zA-Z0-9_]{1}[a-zA-Z0-9_]{1,}[a-zA-Z0-9_]{1}$|');
     }
 
     /**

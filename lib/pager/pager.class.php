@@ -1,6 +1,6 @@
 <?php
 /**
- * The pager class file of ZenTaoPMS.
+ * The pager class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -283,7 +283,7 @@ class pager
     public function get($align = 'right', $type = 'full')
     {
         /* If the RecTotal is zero, return with no record. */
-        if($this->recTotal == 0) { return "<div style='float:$align; clear:none'>{$this->lang->pager->noRecord}</div>"; }
+        if($this->recTotal == 0) { return "<div style='float:$align; clear:none;' class='pager'>{$this->lang->pager->noRecord}</div>"; }
 
         /* Set the params. */
         $this->setParams();
@@ -307,7 +307,7 @@ class pager
             $pager .= $this->createRecPerPageJS();
         }
 
-        return "<div style='float:$align; clear:none'>$pager</div>";
+        return "<div style='float:$align; clear:none;' class='pager'>$pager</div>";
     }
 
     /**
@@ -431,9 +431,10 @@ EOT;
     private function createRecPerPageList()
     {
         for($i = 5; $i <= 50; $i += 5) $range[$i] = $i;
-        $range[100] = 100;
-        $range[200] = 200;
-        $range[500] = 500;
+        $range[100]  = 100;
+        $range[200]  = 200;
+        $range[500]  = 500;
+        $range[1000] = 1000;
         return html::select('_recPerPage', $range, $this->recPerPage, "onchange='submitPage(\"changeRecPerPage\");'");
     }
 

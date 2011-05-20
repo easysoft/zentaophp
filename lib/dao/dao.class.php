@@ -1,6 +1,6 @@
 <?php
 /**
- * The dao and sql class file of ZenTaoPMS.
+ * The dao and sql class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -48,6 +48,14 @@ class dao
      * @access protected
      */
     protected $dbh;
+
+    /**
+     * The global slaveDBH(database handler) object.
+     * 
+     * @var object
+     * @access protected
+     */
+    protected $slaveDBH;
 
     /**
      * The sql object, used to creat the query sql.
@@ -123,11 +131,12 @@ class dao
      */
     public function __construct()
     {
-        global $app, $config, $lang, $dbh;
-        $this->app    = $app;
-        $this->config = $config;
-        $this->lang   = $lang;
-        $this->dbh    = $dbh;
+        global $app, $config, $lang, $dbh, $slaveDBH;
+        $this->app      = $app;
+        $this->config   = $config;
+        $this->lang     = $lang;
+        $this->dbh      = $dbh;
+        $this->slaveDBH = $slaveDBH ? $slaveDBH : false;
 
         $this->reset();
     }
@@ -417,8 +426,17 @@ class dao
         $sql = $this->processSQL();
         try
         {
+            $method = $this->method;
             $this->reset();
-            return $this->dbh->query($sql);
+
+            if($this->slaveDBH and $method == 'select')
+            {
+                return $this->slaveDBH->query($sql);
+            }
+            else
+            {
+                return $this->dbh->query($sql);
+            }
         }
         catch (PDOException $e) 
         {
@@ -495,7 +513,7 @@ class dao
         }
     }
 
-    //-------------------- 数据获取相关的方法。--------------------//
+    //-------------------- Fetch related methods. -------------------//
 
     /**
      * Fetch one record.
@@ -901,8 +919,8 @@ class dao
 
             if($type == 'enum' or $type == 'set')
             {
-                $rangeBegin  = $firstPOS + 2;  // 将第一个引号去掉。
-                $rangeEnd    = strrpos($rawField->type, ')') - 1; // 将最后一个引号去掉。
+                $rangeBegin  = $firstPOS + 2;                       // Remove the first quote.
+                $rangeEnd    = strrpos($rawField->type, ')') - 1;   // Remove the last quote.
                 $range       = substr($rawField->type, $rangeBegin, $rangeEnd - $rangeBegin);
                 $field['rule'] = 'reg';
                 $field['options']['reg']  = '/' . str_replace("','", '|', $range) . '/';
