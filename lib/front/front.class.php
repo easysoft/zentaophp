@@ -571,10 +571,6 @@ EOT;
         $jsConfig->currentMethod  = $methodName;
         $jsConfig->clientLang     = $clientLang;
         $jsConfig->requiredFields = $requiredFields;
-        $jsConfig->lblShowAll     = $lang->showAll;
-        $jsConfig->lblHideClosed  = $lang->hideClosed;
-        $jsConfig->submitting     = $lang->submitting;
-        $jsConfig->save           = $lang->save;
         $jsConfig->router         = $app->server->PHP_SELF;
 
         $js  = self::start(false);
