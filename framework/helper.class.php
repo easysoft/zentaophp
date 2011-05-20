@@ -119,11 +119,11 @@ class helper
      */
     static public function import($file)
     {
+        if(!is_file($file)) return false;
         static $includedFiles = array();
         if(!isset($includedFiles[$file]))
         {
-            $return = include $file;
-            if(!$return) return false;
+            include $file;
             $includedFiles[$file] = true;
             return true;
         }
