@@ -45,7 +45,7 @@ class blogModel extends model
     public function create()
     {
         $article = fixer::input('post')->specialchars('title, content')->add('date', date('Y-m-d H:i:s'))->get();
-        $this->dao->insert('blog')->data($article)->exec();
+        $this->dao->insert('blog')->data($article)->autoCheck()->batchCheck('title,content', 'notempty')->exec();
         return $this->dao->lastInsertID();
     }
 

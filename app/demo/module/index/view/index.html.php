@@ -11,6 +11,6 @@
  */
 ?>
 <?php include '../../common/view/header.html.php';?>
-<h1><?php echo $lang->welcome;?></h1>
-<h3><?php echo html::a($this->createLink('blog'), $lang->index->blog);?></h3>
+<h1 class='a-center'><?php echo $lang->welcome;?></h1>
+<h3 class='a-center'><?php echo html::a($this->createLink('blog'), $lang->index->blog);?></h3>
 <?php include '../../common/view/footer.html.php';?>

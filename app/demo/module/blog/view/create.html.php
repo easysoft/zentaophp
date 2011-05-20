@@ -11,7 +11,7 @@
  */
 ?>
 <?php include '../../common/view/header.html.php';?>
-<form method='post'>
+<form method='post' target='hiddenwin'>
   <table align='center'> 
     <tr>
       <th><?php echo $lang->blog->title;?></th>  

@@ -51,7 +51,8 @@ class blog extends control
         if(!empty($_POST))
         {
             $blogID = $this->blog->create();
-            $this->locate(inlink('index'));
+            if(dao::isError()) die(js::error(dao::getError()));
+            die(js::locate(inlink('index'), 'parent'));
         }
 
         $this->view->header->title = $this->lang->blog->add;
@@ -106,6 +107,4 @@ class blog extends control
         $this->blog->delete($id);
         $this->locate(inlink('index'));
     }
-
- 
 }

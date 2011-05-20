@@ -10,7 +10,7 @@
  *  May you share freely, never taking more than you give.
  */
 /* Basic settings. */
-$config->version     = '2.0';             // The version of zentaophp. Don't change it.
+$config->version     = '2.1';             // The version of zentaophp. Don't change it.
 $config->encoding    = 'UTF-8';           // The encoding of znetaopms.
 $config->cookieLife  = time() + 2592000;  // The cookie life time.
 $config->timezone    = 'Asia/Shanghai';   // The time zone setting, for more see http://www.php.net/manual/en/timezones.php
@@ -44,6 +44,13 @@ $config->db->persistant = false;           // Pconnect or not.
 $config->db->driver     = 'mysql';         // Must be MySQL. Don't support other database server yet.
 $config->db->encoding   = 'UTF8';          // Encoding of database.
 $config->db->strictMode = false;           // Turn off the strict mode of MySQL.
+$config->db->prefix     = '';              // The prefix of the table name.
+
+/* Slave database settings. */
+$config->slaveDB->persistant = false;      
+$config->slaveDB->driver     = 'mysql';    
+$config->slaveDB->encoding   = 'UTF8';     
+$config->slaveDB->strictMode = false;      
 
 /* Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
