@@ -17,6 +17,32 @@
 class helper
 {
     /**
+     * Set the member's value of one object.
+     * <code>
+     * <?php
+     * $lang->db->user = 'wwccss';
+     * helper::setMember('lang', 'db.user', 'chunsheng.wang');
+     * ?>
+     * </code>
+     * @param string    $objName    the var name of the object.
+     * @param string    $key        the key of the member, can be parent.child.
+     * @param mixed     $value      the value to be set.
+     * @static
+     * @access public
+     * @return bool
+     */
+    static public function setMember($objName, $key, $value)
+    {
+        global $$objName;
+        if(!is_object($$objName) or empty($key)) return false;
+        $key   = str_replace('.', '->', $key);
+        $value = serialize($value);
+        $code  = ("\$${objName}->{$key}=unserialize(<<<EOT\n$value\nEOT\n);");
+        eval($code);
+        return true;
+    }
+
+    /**
      * Create a link to a module's method.
      * 
      * This method also mapped in control class to call conveniently.
@@ -92,11 +118,11 @@ class helper
      */
     static public function import($file)
     {
-        if(!is_file($file)) return false;
         static $includedFiles = array();
         if(!isset($includedFiles[$file]))
         {
-            include $file;
+            $return = include $file;
+            if(!$return) return false;
             $includedFiles[$file] = true;
             return true;
         }
@@ -296,6 +322,20 @@ class helper
         {
             chdir($cwd);
         }
+    }
+
+    /**
+     * Judge the os is centos or not.
+     * 
+     * @access private
+     * @return bool
+     */
+    static public function isCentOS()
+    {
+        if(PHP_OS != 'Linux') return false;
+        $issueFile = '/etc/issue';
+        if(!file_exists($issueFile) or !is_readable($issueFile)) return false;
+        return stripos(file_get_contents($issueFile), 'centos') !== false;
     }
 }
 
