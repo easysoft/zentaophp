@@ -13,7 +13,7 @@
 /**
  * The html class, to build html tags.
  * 
- * @package   framework
+ * @package framework
  */
 class html
 {
@@ -348,7 +348,7 @@ class html
 /**
  * JS class.
  * 
- * @package front
+ * @package framework
  */
 class js
 {
@@ -599,7 +599,7 @@ EOT;
 /**
  * css class.
  *
- * @package front
+ * @package framework
  */
 class css
 {
