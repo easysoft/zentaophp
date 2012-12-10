@@ -14,6 +14,7 @@ $lang->runInfo = "<div class='a-center'>时间: %s 毫秒, 内存: %s KB, 查询
 $lang->save    = '保存';
 
 /* 错误提示信息。*/
+$lang->error = new stdclass();
 $lang->error->companyNotFound = "您访问的域名 %s 没有对应的公司。";
 $lang->error->length          = array("『%s』长度错误，应当为『%s』", "『%s』长度应当不超过『%s』，且不小于『%s』。");
 $lang->error->reg             = "『%s』不符合格式，应当为:『%s』。";
@@ -30,6 +31,7 @@ $lang->error->passwordsame    = "两次密码应当相等。";
 $lang->error->passwordrule    = "密码应该符合规则，长度至少为六位。";
 
 /* 分页信息。*/
+$lang->pager = new stdclass();
 $lang->pager->noRecord  = "暂时没有记录";
 $lang->pager->digest    = "共<strong>%s</strong>条记录，每页 <strong>%s</strong>条，页面：<strong>%s/%s</strong> ";
 $lang->pager->first     = "首页";

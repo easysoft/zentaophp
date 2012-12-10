@@ -165,6 +165,9 @@ class control
         $this->pathFix    = $this->app->getPathFix();
         $this->viewType   = $this->app->getViewType();
 
+        $this->view = new stdclass();
+        $this->view->header = new stdclass();
+
         $this->setModuleName($moduleName);
         $this->setMethodName($methodName);
 
