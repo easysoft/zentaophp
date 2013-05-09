@@ -401,7 +401,7 @@ class router
     {
         if(empty($appRoot))
         {
-            $this->appRoot = $this->basePath . 'app' . $this->pathFix . $appName . $this->pathFix;
+            $this->appRoot = $this->basePath;
         }
         else
         {

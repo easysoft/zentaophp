@@ -11,13 +11,13 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-error_reporting(0);
+error_reporting(E_ALL);
 
 /* Load the framework. */
-include '../../../framework/router.class.php';
-include '../../../framework/control.class.php';
-include '../../../framework/model.class.php';
-include '../../../framework/helper.class.php';
+include './framework/router.class.php';
+include './framework/control.class.php';
+include './framework/model.class.php';
+include './framework/helper.class.php';
 
 /* Instance the app. */
 $startTime = getTime();
