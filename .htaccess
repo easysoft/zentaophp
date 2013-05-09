@@ -1,4 +1,4 @@
-Options +FollowSymLinks +SymLinksIfOwnerMatch
+# Add support for PATH_INFO method.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteCond %{REQUEST_FILENAME} !-d 
@@ -6,20 +6,22 @@ Options +FollowSymLinks +SymLinksIfOwnerMatch
   RewriteRule (.*)$ index.php/$1 [L]
 </IfModule>
 
-# Turn on these settings to get A in yslow. :)
-# <IfModule mod_expires.c>
-# ExpiresActive On
-# ExpiresByType image/gif A2592000
-# ExpiresByType image/jpeg A2592000
-# ExpiresByType image/png A2592000
-# ExpiresByType image/x-icon A2592000
-# ExpiresByType application/javascript A2592000
-# ExpiresByType application/x-shockwave-flash A2592000
-# ExpiresByType text/css A604800
-# </IfModule>
-#
-# <IfModule mod_deflate.c>
-# AddOutputFilterByType DEFLATE text/html text/css application/javascript
-# </IfModule>
-#
-# FileEtag none
+# Set expires for static files.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/gif A2592000
+  ExpiresByType image/jpeg A2592000
+  ExpiresByType image/png A2592000
+  ExpiresByType image/x-icon A2592000
+  ExpiresByType application/javascript A2592000
+  ExpiresByType application/x-shockwave-flash A2592000
+  ExpiresByType text/css A604800
+</IfModule>
+
+# Deflate static files.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript
+</IfModule>
+
+# Turn off FileEtag.
+FileEtag none
