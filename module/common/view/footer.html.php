@@ -1,4 +1,6 @@
-<iframe name='hiddenwin' id='hiddenwin' class='hidden'></iframe>
-<script laguage='Javascript'><?php if(isset($pageJS)) echo $pageJS;?></script>
+<?php if(isset($pageJS)) js::internal($pageJS);?>
+<?php if($this->server->HTTP_X_PJAX == false):?>
+  </div>
 </body>
-</html>
+</html> 
+<?php endif;?>
