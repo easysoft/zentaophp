@@ -27,4 +27,3 @@ $app = router::createApp('demo');
 $common = $app->loadCommon();
 $app->parseRequest();
 $app->loadModule();
-$common->printRunInfo($startTime);
