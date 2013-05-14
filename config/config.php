@@ -30,7 +30,7 @@ $config->themes = 'default';              // Supported themes.
 
 /* Supported languages. */
 $config->langs['zh-cn'] = '简体';
-$config->langs['en']    = 'En';
+//$config->langs['en']  = 'En';
 
 /* Default settings. */
 $config->default->view   = 'html';        // Default view.
