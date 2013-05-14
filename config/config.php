@@ -29,8 +29,8 @@ $config->views  = ',html,json,';          // Supported view formats.
 $config->themes = 'default';              // Supported themes.
 
 /* Supported languages. */
-$config->langs['zh-cn'] = '中文简体';
-$config->langs['en']    = 'English';
+$config->langs['zh-cn'] = '简体';
+$config->langs['en']    = 'En';
 
 /* Default settings. */
 $config->default->view   = 'html';        // Default view.
