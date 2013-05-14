@@ -39,6 +39,7 @@ class html
      */
     public static function meta($name, $value)
     {
+        if($name == 'charset') return "<meta charset='$value'>\n";
         return "<meta name='$name' content='$value'>\n";
     }
 
@@ -357,12 +358,14 @@ class js
      * 
      * @param  string $url 
      * @param  string $version 
+     * @param  string $ieParam    like 'lt IE 9'
      * @access public
      * @return string
      */
-    public static function import($url, $version = '')
+    public static function import($url, $version = '', $ieParam = '')
     {
-        echo "<script src='$url?v=$version' type='text/javascript'></script>\n";
+        if(!$ieParam) return print("<script src='$url?v=$version'></script>\n");
+        echo "<!--[if $ieParam]>\n <script src='$url?v=$version'></script>\n<![endif]-->\n";
     }
 
     /**
@@ -614,7 +617,7 @@ class css
      */
     public static function import($url, $version = '')
     {
-        echo "<link rel='stylesheet' href='$url?v=$version' type='text/css' media='screen' />\n";
+        echo "<link rel='stylesheet' href='$url?v=$version' />\n";
     }
 
     /**
