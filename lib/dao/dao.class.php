@@ -375,7 +375,7 @@ class dao
     }
 
     /**
-     * Process the sql, replace the table, fields and add the company condition.
+     * Process the sql, replace the table, fields.
      * 
      * @access private
      * @return string the sql string after process.
@@ -697,7 +697,6 @@ class dao
         {
             $args = func_get_args();
             $sql  = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->sqlobj->quote($value); 
-            if($this->table != TABLE_COMPANY) $sql .= " AND company = {$this->app->company->id} ";
             if(isset($args[2])) $sql .= ' AND ' . $args[2];
             try
             {
