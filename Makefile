@@ -1,6 +1,6 @@
 VERSION=$(shell head -n 1 VERSION)
 
-all: pear zip
+all: zip
 
 clean:
 	rm -fr *-stamp
@@ -26,14 +26,9 @@ deb:
 
 zip:
 	mkdir zentaophp
-	cp -fr app zentaophp
-	cp -fr framework zentaophp
-	cp -fr lib zentaophp
-	rm -fr zentaophp/app/pms
-	rm -fr zentaophp/app/cli
-	rm -fr zentaophp/framework/tests
-	rm -fr zentaophp/app/cli/test
-	find zentaophp -name .svn |xargs rm -fr
+	cp -fr {config,db,favicon.ico,framework,index.php,js,lib,module,theme} zentaophp
+	rm -fr zentaophp/config/my.php
+	find zentaophp -name .git |xargs rm -fr
 	zip -r -9 ZenTaoPHP.$(VERSION).zip zentaophp
 	rm -fr zentaophp
 ztphpdoc:
