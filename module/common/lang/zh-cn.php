@@ -9,11 +9,20 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-$lang->welcome = '欢迎使用ZenTaoPHP框架。';
-$lang->runInfo = "<div class='a-center'>时间: %s 毫秒, 内存: %s KB, 查询: %s.  </div>";
-$lang->save    = '保存';
+/* Some global items. */
+$lang->zentaophp = 'ZenTaoPHP框架';
+$lang->welcome   = 'ZenTaoPHP, 做最懂程序员的框架！';
+$lang->intro     = 'ZenTaoPHP框架是一款轻量级的MVC开发框架，代码简单，性能良好，结构清晰，开发友好！';
+$lang->more      = '了解更多&raquo;';
+$lang->save      = '保存';
 
-/* 错误提示信息。*/
+/* The menu items. */
+$lang->menu = new stdclass();
+$lang->menu->index = '首页';
+$lang->menu->blog  = '演示';
+//$lang->menu->doc   = '文档';
+
+/* Error message. */
 $lang->error = new stdclass();
 $lang->error->companyNotFound = "您访问的域名 %s 没有对应的公司。";
 $lang->error->length          = array("『%s』长度错误，应当为『%s』", "『%s』长度应当不超过『%s』，且不小于『%s』。");
@@ -30,7 +39,7 @@ $lang->error->account         = "『%s』应当为合法的用户名。";
 $lang->error->passwordsame    = "两次密码应当相等。";
 $lang->error->passwordrule    = "密码应该符合规则，长度至少为六位。";
 
-/* 分页信息。*/
+/* Pager items. */
 $lang->pager = new stdclass();
 $lang->pager->noRecord  = "暂时没有记录";
 $lang->pager->digest    = "共<strong>%s</strong>条记录，每页 <strong>%s</strong>条，页面：<strong>%s/%s</strong> ";
@@ -40,13 +49,13 @@ $lang->pager->next      = "下页";
 $lang->pager->last      = "末页";
 $lang->pager->locate    = "GO!";
 
-/* 时间格式设置。*/
+/* Datetime settings. */
 define('DT_DATETIME1',  'Y-m-d H:i:s');
 define('DT_DATETIME2',  'y-m-d H:i');
 define('DT_MONTHTIME1', 'n/d H:i');
 define('DT_MONTHTIME2', 'n月d日 H:i');
-define('DT_DATE1',     'Y-m-d');
-define('DT_DATE2',     'Ymd');
-define('DT_DATE3',     'Y年m月d日');
-define('DT_TIME1',     'H:i:s');
-define('DT_TIME2',     'H:i');
+define('DT_DATE1',      'Y-m-d');
+define('DT_DATE2',      'Ymd');
+define('DT_DATE3',      'Y年m月d日');
+define('DT_TIME1',      'H:i:s');
+define('DT_TIME2',      'H:i');

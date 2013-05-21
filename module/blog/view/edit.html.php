@@ -11,17 +11,19 @@
  */
 ?>
 <?php include '../../common/view/header.html.php';?>
-<form method='post'>
-  <table align='center'> 
-    <tr>
-      <th><?php echo $lang->blog->title;?></th>  
-      <td><?php echo html::input('title', $article->title);?></td>
-    </tr>  
-    <tr>
-      <th><?php echo $lang->blog->content;?></th>  
-      <td><?php echo html::textarea('content', $article->content, "rows='10' cols='100'");?></td>
-    </tr>
-    <tr><td colspan='2'><?php echo html::submitButton();?></td></tr>  
-  </table>
-</form>
+<div class='container'>
+  <form method='post'>
+    <table class='table table-bordered' align='center' style='width:450px'> 
+      <tr>
+        <th><?php echo $lang->blog->title;?></th>  
+        <td><?php echo html::input('title', $article->title);?></td>
+      </tr>  
+      <tr>
+        <th><?php echo $lang->blog->content;?></th>  
+        <td><?php echo html::textarea('content', $article->content, "rows='10' cols='100'");?></td>
+      </tr>
+      <tr><td colspan='2'><?php echo html::submitButton();?></td></tr>  
+    </table>
+  </form>
+</div>
 <?php include '../../common/view/footer.html.php';?>

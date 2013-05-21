@@ -11,7 +11,9 @@
  */
 ?>
 <?php include '../../common/view/header.html.php';?>
-<h1><?php echo $article->title;?></h1>
-<p><?php echo nl2br(strip_tags($article->content));?></p>
-<h3><?php echo html::a(inlink('index'), $lang->blog->index);?></h3>
+<div class='container'>
+  <h1><?php echo $article->title;?></h1>
+  <p><?php echo nl2br(strip_tags($article->content));?></p>
+  <?php echo html::a(inlink('index'), $lang->blog->index);?>
+</div>
 <?php include '../../common/view/footer.html.php';?>
