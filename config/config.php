@@ -33,6 +33,7 @@ $config->langs['zh-cn'] = '简体';
 //$config->langs['en']  = 'En';
 
 /* Default settings. */
+$config->default = new stdclass();
 $config->default->view   = 'html';        // Default view.
 $config->default->lang   = 'en';          // Default language.
 $config->default->theme  = 'default';     // Default theme.
@@ -40,6 +41,7 @@ $config->default->module = 'index';       // Default module.
 $config->default->method = 'index';       // Default method.
 
 /* Database settings. */
+$config->db = new stdclass();
 $config->db->persistant = false;           // Pconnect or not.
 $config->db->driver     = 'mysql';         // Must be MySQL. Don't support other database server yet.
 $config->db->encoding   = 'UTF8';          // Encoding of database.
@@ -47,6 +49,7 @@ $config->db->strictMode = false;           // Turn off the strict mode of MySQL.
 $config->db->prefix     = '';              // The prefix of the table name.
 
 /* Slave database settings. */
+$config->slaveDB = new stdClass();
 $config->slaveDB->persistant = false;      
 $config->slaveDB->driver     = 'mysql';    
 $config->slaveDB->encoding   = 'UTF8';     

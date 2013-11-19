@@ -1,6 +1,6 @@
 <?php
 /**
- * The html template file of view method of hello module of ZenTaoPHP.
+ * The html template file of view method of blog module of ZenTaoPHP.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
