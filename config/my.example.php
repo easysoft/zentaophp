@@ -1,4 +1,5 @@
 <?php
+$config->installed    = true;  
 $config->debug        = true;  
 $config->requestType  = 'GET';    // PATH_INFO or GET.
 $config->requestFix   = '-';
