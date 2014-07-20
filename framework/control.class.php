@@ -4,14 +4,15 @@
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
- * 
+ *
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
+
 /**
  * The base class of control.
- * 
+ *
  * @package framework
  */
 class control
@@ -165,20 +166,19 @@ class control
         $this->pathFix    = $this->app->getPathFix();
         $this->viewType   = $this->app->getViewType();
 
-        $this->view = new stdclass();
-        $this->view->header = new stdclass();
-
+        /* Load the model file auto. */
         $this->setModuleName($moduleName);
         $this->setMethodName($methodName);
-
-        /* Load the model file auto. */
         $this->loadModel();
 
-        /* Assign them to the view. */
-        $this->assign('app',    $app);
-        $this->assign('lang',   $lang);
-        $this->assign('config', $config);
+        /* Init the view vars.  */
+        $this->view = new stdclass();
+        $this->view->app    = $app;
+        $this->view->lang   = $lang;
+        $this->view->config = $config;
+        $this->view->title  = '';
 
+        /* Set super vars. */
         $this->setSuperVars();
     }
 
@@ -228,7 +228,7 @@ class control
         }
 
         $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
-        if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+        if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
 
         $this->$moduleName = new $modelClass();
         $this->dao = $this->$moduleName->dao;
@@ -275,7 +275,7 @@ class control
         $extHookFiles = helper::ls($viewExtPath, '.hook.php');
 
         $viewFile = file_exists($extViewFile) ? $extViewFile : $mainViewFile;
-        if(!is_file($viewFile)) $this->app->error("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
+        if(!is_file($viewFile)) $this->app->triggerError("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
         if(!empty($extHookFiles)) return array('viewFile' => $viewFile, 'hookFiles' => $extHookFiles);
         return $viewFile;
     }
@@ -318,6 +318,7 @@ class control
         $methodCssFile = $modulePath . 'css' . $this->pathFix . $methodName . '.css';
         if(file_exists($mainCssFile))   $css .= file_get_contents($mainCssFile);
         if(is_file($methodCssFile))     $css .= file_get_contents($methodCssFile);
+
         return $css;
     }
 
@@ -340,6 +341,7 @@ class control
         $methodJsFile = $modulePath . 'js' . $this->pathFix . $methodName . '.js';
         if(file_exists($mainJsFile))   $js .= file_get_contents($mainJsFile);
         if(is_file($methodJsFile))     $js .= file_get_contents($methodJsFile);
+
         return $js;
     }
 
@@ -404,7 +406,6 @@ class control
         unset($this->view->app);
         unset($this->view->config);
         unset($this->view->lang);
-        unset($this->view->pager);
         unset($this->view->header);
         unset($this->view->position);
         unset($this->view->moduleTree);
@@ -478,14 +479,14 @@ class control
         $file2Included     = file_exists($actionExtFile) ? $actionExtFile : $moduleControlFile;
 
         /* Load the control file. */
-        if(!is_file($file2Included)) $this->app->error("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
+        if(!is_file($file2Included)) $this->app->triggerError("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
         $currentPWD = getcwd();
         chdir(dirname($file2Included));
         if($moduleName != $this->moduleName) helper::import($file2Included);
         
         /* Set the name of the class to be called. */
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
-        if(!class_exists($className)) $this->app->error(" The class $className not found", __FILE__, __LINE__, $exit = true);
+        if(!class_exists($className)) $this->app->triggerError(" The class $className not found", __FILE__, __LINE__, $exit = true);
 
         /* Parse the params, create the $module control object. */
         if(!is_array($params)) parse_str($params, $params);
@@ -516,6 +517,19 @@ class control
         if(empty($this->output)) $this->parse($moduleName, $methodName);
         echo $this->output;
     }
+    /** 
+     * Send data directly, for ajax requests.
+     * 
+     * @param  misc    $data 
+     * @param  string $type 
+     * @access public
+     * @return void
+     */
+    public function send($data, $type = 'json')
+    {   
+        if($type == 'json') echo json_encode($data);
+        die(helper::removeUTF8Bom(ob_get_clean()));
+    }   
 
     /**
      * Create a link to one method of one module.
