@@ -1,8 +1,8 @@
 <?php
 /**
- * The helper class file of ZenTaoPHP framework.
+ * The helper class file of zentaophp framework.
  *
- * The author disclaims copyright to this source code.  In place of
+ * The author disclaims copyright to this source code. In place of
  * a legal notice, here is a blessing:
  * 
  *  May you do good and not evil.
@@ -289,18 +289,8 @@ class helper
     {
         $files = array();
         $dir = realpath($dir);
-        if(is_dir($dir))
-        {
-            if($dh = opendir($dir))
-            {
-                while(($file = readdir($dh)) !== false) 
-                {
-                    if(strpos($file, $pattern) !== false) $files[] = $dir . DIRECTORY_SEPARATOR . $file;
-                }
-                closedir($dh);
-            }
-        }
-        return $files;
+        if(is_dir($dir)) $files = glob($dir . DIRECTORY_SEPARATOR . '*' . $pattern);
+        return empty($files) ? array() : $files;
     }
 
     /**
@@ -326,17 +316,16 @@ class helper
     }
 
     /**
-     * Judge the os is centos or not.
+     * Remove UTF8 Bom 
      * 
-     * @access private
-     * @return bool
+     * @param  string    $string
+     * @access public
+     * @return string
      */
-    static public function isCentOS()
+    public static function removeUTF8Bom($string)
     {
-        if(PHP_OS != 'Linux') return false;
-        $issueFile = '/etc/issue';
-        if(!file_exists($issueFile) or !is_readable($issueFile)) return false;
-        return stripos(file_get_contents($issueFile), 'centos') !== false;
+        if(substr($string, 0, 3) == pack('CCC', 239, 187, 191)) return substr($string, 3);
+        return $string;
     }
 }
 
@@ -378,25 +367,6 @@ function getTime()
 {
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
-}
-
-/**
- * Save the sql.
- * 
- * @access protected
- * @return void
- */
-function saveSQL()
-{
-    if(!class_exists('dao')) return;
-    global $app;
-    $sqlLog = $app->getLogRoot() . 'sql.' . date('Ymd') . '.log';
-    $fh = @fopen($sqlLog, 'a');
-    if(!$fh) return false;
-    fwrite($fh, date('Ymd H:i:s') . ": " . $app->getURI() . "\n");
-    foreach(dao::$querys as $query) fwrite($fh, "  $query\n");
-    fwrite($fh, "\n");
-    fclose($fh);
 }
 
 /**
