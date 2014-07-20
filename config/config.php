@@ -1,6 +1,6 @@
 <?php
 /**
- * The config file of ZenTaoPHP.  Don't modify this file directly, copy the item to my.php and change it.
+ * The config file of zentaophp.  Don't modify this file directly, copy the item to my.php and change it.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -10,7 +10,7 @@
  *  May you share freely, never taking more than you give.
  */
 /* Basic settings. */
-$config->version     = '2.1';             // The version of zentaophp. Don't change it.
+$config->version     = '2.2';             // The version of zentaophp. Don't change it.
 $config->encoding    = 'UTF-8';           // The encoding of znetaopms.
 $config->cookieLife  = time() + 2592000;  // The cookie life time.
 $config->timezone    = 'Asia/Shanghai';   // The time zone setting, for more see http://www.php.net/manual/en/timezones.php
