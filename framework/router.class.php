@@ -1,10 +1,10 @@
 <?php
 /**
- * The router, config and lang class file of ZenTaoPHP framework.
+ * The router, config and lang class file of zentaophp framework.
  *
- * The author disclaims copyright to this source code.  In place of
+ * The author disclaims copyright to this source code. In place of 
  * a legal notice, here is a blessing:
- * 
+ *
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
@@ -12,21 +12,13 @@
 
 /**
  * The router class.
- * 
+ *
  * @package framework
  */
 class router
 {
     /**
-     * The directory seperator.
-     * 
-     * @var string
-     * @access private
-     */
-    private $pathFix;
-
-    /**
-     * The base path of the ZenTaoPMS framework.
+     * The base path of the zentaophp framework.
      *
      * @var string
      * @access private
@@ -106,7 +98,7 @@ class router
     private $moduleRoot;
 
     /**
-     * The root directory of them.
+     * The root directory of theme.
      * 
      * @var string
      * @access private
@@ -189,9 +181,9 @@ class router
      * The view type.
      * 
      * @var string
-     * @access private
+     * @access public
      */
-    private $viewType;
+    public $viewType;
 
     /**
      * The global $config object.
@@ -305,6 +297,7 @@ class router
 
         $this->loadConfig('common');
         $this->setDebug();
+        $this->setErrorHandler();
 
         $this->connectDB();
 
@@ -407,7 +400,7 @@ class router
         {
             $this->appRoot = realpath($appRoot) . $this->pathFix;
         }
-        if(!is_dir($this->appRoot)) $this->error("The app you call not noud in {$this->appRoot}", __FILE__, __LINE__, $exit = true);
+        if(!is_dir($this->appRoot)) $this->triggerError("The app you call not found in {$this->appRoot}", __FILE__, __LINE__, $exit = true);
     }
 
     /**
@@ -511,11 +504,19 @@ class router
      */
     public function setDebug()
     {
-        if(isset($this->config->debug) and $this->config->debug)
-        {
-            error_reporting(E_ALL & ~ E_STRICT);
-            register_shutdown_function('saveSQL');
-        }
+        if(!empty($this->config->debug)) error_reporting(E_ALL & ~ E_STRICT);
+    }
+
+    /**
+     * Set the error handler.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setErrorHandler()
+    {
+        set_error_handler(array($this, 'saveError'));
+        register_shutdown_function(array($this, 'shutdown'));
     }
 
     /**
@@ -685,7 +686,7 @@ class router
         elseif(isset($_COOKIE['lang']))
         {
             $this->clientLang = $_COOKIE['lang'];
-        }    
+        }
         elseif(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
         {
             if(strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ',') === false)
@@ -748,10 +749,6 @@ class router
         if(!empty($this->clientTheme))
         {
             $this->clientTheme = strtolower($this->clientTheme);
-            if(strpos($this->config->themes, $this->clientTheme) === false)
-            {
-                $this->clientTheme = $this->config->default->theme;
-            }
         }    
         else
         {
@@ -805,7 +802,7 @@ class router
         }
         else
         {
-            $this->error("The request type {$this->config->requestType} not supported", __FILE__, __LINE__, $exit = true);
+            $this->triggerError("The request type {$this->config->requestType} not supported", __FILE__, __LINE__, $exit = true);
         }
     }
 
@@ -849,10 +846,10 @@ class router
      * Mostly, the var name of PATH_INFO is  PATH_INFO, but may be ORIG_PATH_INFO.
      * 
      * @param   string  $varName    PATH_INFO, ORIG_PATH_INFO
-     * @access  private
+     * @access  public
      * @return  string the PATH_INFO
      */
-    private function getPathInfo($varName)
+    public function getPathInfo($varName)
     {
         $value = @getenv($varName);
         if(isset($_SERVER[$varName])) $value = $_SERVER[$varName];
@@ -963,7 +960,7 @@ class router
         $this->controlFile = $this->moduleRoot . $this->moduleName . $this->pathFix . 'control.php';
         if(!is_file($this->controlFile))
         {
-            $this->error("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
+            $this->triggerError("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
             return false;
         }
         return true;
@@ -1098,11 +1095,11 @@ class router
 
         /* Set the class name of the control. */
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
-        if(!class_exists($className)) $this->error("the control $className not found", __FILE__, __LINE__, $exit = true);
+        if(!class_exists($className)) $this->triggerError("the control $className not found", __FILE__, __LINE__, $exit = true);
 
         /* Create a instance of the control. */
         $module = new $className();
-        if(!method_exists($module, $methodName)) $this->error("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
+        if(!method_exists($module, $methodName)) $this->triggerError("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
         $this->control = $module;
 
         /* Get the default setings of the method to be called useing the reflecting. */
@@ -1110,7 +1107,7 @@ class router
         $methodReflect = new reflectionMethod($className, $methodName);
         foreach($methodReflect->getParameters() as $param)
         {
-            $name    = $param->getName();
+            $name = $param->getName();
             $default = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : '_NOT_SET';
             $defaultParams[$name] = $default;
         }
@@ -1208,7 +1205,7 @@ class router
                 }
                 else
                 {
-                    if($defaultValue === '_NOT_SET') $this->error("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
+                    if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
                 }
                 $i ++;
             }
@@ -1224,7 +1221,7 @@ class router
                 }
                 else
                 {
-                    if($defaultValue === '_NOT_SET') $this->error("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
+                    if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
                 }
             }
         }
@@ -1278,35 +1275,6 @@ class router
     //-------------------- Tool methods.------------------//
     
     /**
-     * The error handler.
-     * 
-     * @param string    $message    error message
-     * @param string    $file       the file error occers
-     * @param int       $line       the line error occers
-     * @param bool      $exit       exit the program or not
-     * @access public
-     * @return void
-     */
-    public function error($message, $file, $line, $exit = false)
-    {
-        /* Log the error info. */
-        $log = "ERROR: $message in $file on line $line";
-        if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
-        $trace = debug_backtrace();
-        extract($trace[0]);
-        extract($trace[1]);
-        $log .= ", last called by $file on $line through function $function.";
-        error_log($log);
-
-        /* If exit, output the error. */
-        if($exit)
-        {
-            if($this->config->debug) die("<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body>$log</body></html>");
-            die();
-        }
-    }
-
-    /**
      * Load a class file.
      * 
      * First search in $appLibRoot, then $coreLibRoot.
@@ -1331,7 +1299,7 @@ class router
             $classFile = $this->coreLibRoot . $className;
             if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
             $classFile .= '.class.php';
-            if(!helper::import($classFile)) $this->error("class file $classFile not found", __FILE__, __LINE__, $exit = true);
+            if(!helper::import($classFile)) $this->triggerError("class file $classFile not found", __FILE__, __LINE__, $exit = true);
         }
 
         /* If staitc, return. */
@@ -1339,7 +1307,7 @@ class router
 
         /* Instance it. */
         global $$className;
-        if(!class_exists($className)) $this->error("the class $className not found in $classFile", __FILE__, __LINE__, $exit = true);
+        if(!class_exists($className)) $this->triggerError("the class $className not found in $classFile", __FILE__, __LINE__, $exit = true);
         if(!is_object($$className)) $$className = new $className();
         return $$className;
     }
@@ -1356,6 +1324,10 @@ class router
      */
     public function loadConfig($moduleName, $exitIfNone = true)
     {
+        global $config;
+        if(!is_object($config)) $config = new config();
+        if(!isset($config->$moduleName)) $config->$moduleName = new stdclass();
+
         $extConfigFiles = array();
 
         /* Set the main config file and extension config file. */
@@ -1375,7 +1347,7 @@ class router
         /* Set the files to include. */
         if(!is_file($mainConfigFile))
         {
-            if($exitIfNone) self::error("config file $mainConfigFile not found", __FILE__, __LINE__, true);
+            if($exitIfNone) self::triggerError("config file $mainConfigFile not found", __FILE__, __LINE__, true);
             if(empty($extConfigFiles)) return false;  //  and no extension file, exit.
             $configFiles = $extConfigFiles;
         }
@@ -1407,6 +1379,7 @@ class router
      */
     public function exportConfig()
     {
+        $view = new stdclass();
         $view->version     = $this->config->version;
         $view->requestType = $this->config->requestType;
         $view->pathType    = $this->config->pathType;
@@ -1467,6 +1440,7 @@ class router
     public function connectDB()
     {
         global $config, $dbh, $slaveDBH;
+        if(empty($config->installed)) return;
 
         if(isset($config->db->host))      $this->dbh      = $dbh      = $this->connectByPDO($config->db);
         if(isset($config->slaveDB->host)) $this->slaveDBH = $slaveDBH = $this->connectByPDO($config->slaveDB);
@@ -1481,7 +1455,7 @@ class router
      */
     private function connectByPDO($params)
     {
-        if(!isset($params->driver)) self::error('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
+        if(!isset($params->driver)) self::triggerError('no pdo driver defined, it should be mysql or sqlite', __FILE__, __LINE__, $exit = true);
         if(!isset($params->user)) return false;
         if($params->driver == 'mysql')
         {
@@ -1490,21 +1464,140 @@ class router
         try 
         {
             $dbh = new PDO($dsn, $params->user, $params->password, array(PDO::ATTR_PERSISTENT => $params->persistant));
+            $dbh->exec("SET NAMES {$params->encoding}");
+
+            /* If run on linux, set emulatePrepare and bufferQuery to true. */
+            if(!isset($params->emulatePrepare) and PHP_OS == 'Linux') $params->emulatePrepare = true;
+            if(!isset($params->bufferQuery) and PHP_OS == 'Linux')    $params->bufferQuery = true;
+
             $dbh->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
             $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $dbh->exec("SET NAMES {$params->encoding}");
             if(isset($params->strictMode) and $params->strictMode == false) $dbh->exec("SET @@sql_mode= ''");
-            if(isset($params->checkCentOS) and $params->checkCentOS and helper::isCentOS())
-            {
-                $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-                $dbh->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-            }
+            if(isset($params->emulatePrepare)) $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, $params->emulatePrepare);
+            if(isset($params->bufferQuery))    $dbh->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $params->bufferQuery);
+
             return $dbh;
         }
         catch (PDOException $exception)
         {
-            self::error($exception->getMessage(), __FILE__, __LINE__, $exit = true);
+            self::triggerError($exception->getMessage(), __FILE__, __LINE__, $exit = true);
         }
+    }
+
+    //-------------------- Error methods.------------------//
+    
+    /**
+     * The shutdown handler.
+     * 
+     * @access public
+     * @return void
+     */
+    public function shutdown()
+    {
+        /* If debug on, save sql lines. */
+        if(!empty($this->config->debug)) $this->saveSQL();
+
+        /* If any error occers, save it. */
+        if(!function_exists('error_get_last')) return;
+        $error = error_get_last();
+        if($error) $this->saveError($error['type'], $error['message'], $error['file'], $error['line']);
+    }
+
+    /**
+     * Trriger an error.
+     * 
+     * @param string    $message    error message
+     * @param string    $file       the file error occers
+     * @param int       $line       the line error occers
+     * @param bool      $exit       exit the program or not
+     * @access public
+     * @return void
+     */
+    public function triggerError($message, $file, $line, $exit = false)
+    {
+        /* Set the error info. */
+        $log = "ERROR: $message in $file on line $line";
+        if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
+        $trace = debug_backtrace();
+        extract($trace[0]);
+        extract($trace[1]);
+        $log .= ", last called by $file on line $line through function $function.\n";
+
+        /* Trigger it. */
+        trigger_error($log, $exit ? E_USER_ERROR : E_USER_WARNING);
+    }
+
+    /**
+     * Save error info.
+     * 
+     * @param  int    $level 
+     * @param  string $message 
+     * @param  string $file 
+     * @param  int    $line 
+     * @access public
+     * @return void
+     */
+    public function saveError($level, $message, $file, $line)
+    {
+        /* Skip the error: Redefining already defined constructor. */
+        if(strpos($message, 'Redefining') !== false) return true;
+
+        /* Set the error info. */
+        $errorLog  = "\n" . date('H:i:s') . " $message in <strong>$file</strong> on line <strong>$line</strong> ";
+        $errorLog .= "when visiting <strong>" . $this->getURI() . "</strong>\n";
+
+        /* If the ip is pulic, hidden the full path of scripts. */
+        if(!defined('IN_SHELL') and !($this->server->server_addr == '127.0.0.1' or filter_var($this->server->server_addr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false))
+        {
+            $errorLog  = str_replace($this->getBasePath(), '', $errorLog);
+        }
+
+        /* Save to log file. */
+        $errorFile = $this->getLogRoot() . 'php.' . date('Ymd') . '.log';
+        $fh = @fopen($errorFile, 'a');
+        if($fh) fwrite($fh, strip_tags($errorLog)) && fclose($fh);
+
+        /* If the debug > 1, show warning, notice error. */
+        if($level == E_NOTICE or $level == E_WARNING or $level == E_STRICT or $level == 8192) // 8192: E_DEPRECATED
+        {
+            if(!empty($this->config->debug) and $this->config->debug > 1)
+            {
+                $cmd  = "vim +$line $file";
+                $size = strlen($cmd);
+                echo "<pre class='alert alert-danger'>$message: ";
+                echo "<input type='text' value='$cmd' size='$size' style='border:none; background:none;' onclick='this.select();' /></pre>";
+            }
+        }
+
+        /* If error level is serious, die.  */
+        if($level == E_ERROR or $level == E_PARSE or $level == E_CORE_ERROR or $level == E_COMPILE_ERROR or $level == E_USER_ERROR)
+        {
+            if(empty($this->config->debug)) die();
+            if(PHP_SAPI == 'cli') die($errorLog);
+
+            $htmlError  = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head>";
+            $htmlError .= "<body>" . nl2br($errorLog) . "</body></html>";
+            die($htmlError);
+        }
+    }
+
+    /**
+     * Save the sql.
+     * 
+     * @access protected
+     * @return void
+     */
+    public function saveSQL()
+    {
+        if(!class_exists('dao')) return;
+
+        $sqlLog = $this->getLogRoot() . 'sql.' . date('Ymd') . '.log';
+        $fh = @fopen($sqlLog, 'a');
+        if(!$fh) return false;
+        fwrite($fh, date('Ymd H:i:s') . ": " . $this->getURI() . "\n");
+        foreach(dao::$querys as $query) fwrite($fh, "  $query\n");
+        fwrite($fh, "\n");
+        fclose($fh);
     }
 }
 
@@ -1584,7 +1677,7 @@ class super
     /**
      * Construct, set the var scope.
      * 
-     * @param   string $scope  the score, can be server, post, get, cookie, session, global
+     * @param   string $scope  the scope, can be server, post, get, cookie, session, global
      * @access  public
      * @return  void
      */
