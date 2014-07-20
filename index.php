@@ -1,6 +1,6 @@
 <?php
 /**
- * The router file of ZenTaoPHP.
+ * The router file of zentaophp.
  *
  * All request should be routed by this router.
  *
@@ -11,7 +11,11 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-error_reporting(E_ALL);
+/* Set the error reporting. */
+error_reporting(0);
+
+/* Start output buffer. */
+ob_start();
 
 /* Load the framework. */
 include './framework/router.class.php';
@@ -27,3 +31,6 @@ $app = router::createApp('demo');
 $common = $app->loadCommon();
 $app->parseRequest();
 $app->loadModule();
+
+/* Flush the buffer. */
+echo helper::removeUTF8Bom(ob_get_clean());
