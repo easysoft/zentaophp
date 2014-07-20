@@ -34,9 +34,9 @@ class blog extends control
         $this->app->loadClass('pager');
         $pager = new pager($recTotal, $recPerPage, $pageID);
 
-        $this->view->header->title = $this->lang->blog->index;
-        $this->view->articles      = $this->blog->getList($pager);
-        $this->view->pager         = $pager;
+        $this->view->title    = $this->lang->blog->index;
+        $this->view->articles = $this->blog->getList($pager);
+        $this->view->pager    = $pager;
         $this->display();
     }
 
@@ -55,7 +55,7 @@ class blog extends control
             die(js::locate(inlink('index')));
         }
 
-        $this->view->header->title = $this->lang->blog->add;
+        $this->view->title = $this->lang->blog->add;
         $this->display();
     }
 
@@ -75,8 +75,8 @@ class blog extends control
         }
         else
         {
-            $this->view->header->title = $this->lang->blog->edit;
-            $this->view->article       = $this->blog->getByID($id);
+            $this->view->title   = $this->lang->blog->edit;
+            $this->view->article = $this->blog->getByID($id);
             $this->display();
         }
     }
@@ -90,8 +90,8 @@ class blog extends control
      */
     public function view($id)
     {
-        $this->view->header->title = $this->lang->blog->view;
-        $this->view->article       = $this->blog->getByID($id);
+        $this->view->title   = $this->lang->blog->view;
+        $this->view->article = $this->blog->getByID($id);
         $this->display();
     }
 
