@@ -1,6 +1,6 @@
 <?php
 /**
- * The index module simplified chinese file of ZenTaoPHP.
+ * The index module simplified chinese file of zentaoPHP.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:

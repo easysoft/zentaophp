@@ -1,6 +1,6 @@
 <?php
 /**
- * The common simplified chinese file of ZenTaoPHP.
+ * The common simplified chinese file of zentaoPHP.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -10,9 +10,9 @@
  *  May you share freely, never taking more than you give.
  */
 /* Some global items. */
-$lang->zentaophp = 'ZenTaoPHP框架';
-$lang->welcome   = 'ZenTaoPHP, 做最懂程序员的框架！';
-$lang->intro     = 'ZenTaoPHP框架是一款轻量级的MVC开发框架，代码简单，性能良好，结构清晰，开发友好！';
+$lang->zentaophp = 'zentaoPHP框架';
+$lang->welcome   = 'zentaoPHP, 做最懂程序员的框架！';
+$lang->intro     = 'zentaoPHP框架是一款轻量级的MVC开发框架，代码简单，性能良好，结构清晰，开发友好！';
 $lang->more      = '了解更多&raquo;';
 $lang->save      = '保存';
 
@@ -24,7 +24,6 @@ $lang->menu->blog  = '演示';
 
 /* Error message. */
 $lang->error = new stdclass();
-$lang->error->companyNotFound = "您访问的域名 %s 没有对应的公司。";
 $lang->error->length          = array("『%s』长度错误，应当为『%s』", "『%s』长度应当不超过『%s』，且不小于『%s』。");
 $lang->error->reg             = "『%s』不符合格式，应当为:『%s』。";
 $lang->error->unique          = "『%s』已经有『%s』这条记录了。";
