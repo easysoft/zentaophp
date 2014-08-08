@@ -1045,7 +1045,7 @@ class sql
      * @access public
      * @return object the sql object.
      */
-    public function factory($table = '')
+    public static function factory($table = '')
     {
         return new sql($table);
     }
@@ -1057,7 +1057,7 @@ class sql
      * @access public
      * @return object the sql object.
      */
-    public function select($field = '*')
+    public static function select($field = '*')
     {
         $sqlobj = self::factory();
         $sqlobj->sql = "SELECT $field ";
