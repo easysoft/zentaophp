@@ -26,7 +26,7 @@ deb:
 
 zip:
 	mkdir zentaophp
-	cp -fr {config,db,favicon.ico,framework,index.php,js,lib,module,theme} zentaophp
+	cp -fr {config,db,favicon.ico,framework,index.php,js,lib,module,theme,.htaccess} zentaophp
 	rm -fr zentaophp/config/my.php
 	find zentaophp -name .git |xargs rm -fr
 	zip -r -9 zentaoPHP.$(VERSION).zip zentaophp
