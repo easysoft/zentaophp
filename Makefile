@@ -5,7 +5,7 @@ all: zip
 clean:
 	rm -fr *-stamp
 	rm -fr debian/zentaophp
-	rm -fr ZenTaoPHP-*.tgz
+	rm -fr zentaoPHP-*.tgz
 	rm -fr package.xml
 	rm -fr ztphp*
 	rm -fr *.zip
@@ -19,7 +19,7 @@ pear:
 
 pear-install:
 	sudo pear uninstall zentaophp
-	sudo pear install ZenTaoPHP*.tgz
+	sudo pear install zentaoPHP*.tgz
 
 deb:
 	dpkg-buildpackage -rfakeroot
@@ -29,7 +29,7 @@ zip:
 	cp -fr {config,db,favicon.ico,framework,index.php,js,lib,module,theme} zentaophp
 	rm -fr zentaophp/config/my.php
 	find zentaophp -name .git |xargs rm -fr
-	zip -r -9 ZenTaoPHP.$(VERSION).zip zentaophp
+	zip -r -9 zentaoPHP.$(VERSION).zip zentaophp
 	rm -fr zentaophp
 ztphpdoc:
 	phpdoc -d framework,lib -t ztphpapi -o HTML:frames:phphtmllib -ti "zentaophp framework help" -s on -pp on -i *test*
