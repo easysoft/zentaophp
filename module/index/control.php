@@ -30,7 +30,7 @@ class index extends control
      */
     public function index()
     {
-        $this->view->header->title = $this->lang->welcome;
+        $this->view->title = $this->lang->welcome;
         $this->display();
     }
 }
