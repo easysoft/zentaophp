@@ -12,6 +12,7 @@
 
 /**
  * The helper class, contains the tool functions.
+ * 该类实现了一些常用的方法
  *
  * @package framework
  */
@@ -19,6 +20,7 @@ class helper
 {
     /**
      * Set the member's value of one object.
+     * 设置一个对象的成员变量
      * <code>
      * <?php
      * $lang->db->user = 'wwccss';
@@ -45,8 +47,11 @@ class helper
 
     /**
      * Create a link to a module's method.
-     * 
      * This method also mapped in control class to call conveniently.
+     *
+     * 创建一个模块方法的链接
+     * control类的createLink实际上调用的是这个方法
+     *
      * <code>
      * <?php
      * helper::createLink('hello', 'index', 'var1=value1&var2=value2');
@@ -110,8 +115,10 @@ class helper
     }
 
     /**
-     * Import a file instend of include or requie.
+     * Import a file instend of include or require.
      * 
+     * 引用一个文件，替换内置的include及require方法
+     *
      * @param string    $file   the file to be imported.
      * @static
      * @access public
@@ -132,6 +139,7 @@ class helper
 
     /**
      * Set the model file of one module. If there's an extension file, merge it with the main model file.
+     * 设置一个模块的model文件，如果存在model扩展，一起合并
      * 
      * @param   string $moduleName the module name
      * @static
@@ -151,6 +159,7 @@ class helper
         if(empty($extFiles)) return $mainModelFile;
 
         /* Else, judge whether needed update or not .*/
+        /* 通过对比合并后的缓存文件和扩展文件的修改时间，确定是否要重新生成缓存 */
         $mergedModelFile = $app->getTmpRoot() . 'model' . $app->getPathFix() . $moduleName . '.php';
         $needUpdate      = false;
         $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
@@ -195,6 +204,7 @@ class helper
 
     /**
      * Create the in('a', 'b') string.
+     * 将数组转化成 IN( 'a', 'b') 的形式，用于数据库字符串拼接
      * 
      * @param   string|array $ids   the id lists, can be a array or a string with ids joined with comma.
      * @static
@@ -209,6 +219,7 @@ class helper
 
     /**
      * Create safe base64 encoded string for the framework.
+     * base64编码，框架对'/'字符比较敏感，转换为'.'
      * 
      * @param   string  $string   the string to encode.
      * @static
@@ -222,6 +233,7 @@ class helper
 
     /**
      * Decode the string encoded by safe64Encode.
+     * 解码base64，先将之前的'.' 转换回'/'
      * 
      * @param   string  $string   the string to decode
      * @static
@@ -235,9 +247,10 @@ class helper
 
     /**
      *  Compute the diff days of two date.
+     *  计算两个日期相差的天数，取整
      * 
-     * @param   date  $date1   the first date.
-     * @param   date  $date2   the sencode date.
+     * @param   string $date1   the first date.
+     * @param   string $date2   the sencode date.
      * @access  public
      * @return  int  the diff of the two days.
      */
@@ -248,6 +261,7 @@ class helper
 
     /**
      *  Get now time use the DT_DATETIME1 constant defined in the lang file.
+     *  获取当前时间，使用common语言文件定义的DT_DATETIME1常量
      * 
      * @access  public
      * @return  datetime  now
@@ -259,7 +273,8 @@ class helper
 
     /**
      *  Get today according to the  DT_DATE1 constant defined in the lang file.
-     * 
+     *  获取当前日期，使用common语言文件定义的DT_DATE1常量
+     *
      * @access  public
      * @return  date  today
      */
