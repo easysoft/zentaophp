@@ -1,6 +1,7 @@
 <?php
 /**
- * The router, config and lang class file of zentaophp framework.
+ * The router, config and lang class file of ZenTaoPHP framework.
+ * 此文件包括ZenTaoPHP框架的三个类：router, config, lang
  *
  * The author disclaims copyright to this source code. In place of 
  * a legal notice, here is a blessing:
@@ -12,13 +13,15 @@
 
 /**
  * The router class.
+ * router类
  *
  * @package framework
  */
 class router
 {
     /**
-     * The base path of the zentaophp framework.
+     * The base path of the ZenTaoPHP framework.
+	 * ZenTaoPHP的基础目录，一般是程序的根目录
      *
      * @var string
      * @access private
@@ -27,6 +30,7 @@ class router
 
     /**
      * The root directory of the framwork($this->basePath/framework)
+	 * 框架的根目录
      * 
      * @var string
      * @access private
@@ -35,6 +39,7 @@ class router
 
     /**
      * The root directory of the core library($this->basePath/lib)
+	 * 核心类库的根目录($this->basePath/lib)
      * 
      * @var string
      * @access private
@@ -43,6 +48,7 @@ class router
 
     /**
      * The root directory of the app.
+	 * 应用程序的根目录
      * 
      * @var string
      * @access private
@@ -51,6 +57,7 @@ class router
 
     /**
      * The root directory of the app library($this->appRoot/lib).
+	 * 应用类库的根目录($this->appRoot/lib)
      * 
      * @var string
      * @access private
@@ -59,6 +66,7 @@ class router
 
     /**
      * The root directory of temp.
+	 * 临时文件的根目录
      * 
      * @var string
      * @access private
@@ -67,6 +75,7 @@ class router
 
     /**
      * The root directory of cache.
+	 * 缓存的根目录
      * 
      * @var string
      * @access private
@@ -75,6 +84,7 @@ class router
 
     /**
      * The root directory of log.
+	 * 日志文件的根目录
      * 
      * @var string
      * @access private
@@ -83,6 +93,7 @@ class router
 
     /**
      * The root directory of config.
+	 * 配置文件的根目录
      * 
      * @var string
      * @access private
@@ -91,6 +102,7 @@ class router
 
     /**
      * The root directory of module.
+	 * 模块的根目录
      * 
      * @var string
      * @access private
@@ -99,6 +111,7 @@ class router
 
     /**
      * The root directory of theme.
+	 * 主题的根目录
      * 
      * @var string
      * @access private
@@ -107,6 +120,7 @@ class router
 
     /**
      * The lang of the client user.
+	 * 用户使用的语言
      * 
      * @var string
      * @access private
@@ -115,6 +129,7 @@ class router
 
     /**
      * The theme of the client user.
+	 * 用户使用的主题
      * 
      * @var string
      * @access private
@@ -123,6 +138,7 @@ class router
 
     /**
      * The control object of current module.
+	 * 当前模块的control对象
      * 
      * @var object
      * @access public
@@ -131,6 +147,7 @@ class router
 
     /**
      * The module name
+	 * 模块名
      * 
      * @var string
      * @access private
@@ -139,6 +156,7 @@ class router
 
     /**
      * The control file of the module current visiting.
+	 * 当前访问模块的control文件
      * 
      * @var string
      * @access private
@@ -147,6 +165,7 @@ class router
 
     /**
      * The name of the method current visiting.
+	 * 当前访问的方法名
      * 
      * @var string
      * @access private
@@ -155,6 +174,7 @@ class router
 
     /**
      * The action extension file of current method.
+	 * 当前方法的扩展文件
      * 
      * @var string
      * @access private
@@ -163,6 +183,7 @@ class router
 
     /**
      * The URI.
+	 * 访问的URI
      * 
      * @var string
      * @access private
@@ -171,6 +192,7 @@ class router
 
     /**
      * The params passed in through url.
+	 * url地址传递的参数
      * 
      * @var array
      * @access private
@@ -179,6 +201,7 @@ class router
 
     /**
      * The view type.
+	 * 视图类型
      * 
      * @var string
      * @access public
@@ -187,6 +210,7 @@ class router
 
     /**
      * The global $config object.
+	 * 全局$config对象
      * 
      * @var object
      * @access public
@@ -195,6 +219,7 @@ class router
 
     /**
      * The global $lang object.
+	 * 全局$lang对象
      * 
      * @var object
      * @access public
@@ -203,6 +228,7 @@ class router
 
     /**
      * The global $dbh object, the database connection handler.
+	 * 全局$dbh对象，数据库连接句柄
      * 
      * @var object
      * @access private
@@ -211,6 +237,7 @@ class router
 
     /**
      * The slave database handler.
+	 * 从数据库的句柄
      * 
      * @var object
      * @access private
@@ -219,6 +246,7 @@ class router
 
     /**
      * The $post object, used to access the $_POST var.
+	 * $post对象，用于访问$_POST变量
      * 
      * @var ojbect
      * @access public
@@ -227,6 +255,7 @@ class router
 
     /**
      * The $get object, used to access the $_GET var.
+	 * $get对象，用于访问$_GET变量
      * 
      * @var ojbect
      * @access public
@@ -235,6 +264,7 @@ class router
 
     /**
      * The $session object, used to access the $_SESSION var.
+	 * $session对象，用于访问$_SESSION变量
      * 
      * @var ojbect
      * @access public
@@ -243,6 +273,7 @@ class router
 
     /**
      * The $server object, used to access the $_SERVER var.
+	 * $server对象，用于访问$_SERVER变量
      * 
      * @var ojbect
      * @access public
@@ -251,6 +282,7 @@ class router
 
     /**
      * The $cookie object, used to access the $_COOKIE var.
+	 * $cookie对象，用于访问$_COOKIE变量
      * 
      * @var ojbect
      * @access public
@@ -259,6 +291,7 @@ class router
 
     /**
      * The $global object, used to access the $_GLOBAL var.
+	 * $global对象，用于访问$_GLOBAL变量
      * 
      * @var ojbect
      * @access public
@@ -267,6 +300,7 @@ class router
 
     /**
      * The construct function.
+	 * 构造方法
      * 
      * Prepare all the paths, classes, super objects and so on.
      * Notice: 
@@ -313,6 +347,7 @@ class router
 
     /**
      * Create an application.
+	 * 创建一个应用
      * 
      * <code>
      * <?php
@@ -339,7 +374,8 @@ class router
     //-------------------- path related methods --------------------//
 
     /**
-     * Set the path directory.
+     * Set the path directory separator.
+	 * 设置目录分隔符
      * 
      * @access protected
      * @return void
@@ -351,6 +387,7 @@ class router
     
     /**
      * Set the base path.
+	 * 设置基础目录
      *
      * @access protected
      * @return void
@@ -362,6 +399,7 @@ class router
     
     /**
      * Set the frame root.
+	 * 设置框架根目录
      * 
      * @access protected
      * @return void
@@ -373,6 +411,7 @@ class router
 
     /**
      * Set the core library root.
+	 * 设置核心库的根目录
      * 
      * @access protected
      * @return void
@@ -384,6 +423,7 @@ class router
 
     /**
      * Set the app root.
+	 * 设置应用的根目录
      *
      * @param string $appName 
      * @param string $appRoot 
@@ -405,6 +445,7 @@ class router
 
     /**
      * Set the app lib root.
+	 * 设置应用类库的根目录
      * 
      * @access protected
      * @return void
@@ -416,6 +457,7 @@ class router
 
     /**
      * Set the tmp root.
+	 * 设置临时文件的根目录
      * 
      * @access protected
      * @return void
@@ -427,6 +469,7 @@ class router
 
     /**
      * Set the cache root.
+	 * 设置缓存的根目录
      * 
      * @access protected
      * @return void
@@ -438,6 +481,7 @@ class router
 
     /**
      * Set the log root.
+	 * 设置log的根目录
      * 
      * @access protected
      * @return void
@@ -449,6 +493,7 @@ class router
 
     /**
      * Set the config root.
+	 * 设置config配置文件的根目录
      * 
      * @access protected
      * @return void
@@ -460,6 +505,7 @@ class router
 
     /**
      * Set the module root.
+	 * 设置模块的根目录
      * 
      * @access protected
      * @return void
@@ -471,6 +517,7 @@ class router
 
     /**
      * Set the theme root.
+	 * 设置主题根目录
      * 
      * @access protected
      * @return void
@@ -482,6 +529,7 @@ class router
 
     /**
      * Set the super vars.
+	 * 设置超级变量
      * 
      * @access protected
      * @return void
@@ -498,6 +546,7 @@ class router
 
     /**
      * set Debug 
+	 * 设置Debug模式
      * 
      * @access public
      * @return void
@@ -509,6 +558,7 @@ class router
 
     /**
      * Set the error handler.
+	 * 设置错误处理句柄
      * 
      * @access public
      * @return void
@@ -521,6 +571,7 @@ class router
 
     /**
      * Set the time zone according to the config.
+	 * 根据配置设置当前时区
      * 
      * @access public
      * @return void
@@ -532,6 +583,7 @@ class router
 
     /**
      * Get the $pathFix var
+	 * 获取$pathFix变量，即目录分隔符
      * 
      * @access public
      * @return string
@@ -543,6 +595,7 @@ class router
 
     /**
      * Get the $basePath var
+	 * 获取$basePath，即基础路径
      * 
      * @access public
      * @return string
@@ -554,6 +607,7 @@ class router
     
     /**
      * Get the $frameRoot var
+	 * 获取$frameRoot，即框架根目录
      * 
      * @access public
      * @return string
@@ -565,6 +619,7 @@ class router
 
     /**
      * Get the $coreLibRoot var
+	 * 获取$coreLibRoot变量，即核心类库根目录
      * 
      * @access public
      * @return string
@@ -576,6 +631,7 @@ class router
 
     /**
      * Get the $appRoot var
+	 * 获取$appRoot变量，即应用的根目录
      * 
      * @access public
      * @return string
@@ -587,6 +643,7 @@ class router
     
     /**
      * Get the $appLibRoot var
+	 * 获取$appLibRoot变量，即应用类库的根目录
      * 
      * @access public
      * @return string
@@ -598,6 +655,7 @@ class router
 
     /**
      * Get the $tmpRoot var
+	 * 获取$tmpRoot变量，即临时文件的根目录
      * 
      * @access public
      * @return string
@@ -609,6 +667,7 @@ class router
 
     /**
      * Get the $cacheRoot var
+	 * 获取$cacheRoot变量，即缓存文件的根目录
      * 
      * @access public
      * @return string
@@ -620,6 +679,7 @@ class router
 
     /**
      * Get the $logRoot var
+	 * 获取$logRoot变量，即日志文件的根目录
      * 
      * @access public
      * @return string
@@ -631,6 +691,7 @@ class router
 
     /**
      * Get the $configRoot var
+	 * 获取$configRoot变量，即配置文件的根目录
      * 
      * @access public
      * @return string
@@ -642,6 +703,7 @@ class router
 
     /**
      * Get the $moduleRoot var
+	 * 获取$moduleRoot变量，即应用模块的根目录
      * 
      * @access public
      * @return string
@@ -653,6 +715,7 @@ class router
 
     /**
      * Get the $themeRoot var
+	 * 获取$themeRoot变量，即主题的根目录 
      * 
      * @access public
      * @return string
@@ -663,12 +726,15 @@ class router
     }
 
     //-------------------- Client environment related functions --------------------//
+    //-------------------- 与客户端环境有关的函数  --------------------//
 
     /**
      * Set the language used by the client user.
-     * 
      * Using the order of method $lang param, session, cookie, browser and last the default lang.
      *
+	 * 根据来访的用户设置相应语言
+	 * 优先级：$lang参数 > session > cookie > 浏览器 > 配置文件
+	 *
      * @param   string $lang  zh-cn|zh-tw|zh-hk|en
      * @access  public
      * @return  void
@@ -713,6 +779,7 @@ class router
 
     /**
      * Get the $clientLang var.
+	 * 获取$clientLang变量，即客户端的语言
      * 
      * @access public
      * @return string
@@ -723,9 +790,11 @@ class router
     }
 
     /**
-     * Set the them the client user usering. The logic is same as the clientLang.
-     *
+     * Set the theme the client user using. The logic is same as the clientLang.
      * The css and images files of an theme should saved at www/theme/$themeName
+	 *
+	 * 设置客户端使用的主题，判断逻辑与客户端的语言相同
+	 * 主题的css和图片文件应该存放在www/theme/$themeName路径
      *
      * @param   string $theme   
      * @access  public
@@ -760,6 +829,7 @@ class router
 
     /**
      * Get the $clientTheme var. 
+	 * 获取$clientTheme变量
      *
      * @access public
      * @return string
@@ -771,6 +841,7 @@ class router
 
     /**
      * Get the $webRoot var.
+	 * 获取$webRoot，即应用的路径
      * 
      * @access public
      * @return string
@@ -784,6 +855,7 @@ class router
 
     /**
      * The entrance of parseing request. According to the requestType, call related methods.
+	 * 解析本次请求的入口方法，根据请求的类型(PATH_INFO GET)，调用相应的方法
      * 
      * @access public
      * @return void
@@ -808,6 +880,7 @@ class router
 
     /**
      * Parse PATH_INFO, get the $URI and $viewType.
+	 * PATH_INFO方式解析，获取$URI和$viewType
      * 
      * @access public
      * @return void
@@ -842,8 +915,10 @@ class router
 
     /**
      * Get $PATH_INFO from $_SERVER or $_ENV by the pathinfo var name.
-     *
-     * Mostly, the var name of PATH_INFO is  PATH_INFO, but may be ORIG_PATH_INFO.
+     * Mostly, the var name of PATH_INFO is PATH_INFO, but may be ORIG_PATH_INFO.
+	 *
+	 * 从$_SERVER或者$_ENV全局变量根据pathinfo变量名获取$PATH_INFO值
+	 * PATH_INFO的变量名几乎都是'PATH_INFO'，但也有可能是ORIG_PATH_INFO
      * 
      * @param   string  $varName    PATH_INFO, ORIG_PATH_INFO
      * @access  public
@@ -858,7 +933,7 @@ class router
 
     /**
      * Parse GET, get $URI and $viewType.
-     * 
+     * GET请求方式解析，获取$URI和$viewType
      * @access private
      * @return void
      */
@@ -881,6 +956,7 @@ class router
     
     /**
      * Get the $URL
+	 * 获取$URL
      * 
      * @param  bool $full  true, the URI contains the webRoot, else only hte URI.
      * @access public
@@ -898,6 +974,7 @@ class router
 
     /**
      * Get the $viewType var.
+	 * 获取$vewType变量
      * 
      * @access public
      * @return string
@@ -908,13 +985,20 @@ class router
     }
 
     //-------------------- Routing related methods.--------------------//
+    //-------------------- 路由相关方法 --------------------//
 
     /**
      * Load the common module
      *
      *  The common module is a special module, which can be used to do some common things. For examle:
      *  start session, check priviledge and so on.
-     *  This method should called manually in the router file(www/index.php) after the $lang, $config, $dbh loadde.
+     *  This method should called manually in the router file(www/index.php) after the $lang, $config, $dbh loaded.
+	 *
+	 * 加载common模块
+	 *  
+	 *  common模块比较特别，它会执行几乎每次请求都需要执行的操作，例如：
+	 *  打开session，检查权限等等
+	 *  加载完$lang, $config, $dbh后，需要在入口文件(www/index.php)中手动调用该方法
      *
      * @access public
      * @return object|bool  the common control object or false if not exits.
@@ -938,6 +1022,7 @@ class router
 
     /**
      * Set the name of the module to be called.
+	 * 设置要被调用的模块名
      * 
      * @param   string $moduleName  the module name
      * @access  public
@@ -950,8 +1035,10 @@ class router
 
     /**
      * Set the control file of the module to be called.
+	 * 设置要被调用的控制器文件
      * 
      * @param   bool    $exitIfNone     If control file not foundde, how to do. True, die the whole app. false, log error.
+	 * 									没有找到该控制器文件，如果该参数为true，则终止程序；如果为false，则打印错误日志
      * @access  public
      * @return  bool
      */
@@ -968,6 +1055,7 @@ class router
     
     /**
      * Set the name of the method calling.
+	 * 设置要被调用的方法名
      * 
      * @param string $methodName 
      * @access public
@@ -980,6 +1068,7 @@ class router
 
     /**
      * Get the path of one module.
+	 * 获取一个模块的路径
      * 
      * @param  string $moduleName    the module name
      * @access public
@@ -993,6 +1082,7 @@ class router
 
     /**
      * Get extension path of one module.
+	 * 获取一个模块的扩展路径
      * 
      * @param   string $moduleName     the module name
      * @param   string $ext            the extension type, can be control|model|view|lang|config
@@ -1006,6 +1096,7 @@ class router
 
     /**
      * Set the action extension file.
+	 * 设置请求方法的扩展文件
      * 
      * @access  public
      * @return  bool
