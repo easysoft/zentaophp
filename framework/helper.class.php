@@ -285,6 +285,7 @@ class helper
 
     /**
      *  Judge a date is zero or not.
+     *  判断日期是不是零
      * 
      * @access  public
      * @return  bool
@@ -296,6 +297,7 @@ class helper
 
     /**
      *  Get files match the pattern under one directory.
+     *  列出目录中符合该正则表达式的文件
      * 
      * @access  public
      * @return  array   the files match the pattern
@@ -310,6 +312,7 @@ class helper
 
     /**
      * Change directory.
+     * 切换目录
      * 
      * @param  string $path 
      * @static
@@ -332,6 +335,7 @@ class helper
 
     /**
      * Remove UTF8 Bom 
+     * 去掉UTF8 Bom头
      * 
      * @param  string    $string
      * @access public
@@ -346,6 +350,7 @@ class helper
 
 /**
  *  The short alias of helper::createLink() method. 
+ *  helper::createLink()的别名，方便创建本模块的链接
  *
  * @param  string        $methodName  the method name
  * @param  string|array  $vars        the params passed to the method, can be array('key' => 'value') or key1=value1&key2=value2)
@@ -359,7 +364,8 @@ function inLink($methodName = 'index', $vars = '', $viewType = '')
 }
 
 /**
- *  Static cycle a array 
+ *  Static cycle a array
+ *  通过一个静态游标，可以遍历数组
  *
  * @param array  $items     the array to be cycled.
  * @return mixed
@@ -374,6 +380,7 @@ function cycle($items)
 
 /**
  * Get current microtime.
+ * 获取当前时间的Unix时间戳，精确到微妙
  * 
  * @access protected
  * @return float current time.
@@ -386,6 +393,7 @@ function getTime()
 
 /**
  * dump a var.
+ * 打印变量的信息
  * 
  * @param mixed $var 
  * @access public

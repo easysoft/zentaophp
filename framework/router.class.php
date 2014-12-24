@@ -1038,7 +1038,7 @@ class router
 	 * 设置要被调用的控制器文件
      * 
      * @param   bool    $exitIfNone     If control file not foundde, how to do. True, die the whole app. false, log error.
-	 * 									没有找到该控制器文件，如果该参数为true，则终止程序；如果为false，则打印错误日志
+	 * 									没有找到该控制器文件的情况：如果该参数为true，则终止程序；如果为false，则打印错误日志
      * @access  public
      * @return  bool
      */
@@ -1110,10 +1110,14 @@ class router
 
     /**
      * Set the route according to PATH_INFO.
-     * 
      * 1. set the module name.
      * 2. set the method name.
      * 3. set the control file.
+     *
+     * 设置路由(PATH_INFO 方式)
+     * 1.设置模块名
+     * 2.设置方法名
+     * 3.设置控制器文件
      *
      * @access public
      * @return void
@@ -1151,6 +1155,11 @@ class router
      * 2. set the method name.
      * 3. set the control file.
      *
+     * 设置路由(GET 方式)
+     * 1.设置模块名
+     * 2.设置方法名
+     * 3.设置控制器文件
+     *
      * @access public
      * @return void
      */
@@ -1165,12 +1174,17 @@ class router
 
     /**
      * Load a module.
-     *
      * 1. include the control file or the extension action file.
      * 2. create the control object.
      * 3. set the params passed in through url.
      * 4. call the method by call_user_function_array
      * 
+     * 加载一个模块
+     * 1. 引入控制器文件或扩展的方法文件
+     * 2. 创建control对象
+     * 3. 解析url，得到请求的参数
+     * 4. 使用call_user_function_array调用相应的方法
+     *
      * @access public
      * @return bool|object  if the module object of die.
      */
@@ -1193,7 +1207,11 @@ class router
         if(!method_exists($module, $methodName)) $this->triggerError("the module $moduleName has no $methodName method", __FILE__, __LINE__, $exit = true);
         $this->control = $module;
 
-        /* Get the default setings of the method to be called useing the reflecting. */
+        /* 
+         * Get the default settings of the method to be called using the reflecting. 
+         * 使用反射机制获取函数参数的默认值
+         *
+         * */
         $defaultParams = array();
         $methodReflect = new reflectionMethod($className, $methodName);
         foreach($methodReflect->getParameters() as $param)
@@ -1203,7 +1221,10 @@ class router
             $defaultParams[$name] = $default;
         }
 
-        /* Set params according PATH_INFO or GET. */
+        /** 
+         * Set params according PATH_INFO or GET
+         * 根据PATH_INFO或者GET方式设置请求的参数
+         */
         if($this->config->requestType == 'PATH_INFO')
         {
             $this->setParamsByPathInfo($defaultParams);
@@ -1220,6 +1241,7 @@ class router
 
     /**
      * Set the params by PATH_INFO
+     * 设置请求的参数(PATH_INFO 方式)
      * 
      * @param   array $defaultParams the default settings of the params.
      * @access  public
@@ -1232,10 +1254,16 @@ class router
         $itemCount = count($items);
 
         $params = array();
-        /* The clean mode, only passed in values, no keys. */
+        /** 
+         * The clean mode, only passed in values, no keys. 
+         * clean模式，按照顺序来设置参数
+         **/
         if($this->config->pathType == 'clean')
         {
-            /* The first two item is moduleName and methodName. So the params should begin at 2.*/
+            /** 
+             * The first two item is moduleName and methodName. So the params should begin at 2.
+             * 前两项为模块名和方法名，参数从下标为2开始
+             **/
             for($i = 2; $i < $itemCount; $i ++)
             {
                 $key = key($defaultParams);     // Get key from the $defaultParams.
@@ -1243,7 +1271,10 @@ class router
                 next($defaultParams);
             }
         }
-        /* The full mode, both key and value passed in. */
+        /** 
+         * The full mode, both key and value passed in. 
+         * full模式，根据key来合并参数数组
+         **/
         elseif($this->config->pathType == 'full')
         {
             for($i = 2; $i < $itemCount; $i += 2)
@@ -1258,6 +1289,7 @@ class router
 
     /**
      * Set the params by GET.
+     * 设置请求的参数(GET 方式)
      * 
      * @param   array $defaultParams the default settings of the params.
      * @access  public
@@ -1275,6 +1307,7 @@ class router
 
     /**
      * Merge the params passed in and the default params. Thus the params which have default values needn't pass value, just like a function.
+     * 合并请求的参数和默认参数，这样就可以省略已经有默认值的参数了
      *
      * @param   array $defaultParams     the default params defined by the method.
      * @param   array $passedParams      the params passed in through url.
@@ -1283,7 +1316,10 @@ class router
      */
     private function mergeParams($defaultParams, $passedParams)
     {
-        /* If the not strict mode, the keys of passed params and defaaul params msut be the same. */
+        /** 
+         * If the not strict mode, the keys of passed params and default params must be the same. 
+         * 非严格模式，请求的参数和默认参数的key必须一致
+         * */
         if(!isset($this->config->strictParams) or $this->config->strictParams == false) 
         {
             $passedParams = array_values($passedParams);
@@ -1301,7 +1337,10 @@ class router
                 $i ++;
             }
         }
-        /* If in strict mode, the keys of the passed params must be the same with the default params, but order can be different. */
+        /** 
+         * If in strict mode, the keys of the passed params must be the same with the default params, but order can be different.
+         * 严格模式， 请求的参数必须与默认参数的key一致，顺序可以不同
+         * */
         else
         {
             foreach($defaultParams as $key => $defaultValue)
@@ -1321,6 +1360,7 @@ class router
  
     /**
      * Get the $moduleName var.
+     * 获取$moduleName变量
      * 
      * @access public
      * @return string
@@ -1332,6 +1372,7 @@ class router
 
     /**
      * Get the $controlFile var.
+     * 获取$controlFile变量
      * 
      * @access public
      * @return string
@@ -1343,6 +1384,7 @@ class router
 
     /**
      * Get the $methodName var.
+     * 获取$methodName变量
      * 
      * @access public
      * @return string
@@ -1354,6 +1396,7 @@ class router
 
     /**
      * Get the $param var.
+     * 获取$param变量
      * 
      * @access public
      * @return string
@@ -1363,12 +1406,15 @@ class router
         return $this->params;
     }
 
-    //-------------------- Tool methods.------------------//
+    //-------------------- Tool methods. ------------------//
+    //-------------------- 常用的工具方法 ------------------//
     
     /**
      * Load a class file.
-     * 
      * First search in $appLibRoot, then $coreLibRoot.
+     *
+     * 从类库中加载一个类文件
+     * 先搜索$appLibRoot，然后搜索$coreLibRoot
      *
      * @param   string $className  the class name
      * @param   bool   $static     statis class or not
@@ -1396,7 +1442,10 @@ class router
         /* If staitc, return. */
         if($static) return true;
 
-        /* Instance it. */
+        /**
+         * Instance it. 
+         * 如果是非静态调用，实例化该类
+         **/
         global $$className;
         if(!class_exists($className)) $this->triggerError("the class $className not found in $classFile", __FILE__, __LINE__, $exit = true);
         if(!is_object($$className)) $$className = new $className();
@@ -1405,8 +1454,10 @@ class router
 
     /**
      * Load config and return it as the global config object.
-     * 
      * If the module is common, search in $configRoot, else in $modulePath.
+     *
+     * 加载模块的config文件，返回全局$config对象
+     * 如果该模块是common，加载$configRoot的配置文件，其他模块则加载其模块的配置文件
      *
      * @param   string $moduleName     module name
      * @param   bool  $exitIfNone     exit or not
@@ -1421,7 +1472,10 @@ class router
 
         $extConfigFiles = array();
 
-        /* Set the main config file and extension config file. */
+        /*
+         * Set the main config file and extension config file.
+         * 设置主配置文件和扩展配置文件
+         * */
         if($moduleName == 'common')
         {
             $mainConfigFile = $this->configRoot . 'config.php';
@@ -1464,6 +1518,7 @@ class router
 
     /**
      * Export the config params to the client, thus the client can adjust it's logic according the config.
+     * 向客户端输出配置参数，客户端可以根据这些参数实现和调整请求的逻辑
      * 
      * @access public
      * @return void
@@ -1484,6 +1539,7 @@ class router
     
     /**
      * Load lang and return it as the global lang object.
+     * 加载语言文件，返回全局$lang对象
      * 
      * @param   string $moduleName     the module name
      * @access  public
@@ -1524,6 +1580,7 @@ class router
 
     /**
      * Connect to database.
+     * 连接数据库
      * 
      * @access public
      * @return void
@@ -1539,6 +1596,7 @@ class router
 
     /**
      * Connect database by PDO.
+     * 使用PDO连接数据库
      * 
      * @param  object    $params    the database params.
      * @access private
@@ -1576,9 +1634,11 @@ class router
     }
 
     //-------------------- Error methods.------------------//
+    //-------------------- 错误处理方法 ------------------//
     
     /**
      * The shutdown handler.
+     * 程序停止时执行的函数
      * 
      * @access public
      * @return void
@@ -1588,14 +1648,18 @@ class router
         /* If debug on, save sql lines. */
         if(!empty($this->config->debug)) $this->saveSQL();
 
-        /* If any error occers, save it. */
+        /* 
+         * If any error occers, save it.
+         * 发现错误，保存到日志中
+         * */
         if(!function_exists('error_get_last')) return;
         $error = error_get_last();
         if($error) $this->saveError($error['type'], $error['message'], $error['file'], $error['line']);
     }
 
     /**
-     * Trriger an error.
+     * Trigger an error.
+     * 触发一个错误
      * 
      * @param string    $message    error message
      * @param string    $file       the file error occers
@@ -1620,6 +1684,7 @@ class router
 
     /**
      * Save error info.
+     * 保存错误信息
      * 
      * @param  int    $level 
      * @param  string $message 
@@ -1630,14 +1695,23 @@ class router
      */
     public function saveError($level, $message, $file, $line)
     {
-        /* Skip the error: Redefining already defined constructor. */
+        /* 
+         * Skip the error: Redefining already defined constructor.
+         * 忽略该错误：
+         **/
         if(strpos($message, 'Redefining') !== false) return true;
 
-        /* Set the error info. */
+        /* 
+         * Set the error info.
+         * 设置错误信息
+         **/
         $errorLog  = "\n" . date('H:i:s') . " $message in <strong>$file</strong> on line <strong>$line</strong> ";
         $errorLog .= "when visiting <strong>" . $this->getURI() . "</strong>\n";
 
-        /* If the ip is pulic, hidden the full path of scripts. */
+        /* 
+         * If the ip is pulic, hidden the full path of scripts.
+         * 为了安全起见，对公网环境因此脚本路径
+         * */
         if(!defined('IN_SHELL') and !($this->server->server_addr == '127.0.0.1' or filter_var($this->server->server_addr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false))
         {
             $errorLog  = str_replace($this->getBasePath(), '', $errorLog);
@@ -1648,7 +1722,10 @@ class router
         $fh = @fopen($errorFile, 'a');
         if($fh) fwrite($fh, strip_tags($errorLog)) && fclose($fh);
 
-        /* If the debug > 1, show warning, notice error. */
+        /* 
+         * If the debug > 1, show warning, notice error.
+         * 如果debug > 1，显示warning, notice级别的错误
+         **/
         if($level == E_NOTICE or $level == E_WARNING or $level == E_STRICT or $level == 8192) // 8192: E_DEPRECATED
         {
             if(!empty($this->config->debug) and $this->config->debug > 1)
@@ -1660,7 +1737,10 @@ class router
             }
         }
 
-        /* If error level is serious, die.  */
+        /* 
+         * If error level is serious, die.
+         * 如果是严重错误，停止程序
+         * */
         if($level == E_ERROR or $level == E_PARSE or $level == E_CORE_ERROR or $level == E_COMPILE_ERROR or $level == E_USER_ERROR)
         {
             if(empty($this->config->debug)) die();
@@ -1674,6 +1754,7 @@ class router
 
     /**
      * Save the sql.
+     * 保存sql语句
      * 
      * @access protected
      * @return void
@@ -1700,7 +1781,8 @@ class router
 class config
 { 
     /**
-     * Set the value of a member. the member can be the foramt like db.user.
+     * Set the value of a member. the member can be the format like db.user.
+     * 设置成员变量，成员可以是'db.user'类似的格式
      * 
      * <code>
      * <?php
@@ -1727,6 +1809,7 @@ class language
 {
     /**
      * Set the value of a member. the member can be the foramt like db.user.
+     * 设置成员变量，成员可以是'db.user'类似的格式
      * 
      * <code>
      * <?php
@@ -1745,6 +1828,7 @@ class language
 
     /**
      * Show a member 
+     * 显示一个成员的值
      * 
      * @param   object $obj    the object
      * @param   string $key    the key
@@ -1754,7 +1838,7 @@ class language
     public function show($obj, $key)
     {
         $obj = (array)$obj;
-        if(isset($obj[$key])) echo $obj[$key]; else echo '';
+        echo isset($obj[$key]) ? $obj[$key] : '';
     }
 }
 
@@ -1767,6 +1851,7 @@ class super
 {
     /**
      * Construct, set the var scope.
+     * 构造函数，设置超级变量名
      * 
      * @param   string $scope  the scope, can be server, post, get, cookie, session, global
      * @access  public
@@ -1779,6 +1864,7 @@ class super
 
     /**
      * Set one member value. 
+     * 设置超级变量的成员值
      * 
      * @param   string    the key
      * @param   mixed $value  the value
@@ -1819,6 +1905,7 @@ class super
 
     /**
      * The magic get method.
+     * 超级变量的魔术方法，比如用$post->key访问$_POST['key']
      * 
      * @param  string $key    the key
      * @access public
@@ -1871,6 +1958,7 @@ class super
 
     /**
      * Print the structure.
+     * 打印变量的详细结构
      * 
      * @access public
      * @return void

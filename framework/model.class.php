@@ -19,6 +19,7 @@ class model
 {
     /**
      * The global $app object.
+     * 全局对象$app
      * 
      * @var object
      * @access protected
@@ -27,6 +28,7 @@ class model
 
     /**
      * The global $config object.
+     * 全局对象$config
      * 
      * @var object
      * @access protected
@@ -35,6 +37,7 @@ class model
 
     /**
      * The global $lang object.
+     * 全局对象$lang
      * 
      * @var object
      * @access protected
@@ -43,6 +46,7 @@ class model
 
     /**
      * The global $dbh object, the database connection handler.
+     * 全局对象$dbh，数据库连接句柄
      * 
      * @var object
      * @access protected
@@ -51,6 +55,7 @@ class model
 
     /**
      * The $dao object, used to access or update database.
+     * $dao对象，用于访问或者更新数据库
      * 
      * @var object
      * @access protected
@@ -59,6 +64,7 @@ class model
 
     /**
      * The $post object, used to access the $_POST var.
+     * $post对象，用于访问$_POST变量
      * 
      * @var ojbect
      * @access public
@@ -67,6 +73,7 @@ class model
 
     /**
      * The $get object, used to access the $_GET var.
+     * $get对象，用于访问$_GET变量
      * 
      * @var ojbect
      * @access public
@@ -74,7 +81,8 @@ class model
     public $get;
 
     /**
-     * The $sesion object, used to access the $_SESSION var.
+     * The $session object, used to access the $_SESSION var.
+     * $session对象，用于访问$_SESSION变量
      * 
      * @var ojbect
      * @access public
@@ -83,6 +91,7 @@ class model
 
     /**
      * The $server object, used to access the $_SERVER var.
+     * $server对象，用于访问$_SERVER变量
      * 
      * @var ojbect
      * @access public
@@ -91,6 +100,7 @@ class model
 
     /**
      * The $cookie object, used to access the $_COOKIE var.
+     * $cookie对象，用于访问$_COOKIE变量
      * 
      * @var ojbect
      * @access public
@@ -99,6 +109,7 @@ class model
 
     /**
      * The $global object, used to access the $_GLOBAL var.
+     * $global对象，用于访问$_GLOBAL变量
      * 
      * @var ojbect
      * @access public
@@ -110,6 +121,11 @@ class model
      *
      * 1. global the global vars, refer them by the class member such as $this->app.
      * 2. set the pathes, config, lang of current module
+     *
+     * 构造方法
+     *
+     * 1. 将全局变量设为model类的成员变量，方便model的派生类调用 
+     * 2. 设置$config, $lang, $dbh, $dao 
      * 
      * @access public
      * @return void
@@ -134,8 +150,14 @@ class model
      * Get the module name of this model. Not the module user visiting.
      *
      * This method replace the 'ext' and 'model' string from the model class name, thus get the module name.
-     * Not useing $app->getModuleName() because it return the module user is visiting. But one module can be
-     * loaded by loadModel() so we must get the module name of thie model.
+     * Not using $app->getModuleName() because it return the module user is visiting. But one module can be
+     * loaded by loadModel() so we must get the module name of this model.
+     *
+     * 获取该model的模块名，而不是用户请求的模块名
+     *
+     * 这个方法通过去掉该model类名的'ext'和'model'字符串，来获取当前模块名。
+     * 不要使用$app->getModuleName()，因为其返回的是用户请求的模块名。
+     * 另一个model可以通过loadModel()加载进来，与请求的模块名不一致。
      * 
      * @access protected
      * @return string the module name.
@@ -150,6 +172,7 @@ class model
 
     /**
      * Set the super vars.
+     * 设置全局超级变量
      * 
      * @access protected
      * @return void
@@ -165,7 +188,9 @@ class model
     }
 
     /**
-     * Load the model of one module. After loaded, can use $this->modulename to visit the model object.
+     * Load the model of one module. After loaded, can use $this->$moduleName to visit the model object.
+     * 加载一个模块的model。加载完成后，使用$this->$moduleName来访问这个model对象
+     * 比如：loadModel('user')引入user模块的model实例对象，可以通过$this->user来访问它
      * 
      * @param   string  $moduleName
      * @access  public
@@ -186,6 +211,7 @@ class model
 
     /**
      * Load DAO.
+     * 加载DAO
      * 
      * @access private
      * @return void
@@ -194,4 +220,4 @@ class model
     {
         $this->dao = $this->app->loadClass('dao');
     }
-}    
+}
