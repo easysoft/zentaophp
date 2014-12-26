@@ -19,6 +19,7 @@ class dao
 {
     /**
      * The global app object.
+     * 全局对象$global
      * 
      * @var object
      * @access protected
@@ -27,6 +28,7 @@ class dao
 
     /**
      * The global config object.
+     * 全局对象$config
      * 
      * @var object
      * @access protected
@@ -35,6 +37,7 @@ class dao
 
     /**
      * The global lang object.
+     * 全局对象$lang
      * 
      * @var object
      * @access protected
@@ -43,6 +46,7 @@ class dao
 
     /**
      * The global dbh(database handler) object.
+     * 全局对象$dbh
      * 
      * @var object
      * @access protected
@@ -51,6 +55,7 @@ class dao
 
     /**
      * The global slaveDBH(database handler) object.
+     * 全局对象$slaveDBH
      * 
      * @var object
      * @access protected
@@ -58,7 +63,8 @@ class dao
     protected $slaveDBH;
 
     /**
-     * The sql object, used to creat the query sql.
+     * The sql object, used to create the query sql.
+     * sql对象，用于生成sql语句
      * 
      * @var object
      * @access protected
@@ -67,6 +73,7 @@ class dao
 
     /**
      * The table of current query.
+     * 正在使用的表
      * 
      * @var string
      * @access public
@@ -75,6 +82,7 @@ class dao
 
     /**
      * The alias of $this->table.
+     * $this->table的别名
      * 
      * @var string
      * @access public
@@ -83,6 +91,7 @@ class dao
 
     /**
      * The fields will be returned.
+     * 查询的字段
      * 
      * @var string
      * @access public
@@ -91,6 +100,7 @@ class dao
 
     /**
      * The query mode, raw or magic.
+     * 查询模式，raw模式用于正常的select update等sql拼接操作，magic模式用于findByXXX等魔术方法
      * 
      * This var is used to diff dao::from() with sql::from().
      *
@@ -101,6 +111,7 @@ class dao
 
     /**
      * The query method: insert, select, update, delete, replace.
+     * 执行方式：insert, select, update, delete, replace
      *
      * @var string
      * @access public
@@ -109,6 +120,7 @@ class dao
 
     /**
      * The queries executed. Every query will be saved in this array.
+     * 执行的请求，所有的查询都保存在该数组。
      * 
      * @var array
      * @access public
@@ -117,6 +129,7 @@ class dao
 
     /**
      * The errors.
+     * 存放错误的数组。
      * 
      * @var array
      * @access public
@@ -125,6 +138,7 @@ class dao
 
     /**
      * The construct method.
+     * 构造方法。
      *
      * @access public
      * @return void
@@ -143,6 +157,7 @@ class dao
 
     /**
      * Set the $table property.
+     * 设置$table属性。
      * 
      * @param  string $table 
      * @access private
@@ -155,6 +170,7 @@ class dao
 
     /**
      * Set the $alias property.
+     * 设置$alias属性。
      * 
      * @param  string $alias 
      * @access private
@@ -167,6 +183,7 @@ class dao
 
     /**
      * Set the $fields property.
+     * 设置$fields属性。
      * 
      * @param  string $fields 
      * @access private
@@ -179,6 +196,7 @@ class dao
 
     /**
      * Reset the vars.
+     * 重置属性。
      * 
      * @access private
      * @return void
@@ -193,9 +211,11 @@ class dao
     }
 
     //-------------------- According to the query method, call according method of sql class. --------------------//
+    //-------------------- 根据请求的方式，调用sql类相应的方法。 --------------------//
 
     /**
      * Set the query mode. If the method if like findByxxx, the mode is magic. Else, the mode is raw.
+     * 设置请求模式。像findByxxx之类的方法，使用的是magic模式；其他方法使用的是raw模式。
      * 
      * @param  string $mode     magic|raw
      * @access private
@@ -208,6 +228,7 @@ class dao
 
     /**
      * Set the query method: select|update|insert|delete|replace 
+     * 设置请求方法：select|update|insert|delete|replace 。
      * 
      * @param  string $method 
      * @access private
@@ -220,6 +241,7 @@ class dao
 
     /**
      * The select method, call sql::select().
+     * select方法，调用sql::select()。
      * 
      * @param  string $fields 
      * @access public
@@ -234,7 +256,8 @@ class dao
     }
 
     /**
-     * The select method, call sql::update().
+     * The update method, call sql::update().
+     * update方法，调用sql::update()。
      * 
      * @param  string $table 
      * @access public
@@ -251,6 +274,7 @@ class dao
 
     /**
      * The delete method, call sql::delete().
+     * delete方法，调用sql::delete()。
      * 
      * @access public
      * @return object the dao object self.
@@ -265,6 +289,7 @@ class dao
 
     /**
      * The insert method, call sql::insert().
+     * insert方法，调用sql::insert()。
      * 
      * @param  string $table 
      * @access public
@@ -281,6 +306,7 @@ class dao
 
     /**
      * The replace method, call sql::replace().
+     * replace方法，调用sql::replace()。
      * 
      * @param  string $table 
      * @access public
@@ -297,6 +323,7 @@ class dao
 
     /**
      * Set the from table.
+     * 设置要操作的表。
      * 
      * @param  string $table 
      * @access public
@@ -311,6 +338,7 @@ class dao
 
     /**
      * Set the fields.
+     * 设置字段。
      * 
      * @param  string $fields 
      * @access public
@@ -324,6 +352,7 @@ class dao
 
     /**
      * Alias a table, equal the AS keyword. (Don't use AS, because it's a php keyword.)
+     * 表别名，相当于sql里的AS。（as是php的关键词，使用alias代替）
      * 
      * @param  string $alias 
      * @access public
@@ -338,6 +367,7 @@ class dao
 
     /**
      * Set the data to update or insert.
+     * 设置需要更新或插入的数据。
      * 
      * @param  object $data  the data object or array
      * @access public
@@ -351,9 +381,11 @@ class dao
     }
 
     //-------------------- The sql related method. --------------------//
+    //-------------------- sql相关的方法。 --------------------//
 
     /**
      * Get the sql string.
+     * 获取sql字符串。
      * 
      * @access public
      * @return string the sql string after process.
@@ -365,6 +397,7 @@ class dao
 
     /**
      * Print the sql string.
+     * 打印sql字符串。
      * 
      * @access public
      * @return void
@@ -376,6 +409,7 @@ class dao
 
     /**
      * Process the sql, replace the table, fields.
+     * 处理sql语句，替换表和字段。
      * 
      * @access private
      * @return string the sql string after process.
@@ -384,7 +418,10 @@ class dao
     {
         $sql = $this->sqlobj->get();
 
-        /* If the mode is magic, process the $fields and $table. */
+        /** 
+         * If the mode is magic, process the $fields and $table.
+         * 如果是magic模式，处理表和字段。
+         **/
         if($this->mode == 'magic')
         {
             if($this->fields == '') $this->fields = '*';
@@ -397,9 +434,11 @@ class dao
     }
 
     //-------------------- Query related methods. --------------------//
+    //-------------------- 查询相关方法。 --------------------//
     
     /**
      * Set the dbh. 
+     * 设置$dbh，数据库连接句柄。
      * 
      * You can use like this: $this->dao->dbh($dbh), thus you can handle two database.
      *
@@ -415,6 +454,7 @@ class dao
 
     /**
      * Query the sql, return the statement object.
+     * 执行SQL语句，返回PDOStatement结果集。
      * 
      * @access public
      * @return object   the PDOStatement object.
@@ -446,6 +486,7 @@ class dao
 
     /**
      * Page the records, set the limit part auto.
+     * 将记录进行分页，自动
      * 
      * @param  object $pager 
      * @access public
@@ -455,7 +496,10 @@ class dao
     {
         if(!is_object($pager)) return $this;
 
-        /* If the record total is 0, compute it. */
+        /*
+         * If the record total is 0, compute it. 
+         * 如果$pager的总记录为0，需要计算总结果数。
+         **/
         if($pager->recTotal == 0)
         {
             /* Get the SELECT, FROM position, thus get the fields, replace it by count(*). */
@@ -465,7 +509,10 @@ class dao
             $fields    = substr($sql, $selectPOS, $fromPOS - $selectPOS );
             $sql       = str_replace($fields, ' COUNT(*) AS recTotal ', $sql);
 
-            /* Remove the part after order and limit. */
+            /*
+             * Remove the part after order and limit.
+             * 去掉SQL语句中order和limit之后的部分。
+             **/
             $subLength = strlen($sql);
             $orderPOS  = strripos($sql, 'order');
             $limitPOS  = strripos($sql , 'limit');
@@ -474,7 +521,10 @@ class dao
             $sql = substr($sql, 0, $subLength);
             self::$querys[] = $sql;
 
-            /* Get the records count. */
+            /* 
+             * Get the records count.
+             * 获取记录数。
+             **/
             try
             {
                 $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
@@ -493,9 +543,10 @@ class dao
 
     /**
     /* Execute the sql. It's different with query(), which return the stmt object. But this not.
+     * 执行SQL。query()会返回stmt对象，该方法只返回更改或删除的记录数。
      * 
      * @access public
-     * @return int the modified or deleted records.
+     * @return int the modified or deleted records. 更改或删除的记录数。
      */
     public function exec()
     {
@@ -514,11 +565,14 @@ class dao
     }
 
     //-------------------- Fetch related methods. -------------------//
+    //-------------------- Fetch相关方法。 -------------------//
 
     /**
      * Fetch one record.
+     * 获取一个记录。
      * 
      * @param  string $field        if the field is set, only return the value of this field, else return this record
+     *                              如果已经设置获取的字段，则只返回这个字段的值，否则返回这个记录。
      * @access public
      * @return object|mixed
      */
@@ -532,8 +586,10 @@ class dao
 
     /**
      * Fetch all records.
+     * 获取所有记录。
      * 
      * @param  string $keyField     the key field, thus the return records is keyed by this field
+     *                              返回以该字段做键的记录
      * @access public
      * @return array the records
      */
@@ -548,9 +604,10 @@ class dao
 
     /**
      * Fetch all records and group them by one field.
+     * 获取所有记录并将按照字段分组。
      * 
-     * @param  string $groupField   the field to group by
-     * @param  string $keyField     the field of key
+     * @param  string $groupField   the field to group by        分组的字段
+     * @param  string $keyField     the field of key             键字段
      * @access public
      * @return array the records.
      */
@@ -567,8 +624,10 @@ class dao
 
     /**
      * Fetch array like key=>value.
+     * 获取的记录是以关联数组的形式
      *
      * If the keyFiled and valueField not set, use the first and last in the record.
+     * 如果没有设置参数，用首末两键作为参数。
      * 
      * @param  string $keyField 
      * @param  string $valueField 
@@ -600,6 +659,7 @@ class dao
 
     /**
      * Return the last insert ID.
+     * 返回最后插入的ID。
      * 
      * @access public
      * @return int
@@ -609,10 +669,12 @@ class dao
         return $this->dbh->lastInsertID();
     }
 
-    //-------------------- Magic methods.--------------------//
+    //-------------------- Magic methods. --------------------//
+    //-------------------- 魔术方法。 --------------------//
 
     /**
      * Use it to do some convenient queries.
+     * 解析dao的方法名，处理魔术方法。
      * 
      * @param  string $funcName  the function name to be called
      * @param  array  $funcArgs  the params
@@ -623,7 +685,10 @@ class dao
     {
         $funcName = strtolower($funcName);
 
-        /* findByxxx, xxx as will be in the where. */
+        /* 
+         * findByxxx, xxx as will be in the where.
+         * 如果是findByxxx，转换为where条件语句。
+         **/
         if(strpos($funcName, 'findby') !== false)
         {
             $this->setMode('magic');
@@ -641,7 +706,10 @@ class dao
             $this->sqlobj = sql::select('%s')->from('%s')->where($field, $operator, $value);
             return $this;
         }
-        /* Fetch10. */
+        /* 
+         * Fetch10. 
+         * 获取指定个数的记录：fetch10 获取10条记录。
+         **/
         elseif(strpos($funcName, 'fetch') !== false)
         {
             $max  = str_replace('fetch', '', $funcName);
@@ -658,10 +726,16 @@ class dao
             }
             return $rows;
         }
-        /* Others, call the method in sql class. */
+        /* 
+         * Others, call the method in sql class.
+         * 其他的方法，转到sqlobj对象执行。
+         **/
         else
         {
-            /* Create the max counts of sql class methods, and then create $arg0, $arg1... */
+            /* 
+             * Create the max counts of sql class methods, and then create $arg0, $arg1...
+             * 使用$arg0, $arg1... 生成调用的参数。
+             **/
             for($i = 0; $i < SQL::MAX_ARGS; $i ++)
             {
                 ${"arg$i"} = isset($funcArgs[$i]) ? $funcArgs[$i] : null;
@@ -672,9 +746,11 @@ class dao
     }
 
     //-------------------- Checking.--------------------//
+    //-------------------- 条件检查。 --------------------//
     
     /**
      * Check a filed is satisfied with the check rule.
+     * 检查字段是否满足条件。
      * 
      * @param  string $fieldName    the field to check
      * @param  string $funcName     the check rule
@@ -683,7 +759,10 @@ class dao
      */
     public function check($fieldName, $funcName)
     {
-        /* If no this field in the data, reuturn. */
+        /* 
+         * If no this field in the data, return.
+         * 如果没数据中没有该字段，直接返回。
+         **/
         if(!isset($this->sqlobj->data->$fieldName)) return $this;
 
         /* Set the field label and value. */
@@ -692,7 +771,10 @@ class dao
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
         $value = $this->sqlobj->data->$fieldName;
         
-        /* Check unique. */
+        /* 
+         * Check unique.
+         * 检查唯一性。
+         **/
         if($funcName == 'unique')
         {
             $args = func_get_args();
@@ -710,7 +792,10 @@ class dao
         }
         else
         {
-            /* Create the params. */
+            /* 
+             * Create the params.
+             * 创建参数。
+             **/
             $funcArgs = func_get_args();
             unset($funcArgs[0]);
             unset($funcArgs[1]);
@@ -731,6 +816,7 @@ class dao
 
     /**
      * Check a field, if satisfied with the condition.
+     * 检查一个字段是否满足条件。
      * 
      * @param  string $condition 
      * @param  string $fieldName 
@@ -752,6 +838,7 @@ class dao
 
     /**
      * Batch check some fileds.
+     * 批量检查字段。
      * 
      * @param  string $fields       the fields to check, join with ,
      * @param  string $funcName 
@@ -772,6 +859,7 @@ class dao
 
     /**
      * Batch check fields on the condition is true.
+     * 批量检查字段是否满足条件。
      * 
      * @param  string $condition 
      * @param  string $fields 
@@ -794,6 +882,7 @@ class dao
 
     /**
      * Check the fields according the the database schema.
+     * 根据数据库结构检查字段。
      * 
      * @param  string $skipFields   fields to skip checking
      * @access public
@@ -822,8 +911,10 @@ class dao
 
     /**
      * Log the error.
+     * 记录错误到日志。
      * 
      * For the error notice, see module/common/lang.
+     * module/common/lang中定义了错误提示信息。
      *
      * @param  string $checkType    the check rule
      * @param  string $fieldName    the field name
@@ -838,7 +929,10 @@ class dao
         $error    = $lang->error->$checkType;
         $replaces = array_merge(array($fieldLabel), $funcArgs);     // the replace values.
 
-        /* Just a string, cycle the $replaces. */
+        /*
+         * Just a string, cycle the $replaces.
+         * 如果$error错误信息是一个字符串，进行替换。
+         **/
         if(!is_array($error))
         {
             foreach($replaces as $replace)
@@ -848,10 +942,16 @@ class dao
                 $error = substr($error, 0, $pos) . $replace . substr($error, $pos + 2);
             }
         }
-        /* If the error define is an array, select the one which %s counts match the $replaces.  */
+        /*
+         * If the error define is an array, select the one which %s counts match the $replaces.
+         * 如果error错误信息是一个数组，选择一个%s满足替换个数的进行替换。
+         **/
         else
         {
-            /* Remove the empty items. */
+            /*
+             * Remove the empty items.
+             * 去掉空值项。
+             **/
             foreach($replaces as $key => $value) if(is_null($value)) unset($replaces[$key]);
             $replacesCount = count($replaces);
             foreach($error as $errorString)
@@ -867,6 +967,7 @@ class dao
 
     /**
      * Judge any error or not.
+     * 判断是否有错误。
      * 
      * @access public
      * @return bool
@@ -878,6 +979,7 @@ class dao
 
     /**
      * Get the errors.
+     * 获取错误。
      * 
      * @access public
      * @return array
@@ -891,6 +993,7 @@ class dao
 
     /**
      * Get the defination of fields of the table.
+     * 获取表的字段类型。
      * 
      * @access private
      * @return array
@@ -957,6 +1060,7 @@ class dao
 
 /**
  * The SQL class.
+ * SQL类。
  * 
  * @package framework
  */
@@ -964,12 +1068,14 @@ class sql
 {
     /**
      * The max count of params of all methods.
+     * 所有方法的最大参数个数。
      * 
      */
     const MAX_ARGS = 3;
 
     /**
      * The sql string.
+     * SQL字符串。
      * 
      * @var string
      * @access private
@@ -978,6 +1084,7 @@ class sql
 
     /**
      * The global $dbh.
+     * 全局变量$dbh。
      * 
      * @var object
      * @access protected
@@ -986,6 +1093,7 @@ class sql
 
     /**
      * The data to update or insert.
+     * 更新或插入日期。
      * 
      * @var mix
      * @access protected
@@ -993,7 +1101,8 @@ class sql
     public $data;
 
     /**
-     * Is the first time to  call set.
+     * Is the first time to call set.
+     * 是否是第一次设置。
      * 
      * @var bool    
      * @access private;
@@ -1002,6 +1111,7 @@ class sql
 
     /**
      * If in the logic of judge condition or not.
+     * 是否是在条件语句中。
      * 
      * @var bool
      * @access private;
@@ -1010,6 +1120,7 @@ class sql
 
     /**
      * The condition is true or not.
+     * 条件是否为真。
      * 
      * @var bool
      * @access private;
@@ -1018,6 +1129,7 @@ class sql
 
     /**
      * Magic quote or not.
+     * 是否开启特殊字符转义。
      * 
      * @var bool
      * @access public
@@ -1025,7 +1137,8 @@ class sql
      public $magicQuote; 
 
     /**
-     * The construct function. user factory() to instance it.
+     * The construct function.
+     * 构造方法
      * 
      * @param  string $table 
      * @access private
@@ -1040,6 +1153,7 @@ class sql
 
     /**
      * The factory method.
+     * 工厂方法。
      * 
      * @param  string $table 
      * @access public
@@ -1052,6 +1166,7 @@ class sql
 
     /**
      * The sql is select.
+     * select语句。
      * 
      * @param  string $field 
      * @access public
@@ -1066,6 +1181,7 @@ class sql
 
     /**
      * The sql is update.
+     * update语句。
      * 
      * @param  string $table 
      * @access public
@@ -1080,6 +1196,7 @@ class sql
 
     /**
      * The sql is insert.
+     * insert语句。
      * 
      * @param  string $table 
      * @access public
@@ -1094,6 +1211,7 @@ class sql
 
     /**
      * The sql is replace.
+     * replace语句。
      * 
      * @param  string $table 
      * @access public
@@ -1108,6 +1226,7 @@ class sql
 
     /**
      * The sql is delete.
+     * delete语句。
      * 
      * @access public
      * @return object the sql object.
@@ -1121,6 +1240,7 @@ class sql
 
     /**
      * Join the data items by key = value.
+     * 将关联数组转换为sql语句中 `key` = value 的形式。
      * 
      * @param  object $data 
      * @access public
@@ -1135,7 +1255,8 @@ class sql
     }
 
     /**
-     * Aadd an '(' at left.
+     * Add an '(' at left.
+     * 在左边添加'('。
      * 
      * @param  int    $count 
      * @access public
@@ -1148,7 +1269,8 @@ class sql
     }
 
     /**
-     * Add an ')' ad right.
+     * Add an ')' at right.
+     * 在右边增加')'。
      * 
      * @param  int    $count 
      * @access public
@@ -1162,6 +1284,7 @@ class sql
 
     /**
      * The set part.
+     * SET部分。
      * 
      * @param  string $set 
      * @access public
@@ -1183,6 +1306,7 @@ class sql
 
     /**
      * Create the from part.
+     * 创建From部分。
      * 
      * @param  string $table 
      * @access public
@@ -1196,6 +1320,7 @@ class sql
 
     /**
      * Create the Alias part.
+     * 创建Alias部分，Alias转为AS。
      * 
      * @param  string $alias 
      * @access public
@@ -1209,6 +1334,7 @@ class sql
 
     /**
      * Create the left join part.
+     * 创建LEFT JOIN部分。
      * 
      * @param  string $table 
      * @access public
@@ -1222,6 +1348,7 @@ class sql
 
     /**
      * Create the on part.
+     * 创建ON部分。
      * 
      * @param  string $condition 
      * @access public
@@ -1235,6 +1362,7 @@ class sql
 
     /**
      * Begin condition judge.
+     * 开始条件判断。
      * 
      * @param  bool $condition 
      * @access public
@@ -1249,6 +1377,7 @@ class sql
 
     /**
      * End the condition judge.
+     * 结束条件判断。
      * 
      * @access public
      * @return object the sql object.
@@ -1262,6 +1391,7 @@ class sql
 
     /**
      * Create the where part.
+     * 创建WHERE部分。
      * 
      * @param  string $arg1     the field name
      * @param  string $arg2     the operator
@@ -1288,6 +1418,7 @@ class sql
 
     /**
      * Create the AND part.
+     * 创建AND部分。
      * 
      * @param  string $condition 
      * @access public
@@ -1302,6 +1433,7 @@ class sql
 
     /**
      * Create the OR part.
+     * 创建OR部分。
      * 
      * @param  bool  $condition 
      * @access public
@@ -1316,6 +1448,7 @@ class sql
 
     /**
      * Create the '='.
+     * 创建'='部分。
      * 
      * @param  string $value 
      * @access public
@@ -1330,6 +1463,7 @@ class sql
 
     /**
      * Create '!='.
+     * 创建'!='。
      * 
      * @param  string $value 
      * @access public
@@ -1344,6 +1478,7 @@ class sql
 
     /**
      * Create '>'.
+     * 创建'>'。
      * 
      * @param  string $value 
      * @access public
@@ -1358,6 +1493,7 @@ class sql
 
     /**
      * Create '<'.
+     * 创建'<'。
      * 
      * @param  mixed  $value 
      * @access public
@@ -1372,6 +1508,7 @@ class sql
 
     /**
      * Create "between and"
+     * 创建"between and"。
      * 
      * @param  string $min 
      * @param  string $max 
@@ -1389,6 +1526,7 @@ class sql
 
     /**
      * Create in part.
+     * 创建IN部分。
      * 
      * @param  string|array $ids   list string by ',' or an array
      * @access public
@@ -1403,6 +1541,7 @@ class sql
 
     /**
      * Create not in part.
+     * 创建'NOT IN'部分。
      * 
      * @param  string|array $ids   list string by ',' or an array
      * @access public
@@ -1417,6 +1556,7 @@ class sql
 
     /**
      * Create the like by part.
+     * 创建LIKE部分。
      * 
      * @param  string $string 
      * @access public
@@ -1431,6 +1571,7 @@ class sql
 
     /**
      * Create the order by part.
+     * 创建ORDER BY部分。
      * 
      * @param  string $order 
      * @access public
@@ -1446,6 +1587,7 @@ class sql
 
     /**
      * Create the limit part.
+     * 创建LIMIT部分。
      * 
      * @param  string $limit 
      * @access public
@@ -1460,6 +1602,7 @@ class sql
 
     /**
      * Create the groupby part.
+     * 创建GROUP BY部分。
      * 
      * @param  string $groupBy 
      * @access public
@@ -1473,6 +1616,7 @@ class sql
 
     /**
      * Create the having part.
+     * 创建HAVING部分。
      * 
      * @param  string $having 
      * @access public
@@ -1486,6 +1630,7 @@ class sql
 
     /**
      * Get the sql string.
+     * 获取SQL字符串。
      * 
      * @access public
      * @return string
@@ -1496,7 +1641,8 @@ class sql
     }
 
     /**
-     * Uuote a var.
+     * Quote a var.
+     * 对字段加转义。
      * 
      * @param  mixed  $value 
      * @access public

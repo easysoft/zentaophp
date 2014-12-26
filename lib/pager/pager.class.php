@@ -1,6 +1,7 @@
 <?php
 /**
  * The pager class file of ZenTaoPHP framework.
+ * ZenTaoPHP的分页类。
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -18,6 +19,7 @@ class pager
 {
     /**
      * The default counts of per page.
+     * 每页的默认显示记录数。
      *
      * @public int
      */
@@ -25,6 +27,7 @@ class pager
 
     /**
      * The total counts.
+     * 总个数。
      * 
      * @var int
      * @access public
@@ -33,6 +36,7 @@ class pager
 
     /**
      * Record count per page.
+     * 每页的记录数。
      * 
      * @var int
      * @access public
@@ -41,6 +45,7 @@ class pager
 
     /**
      * Page count.
+     * 总页面数。
      * 
      * @var string
      * @access public
@@ -49,6 +54,7 @@ class pager
 
     /**
      * Current page id.
+     * 当前页码。
      * 
      * @var string
      * @access public
@@ -57,6 +63,7 @@ class pager
 
     /**
      * The global $app.
+     * 全局变量$app。
      * 
      * @var object
      * @access private
@@ -65,6 +72,7 @@ class pager
 
     /**
      * The global $lang.
+     * 全局变量$lang。
      * 
      * @var object
      * @access private
@@ -73,6 +81,7 @@ class pager
 
     /**
      * Current module name.
+     * 当前的模块名。
      * 
      * @var string
      * @access private
@@ -81,6 +90,7 @@ class pager
 
     /**
      * Current method.
+     * 当前的方法名。
      * 
      * @var string
      * @access private
@@ -89,6 +99,7 @@ class pager
 
     /**
      * The params.
+     * 参数信息。
      *
      * @private array
      */
@@ -96,6 +107,7 @@ class pager
 
     /**
      * The construct function.
+     * 构造方法。
      * 
      * @param  int    $recTotal 
      * @param  int    $recPerPage 
@@ -117,6 +129,7 @@ class pager
 
     /**
      * The factory function.
+     * 构造方法。
      * 
      * @param  int    $recTotal 
      * @param  int    $recPerPage 
@@ -131,6 +144,7 @@ class pager
 
     /**
      * Set the recTotal property.
+     * 设置总记录数。
      * 
      * @param  int    $recTotal 
      * @access public
@@ -142,7 +156,8 @@ class pager
     }
 
     /**
-     * Set the recTotal property.
+     * Set the recPerPage property.
+     * 设置每页记录数。
      * 
      * @param  int    $recPerPage 
      * @access public
@@ -155,6 +170,7 @@ class pager
 
     /**
      * Set the pageTotal property.
+     * 设置总页数。
      * 
      * @access public
      * @return void
@@ -166,6 +182,7 @@ class pager
 
     /**
      * Set the page id.
+     * 设置页码。
      * 
      * @param  int $pageID 
      * @access public
@@ -185,6 +202,7 @@ class pager
 
     /**
      * Set the $app property;
+     * 设置全局变量$app。
      * 
      * @access private
      * @return void
@@ -197,6 +215,7 @@ class pager
 
     /**
      * Set the $lang property.
+     * 设置全局变量$lang。
      * 
      * @access private
      * @return void
@@ -209,6 +228,7 @@ class pager
 
     /**
      * Set the $moduleName property.
+     * 设置模块名。
      * 
      * @access private
      * @return void
@@ -220,6 +240,7 @@ class pager
 
     /**
      * Set the $methodName property.
+     * 设置方法名。
      * 
      * @access private
      * @return void
@@ -231,6 +252,7 @@ class pager
 
     /**
      * Get recTotal, recPerpage, pageID from the request params, and add them to params.
+     * 从请求网址中获取记录总数、每页记录数、页码。
      * 
      * @access private
      * @return void
@@ -248,6 +270,7 @@ class pager
 
     /**
      * Create the limit string.
+     * 创建limit语句。
      * 
      * @access public
      * @return string
@@ -261,6 +284,7 @@ class pager
    
     /**
      * Print the pager's html.
+     * 向页面显示分页信息。 
      * 
      * @param  string $align 
      * @param  string $type 
@@ -274,6 +298,7 @@ class pager
 
     /**
      * Get the pager html string.
+     * 设置分页信息的样式。
      * 
      * @param  string $align 
      * @param  string $type     the pager type, full|short|shortest
@@ -312,6 +337,7 @@ class pager
 
     /**
      * Create the digest code.
+     * 生成分页摘要信息。
      * 
      * @access private
      * @return string
@@ -323,6 +349,7 @@ class pager
 
     /**
      * Create the first page.
+     * 创建首页链接。
      * 
      * @access private
      * @return string
@@ -336,6 +363,7 @@ class pager
 
     /**
      * Create the pre page html.
+     * 创建前一页链接。
      * 
      * @access private
      * @return string
@@ -349,6 +377,7 @@ class pager
 
     /**
      * Create the next page html.
+     * 创建下一页链接。
      * 
      * @access private
      * @return string
@@ -362,6 +391,7 @@ class pager
 
     /**
      * Create the last page 
+     * 创建最后一页链接。
      * 
      * @access private
      * @return string
@@ -375,13 +405,17 @@ class pager
 
     /**
      * Create the select object of record perpage.
+     * 创建每页显示记录数的select标签。
      * 
      * @access private
      * @return string
      */
     private function createRecPerPageJS()
     {
-        /* Replace the recTotal, recPerPage, pageID to special string, and then replace them with values by JS. */
+        /* 
+         * Replace the recTotal, recPerPage, pageID to special string, and then replace them with values by JS.
+         * 替换recTotal, recPerPage, pageID为特殊的字符串，然后用js代码替换掉。
+         **/
         $params = $this->params;
         foreach($params as $key => $value)
         {
@@ -424,6 +458,7 @@ EOT;
 
     /**
     /* Create the select list of RecPerPage. 
+     * 生成每页显示记录数的select列表。
      * 
      * @access private
      * @return string
@@ -440,6 +475,7 @@ EOT;
 
     /**
      * Create the goto part html.
+     * 生成跳转到指定页码的部分。
      * 
      * @access private
      * @return string

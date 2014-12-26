@@ -209,11 +209,12 @@ class control
     }
 
     //-------------------- Model related methods --------------------//
+    //-------------------- Model相关方法 --------------------//
 
     /* Set the module name. 
     /* 设置模块名 
      * 
-     * @param   string  $moduleName     The module name, if empty, get it from $app.
+     * @param   string  $moduleName   The module name, if empty, get it from $app.   模块名，如果为空，则从$app中获取
      * @access  private
      * @return  void
      */
@@ -222,10 +223,10 @@ class control
         $this->moduleName = $moduleName ? strtolower($moduleName) : $this->app->getModuleName();
     }
 
-    /* Set the method name. 
+    /* Set the method name.
      * 设置方法名
      * 
-     * @param   string  $methodName    The method name, if empty, get it from $app.
+     * @param   string  $methodName    The method name, if empty, get it from $app.   方法名，如果为空，则从$app中获取
      * @access  private
      * @return  void
      */
