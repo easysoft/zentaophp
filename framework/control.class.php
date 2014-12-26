@@ -1,6 +1,7 @@
 <?php
 /**
  * The control class file of ZenTaoPHP framework.
+ * ZenTaoPHP的control类。
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -12,6 +13,7 @@
 
 /**
  * The base class of control.
+ * control基类，所有模块的control类都派生于它。
  *
  * @package framework
  */
@@ -19,7 +21,7 @@ class control
 {
     /**
      * The global $app object.
-     * 全局对象 $app
+     * 全局对象 $app。
      * 
      * @var object
      * @access protected
@@ -28,7 +30,7 @@ class control
 
     /**
      * The global $config object.
-     * 全局对象 $config
+     * 全局对象 $config。
      * 
      * @var object
      * @access protected
@@ -37,7 +39,7 @@ class control
 
     /**
      * The global $lang object.
-     * 全局对象 $lang
+     * 全局对象 $lang。
      * 
      * @var object
      * @access protected
@@ -46,7 +48,7 @@ class control
 
     /**
      * The global $dbh object, the database connection handler.
-     * 全局对象 $dbh，数据库连接句柄
+     * 全局对象 $dbh，数据库连接句柄。
      * 
      * @var object
      * @access protected
@@ -55,7 +57,7 @@ class control
 
     /**
      * The $dao object, used to access or update database.
-     * $dao对象，封装SQL语句，方便数据库访问和更新
+     * $dao对象，封装SQL语句，方便数据库访问和更新。
      * 
      * @var object
      * @access protected
@@ -64,7 +66,7 @@ class control
 
     /**
      * The $post object, used to access the $_POST var.
-     * $post对象，将$_POST数组改为对象，方便调用
+     * $post对象，将$_POST数组改为对象，方便调用。
      * 
      * @var ojbect
      * @access public
@@ -73,7 +75,7 @@ class control
 
     /**
      * The $get object, used to access the $_GET var.
-     * $get对象，将$_GET数组改为对象，方便调用
+     * $get对象，将$_GET数组改为对象，方便调用。
      * 
      * @var ojbect
      * @access public
@@ -82,7 +84,7 @@ class control
 
     /**
      * The $session object, used to access the $_SESSION var.
-     * $session对象，将$_SESSION数组改为对象，方便调用
+     * $session对象，将$_SESSION数组改为对象，方便调用。
      * 
      * @var ojbect
      * @access public
@@ -91,7 +93,7 @@ class control
 
     /**
      * The $server object, used to access the $_SERVER var.
-     * $server对象，将$_SERVER数组改为对象，方便调用
+     * $server对象，将$_SERVER数组改为对象，方便调用。
      * 
      * @var ojbect
      * @access public
@@ -100,7 +102,7 @@ class control
 
     /**
      * The $cookie object, used to access the $_COOKIE var.
-     * $cookie对象，将$_COOKIE数组改为对象，方便调用
+     * $cookie对象，将$_COOKIE数组改为对象，方便调用。
      * 
      * @var ojbect
      * @access public
@@ -109,7 +111,7 @@ class control
 
     /**
      * The $global object, used to access the $_GLOBAL var.
-     * $global对象，将$_COOKIE数组改为对象，方便调用
+     * $global对象，将$_COOKIE数组改为对象，方便调用。
      * 
      * @var ojbect
      * @access public
@@ -118,7 +120,7 @@ class control
 
     /**
      * The name of current module.
-     * 当前模块的名称
+     * 当前模块的名称。
      * 
      * @var string
      * @access protected
@@ -127,7 +129,7 @@ class control
 
     /**
      * The vars assigned to the view page.
-     * $view用于存放从control传到view视图的数据
+     * $view用于存放从control传到view视图的数据。
      * 
      * @var object
      * @access public
@@ -136,7 +138,7 @@ class control
 
     /**
      * The type of the view, such html, json.
-     * 视图的类型，比如html json 
+     * 视图的类型，比如html json。
      * 
      * @var string
      * @access private
@@ -145,7 +147,7 @@ class control
 
     /**
      * The content to display.
-     * 输出到浏览器的内容 
+     * 输出到浏览器的内容。
      * 
      * @var string
      * @access private
@@ -154,7 +156,7 @@ class control
 
     /**
      * The directory seperator.
-     * 目录分隔符(Unix系统为'/'，Windows系统为'\')
+     * 目录分隔符(Unix系统为'/'，Windows系统为'\')。
      * 
      * @var string
      * @access protected
@@ -168,19 +170,21 @@ class control
      * 2. set the pathes of current module, and load it's model class.
      * 3. auto assign the $lang and $config to the view.
      * 
-     * 构造方法 
+     * 构造方法。 
      * 
-     * 1. 将全局变量设为control类的成员变量，方便control的派生类调用 
-     * 2. 设置当前模块，读取该模块的model类
-     * 3. 初始化$view视图类 
+     * 1. 将全局变量设为control类的成员变量，方便control的派生类调用； 
+     * 2. 设置当前模块，读取该模块的model类；
+     * 3. 初始化$view视图类。
      *
      * @access public
      * @return void
      */
     public function __construct($moduleName = '', $methodName = '')
     {
-        /* Global the globals, and refer them to the class member. */
-        /* 将全局变量设为control类的成员变量，方便control的派生类调用 */
+        /*
+         * Global the globals, and refer them to the class member.
+         * 将全局变量设为control类的成员变量，方便control的派生类调用。
+         **/
         global $app, $config, $lang, $dbh;
         $this->app        = $app;
         $this->config     = $config;
@@ -189,22 +193,28 @@ class control
         $this->pathFix    = $this->app->getPathFix();
         $this->viewType   = $this->app->getViewType();
 
-        /* Load the model file auto. */
-        /* 设置当前模块，读取该模块的model类 */
+        /*
+         * Load the model file auto.
+         * 设置当前模块，读取该模块的model类。
+         **/
         $this->setModuleName($moduleName);
         $this->setMethodName($methodName);
         $this->loadModel();
 
-        /* Init the view vars.  */
-        /* 初始化$view视图类 */
+        /*
+         * Init the view vars.
+         * 初始化$view视图类。
+         **/
         $this->view = new stdclass();
         $this->view->app    = $app;
         $this->view->lang   = $lang;
         $this->view->config = $config;
         $this->view->title  = '';
 
-        /* Set super vars. */
-        /* 设置超级变量，从$app引用过来 */
+        /*
+         * Set super vars.
+         * 设置超级变量，从$app引用过来。
+         **/
         $this->setSuperVars();
     }
 
@@ -212,7 +222,7 @@ class control
     //-------------------- Model相关方法 --------------------//
 
     /* Set the module name. 
-    /* 设置模块名 
+    /* 设置模块名。 
      * 
      * @param   string  $moduleName   The module name, if empty, get it from $app.   模块名，如果为空，则从$app中获取
      * @access  private
@@ -224,7 +234,7 @@ class control
     }
 
     /* Set the method name.
-     * 设置方法名
+     * 设置方法名。
      * 
      * @param   string  $methodName    The method name, if empty, get it from $app.   方法名，如果为空，则从$app中获取
      * @access  private
@@ -237,7 +247,7 @@ class control
 
     /**
      * Load the model file of one module.
-     * 加载所属模块的model文件
+     * 加载指定模块的model文件。
      * 
      * @param   string      $methodName    The method name, if empty, use current module's name.
      * @access  public
@@ -248,7 +258,10 @@ class control
         if(empty($moduleName)) $moduleName = $this->moduleName;
         $modelFile = helper::setModelFile($moduleName);
 
-        /* If no model file, try load config. */
+        /* 
+         * If no model file, try load config. 
+         * 如果没有model文件，尝试加载config配置信息。
+         **/
         if(!helper::import($modelFile)) 
         {
             $this->app->loadConfig($moduleName, false);
@@ -267,7 +280,7 @@ class control
 
     /**
      * Set the super vars.
-     * 设置超级全局变量，$app已经设置过了，直接引用
+     * 设置超级全局变量，$app已经设置过了，直接引用。
      * 
      * @access protected
      * @return void
@@ -286,7 +299,7 @@ class control
     
     /**
      * Set the view file, thus can use fetch other module's page.
-     * 设置视图文件，可以获取其他模块的视图文件
+     * 设置视图文件，可以获取其他模块的视图文件。
      * 
      * @param  string   $moduleName    module name
      * @param  string   $methodName    method name
@@ -301,7 +314,10 @@ class control
         $modulePath  = $this->app->getModulePath($moduleName);
         $viewExtPath = $this->app->getModuleExtPath($moduleName, 'view');
 
-        /* The main view file, extension view file and hook file. */
+        /*
+         * The main view file, extension view file and hook file.
+         * 主视图文件，扩展视图文件和钩子文件。
+         **/
         $mainViewFile = $modulePath . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
         $extViewFile  = $viewExtPath . $methodName . ".{$this->viewType}.php";
         $extHookFiles = helper::ls($viewExtPath, '.hook.php');
@@ -334,7 +350,7 @@ class control
 
     /**
      * Get css code for a method. 
-     * 获取方法的css内容，common.css + 该方法的css 
+     * 获取方法的css内容，common.css + 该方法的css。 
      * 
      * @param  string    $moduleName 
      * @param  string    $methodName 
@@ -358,7 +374,7 @@ class control
 
     /**
      * Get js code for a method. 
-     * 获取方法的js，common.js + 该方法的js
+     * 获取方法的js，common.js + 该方法的js。
      * 
      * @param  string    $moduleName 
      * @param  string    $methodName 
@@ -382,7 +398,7 @@ class control
 
     /**
      * Assign one var to the view vars.
-     * 向$view传递一个变量
+     * 向$view传递一个变量。
      * 
      * @param   string  $name       the name.
      * @param   mixed   $value      the value.
@@ -396,7 +412,7 @@ class control
 
     /**
      * Clear the output.
-     * 将之前打算输出的内容清空
+     * 将之前打算输出的内容清空。
      *
      * @access public
      * @return void
@@ -408,7 +424,7 @@ class control
 
     /**
      * Parse view file. 
-     * 根据请求的视图类型，生成输出内容
+     * 根据请求的视图类型，生成输出内容。
      *
      * @param  string $moduleName    module name, if empty, use current module.
      * @param  string $methodName    method name, if empty, use current method.
@@ -433,7 +449,7 @@ class control
 
     /**
      * Parse json format.
-     * 请求为json格式的处理逻辑 
+     * 请求为json格式的处理逻辑。 
      *
      * @param string $moduleName    module name
      * @param string $methodName    method name
@@ -457,7 +473,7 @@ class control
 
     /**
      * Parse default html format.
-     * 其他请求格式的处理逻辑，输出视图文件的内容
+     * 其他请求格式的处理逻辑，输出视图文件的内容。
      *
      * @param string $moduleName    module name
      * @param string $methodName    method name
@@ -495,7 +511,8 @@ class control
      * Get the output of one module's one method as a string, thus in one module's method, can fetch other module's content.
      * If the module name is empty, then use the current module and method. If set, use the user defined module and method.
      *
-     * 获取一个方法的输出内容，这样我们可以在一个方法里获取其他模块方法的内容
+     * 获取一个方法的输出内容，这样我们可以在一个方法里获取其他模块方法的内容。
+     * 如果模块名为空，则调用该模块、该方法；如果设置了模块名，调用指定模块指定方法。
      *
      * @param   string  $moduleName    module name.
      * @param   string  $methodName    method name.
@@ -513,7 +530,10 @@ class control
             return $this->output;
         }
 
-        /* Set the pathes and files to included. */
+        /*
+         * Set the pathes and files to included.
+         * 设置引用的文件和路径。
+         **/
         $modulePath        = $this->app->getModulePath($moduleName);
         $moduleControlFile = $modulePath . 'control.php';
         $actionExtFile     = $this->app->getModuleExtPath($moduleName, 'control') . strtolower($methodName) . '.php';
@@ -547,7 +567,7 @@ class control
 
     /**
      * Print the content of the view. 
-     * 向浏览器输出内容
+     * 向浏览器输出内容。
      *
      * @param   string  $moduleName    module name
      * @param   string  $methodName    method name
@@ -561,7 +581,7 @@ class control
     }
     /** 
      * Send data directly, for ajax requests.
-     * 直接输出data数据，通常用于ajax请求中
+     * 直接输出data数据，通常用于ajax请求中。
      *
      * @param  misc    $data 
      * @param  string $type 
@@ -576,7 +596,7 @@ class control
 
     /**
      * Create a link to one method of one module.
-     * 创建一个模块方法的链接
+     * 创建一个模块方法的链接。
      *
      * @param   string         $moduleName    module name
      * @param   string         $methodName    method name
@@ -593,7 +613,7 @@ class control
 
     /**
      * Create a link to the inner method of current module.
-     * 创建当前模块的一个方法链接
+     * 创建当前模块的一个方法链接。
      * 
      * @param   string         $methodName    method name
      * @param   string|array   $vars          the params passed, can be array(key=>value) or key1=value1&key2=value2
@@ -608,7 +628,7 @@ class control
 
     /**
      * Location to another page.
-     * 重定向到另一个页面
+     * 重定向到另一个页面。
      * 
      * @param   string   $url   the target url.
      * @access  public

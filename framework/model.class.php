@@ -1,6 +1,7 @@
 <?php
 /**
  * The model class file of ZenTaoPHP framework.
+ * ZenTaoPHP的model类。
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
