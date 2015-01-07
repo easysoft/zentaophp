@@ -531,7 +531,7 @@ class dao
             }
             catch (PDOException $e) 
             {
-                $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+                $this->app->triggerError($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
             }
 
             $pager->setRecTotal($row->recTotal);
@@ -560,7 +560,7 @@ class dao
         }
         catch (PDOException $e) 
         {
-            $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+            $this->app->triggerError($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
         }
     }
 
