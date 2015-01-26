@@ -1,7 +1,7 @@
 <?php
 /**
- * The front class file of ZenTaoPHP framework.
  * ZenTaoPHP的前端类。
+ * The front class file of ZenTaoPHP framework.
  *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
@@ -12,16 +12,16 @@
  */
 
 /**
- * The html class, to build html tags.
  * html类，生成html标签。
+ * The html class, to build html tags.
  * 
  * @package framework
  */
 class html
 {
     /**
-     * Create the title tag. 
      * 生成title标签。
+     * Create the title tag. 
      * 
      * @param  mixed $title 
      * @access public
@@ -33,8 +33,8 @@ class html
     }
 
     /**
-     * Create a meta.
      * 生成meta标签。
+     * Create a meta.
      * 
      * @param mixed $name   the meta name
      * @param mixed $value  the meta value
@@ -48,8 +48,8 @@ class html
     }
 
     /**
-     * Create icon tag
      * 生成icon标签。
+     * Create icon tag
      * 
      * @param mixed $url  the url of the icon.
      * @access public
@@ -63,8 +63,8 @@ class html
     }
 
     /**
-     * Create the rss tag.
      * 生成rss标签。
+     * Create the rss tag.
      * 
      * @param  string $url 
      * @param  string $title 
@@ -78,8 +78,8 @@ class html
     }
 
     /**
-     * Create tags like <a href="">text</a>
      * 生成超链接。
+     * Create tags like <a href="">text</a>
      *
      * @param  string $href      the link url.
      * @param  string $title     the link title.
@@ -95,8 +95,8 @@ class html
     }
 
     /**
-     * Create tags like <a href="mailto:">text</a>
      * 生成邮件链接。
+     * Create tags like <a href="mailto:">text</a>
      *
      * @param  string $mail      the email address
      * @param  string $title     the email title.
@@ -109,8 +109,8 @@ class html
     }
 
     /**
-     * Create tags like "<select><option></option></select>"
      * 生成select标签。
+     * Create tags like "<select><option></option></select>"
      *
      * @param  string $name          the name of the select tag.
      * @param  array  $options       the array to create select tag from.
@@ -142,8 +142,8 @@ class html
     }
 
     /**
-     * Create select with optgroup.
      * 生成带optgroup标签的select标签。
+     * Create select with optgroup.
      *
      * @param  string $name          the name of the select tag.
      * @param  array  $groups        the option groups.
@@ -179,8 +179,8 @@ class html
     }
 
     /**
-     * Create tags like "<input type='radio' />"
      * 生成单选按钮。
+     * Create tags like "<input type='radio' />"
      *
      * @param  string $name       the name of the radio tag.
      * @param  array  $options    the array to create radio tag from.
@@ -205,8 +205,8 @@ class html
     }
 
     /**
-     * Create tags like "<input type='checkbox' />"
      * 生成多选按钮。
+     * Create tags like "<input type='checkbox' />"
      *
      * @param  string $name      the name of the checkbox tag.
      * @param  array  $options   the array to create checkbox tag from.
@@ -233,8 +233,8 @@ class html
     }
 
     /**
-     * Create tags like "<input type='text' />"
      * 生成input输入标签。
+     * Create tags like "<input type='text' />"
      *
      * @param  string $name     the name of the text input tag.
      * @param  string $value    the default value.
@@ -247,8 +247,8 @@ class html
     }
 
     /**
-     * Create tags like "<input type='hidden' />"
      * 生成隐藏的提交标签。
+     * Create tags like "<input type='hidden' />"
      *
      * @param  string $name     the name of the text input tag.
      * @param  string $value    the default value.
@@ -261,8 +261,8 @@ class html
     }
 
     /**
-     * Create tags like "<input type='password' />"
      * 创建密码输入框。
+     * Create tags like "<input type='password' />"
      *
      * @param  string $name     the name of the text input tag.
      * @param  string $value    the default value.
@@ -275,8 +275,8 @@ class html
     }
 
     /**
-     * Create tags like "<textarea></textarea>"
      * 创建编辑器标签。
+     * Create tags like "<textarea></textarea>"
      *
      * @param  string $name      the name of the textarea tag.
      * @param  string $value     the default value of the textarea tag.
@@ -289,8 +289,8 @@ class html
     }
 
     /**
-     * Create tags like "<input type='file' />".
      * 创建文件上传标签。
+     * Create tags like "<input type='file' />".
      *
      * @param  string $name      the name of the file name.
      * @param  string $attrib    other attribs.
@@ -302,8 +302,8 @@ class html
     }
 
     /**
-     * Create submit button.
      * 创建提交按钮。
+     * Create submit button.
      * 
      * @param  string $label    the label of the button
      * @param  string $misc     other params
@@ -322,8 +322,8 @@ class html
     }
 
     /**
-     * Create reset button.
      * 创建重置按钮。
+     * Create reset button.
      * 
      * @static
      * @access public
@@ -336,8 +336,8 @@ class html
     }
 
     /**
-     * Create common button.
      * 创建通用按钮。
+     * Create common button.
      * 
      * @param  string $label the label of the button
      * @param  string $misc  other params
@@ -351,8 +351,8 @@ class html
     }
 
     /**
-     * create a button, when click, go to a link.
      * 创建一个带有链接的按钮。
+     * create a button, when click, go to a link.
      * 
      * @param  string $label    the link title
      * @param  string $link     the link url
@@ -368,16 +368,16 @@ class html
 }
 
 /**
- * JS class.
  * JS类。
+ * JS class.
  * 
  * @package framework
  */
 class js
 {
     /**
-     * Import a js file.
      * 引入一个js文件。
+     * Import a js file.
      * 
      * @param  string $url 
      * @param  string $version 
@@ -392,8 +392,8 @@ class js
     }
 
     /**
-     * The start of javascript. 
      * 开始输出js。
+     * The start of javascript. 
      * 
      * @static
      * @access private
@@ -406,8 +406,8 @@ class js
     }
 
     /**
-     * The end of javascript. 
      * 结束输出js。
+     * The end of javascript. 
      * 
      * @static
      * @access private
@@ -419,8 +419,8 @@ class js
     }
 
     /**
-     * Show a alert box. 
      * 显示一个警告框。
+     * Show a alert box. 
      * 
      * @param  string $message 
      * @static
@@ -433,8 +433,8 @@ class js
     }
 
     /**
-     * Show error info.
      * 显示错误信息。
+     * Show error info.
      * 
      * @param  string|array $message 
      * @static
@@ -459,14 +459,14 @@ class js
     }
 
     /**
-     * show a confirm box, press ok go to okURL, else go to cancleURL.
      * 显示一个确认框，点击确定跳转到$okURL，点击取消跳转到$cancelURL。
+     * show a confirm box, press ok go to okURL, else go to cancleURL.
      *
-     * @param  string $message       the text to be showed.                       显示的内容。
-     * @param  string $okURL         the url to go to when press 'ok'.            点击确定后跳转的地址。
-     * @param  string $cancleURL     the url to go to when press 'cancle'.        点击取消后跳转的地址。
-     * @param  string $okTarget      the target to go to when press 'ok'.         点击确定后跳转的target。
-     * @param  string $cancleTarget  the target to go to when press 'cancle'.     点击取消后跳转的target。
+     * @param  string $message      显示的内容。              the text to be showed.
+     * @param  string $okURL        点击确定后跳转的地址。    the url to go to when press 'ok'.
+     * @param  string $cancleURL    点击取消后跳转的地址。    the url to go to when press 'cancle'.
+     * @param  string $okTarget     点击确定后跳转的target。  the target to go to when press 'ok'.
+     * @param  string $cancleTarget 点击取消后跳转的target。  the target to go to when press 'cancle'.
      * @return string
      */
     static public function confirm($message = '', $okURL = '', $cancleURL = '', $okTarget = "self", $cancleTarget = "self", $Echo = true)
@@ -508,8 +508,8 @@ EOT;
     }
 
     /**
-     * change the location of the $target window to the $URL.
      * $target会跳转到$url指定的地址。
+     * change the location of the $target window to the $URL.
      *
      * @param   string $url    the url will go to.
      * @param   string $target the target of the url.
@@ -530,8 +530,8 @@ EOT;
     }
 
     /**
-     * Close current window.
      * 关闭当前窗口。
+     * Close current window.
      * 
      * @static
      * @access public
@@ -543,8 +543,8 @@ EOT;
     }
 
     /**
-     * Goto a page after a timer.
      * 经过一段时间后跳转到指定的页面。
+     * Goto a page after a timer.
      *
      * @param   string $url    the url will go to.
      * @param   string $target the target of the url.
@@ -560,8 +560,8 @@ EOT;
     }
 
     /**
-     * Reload a window.
      * 重新加载窗口。
+     * Reload a window.
      *
      * @param   string $window the window to reload.
      * @return  string the javascript string.
@@ -575,8 +575,8 @@ EOT;
     }
 
     /**
-     * Export the config vars for createLink() js version.
      * 导出$config到js，因为js的createLink()方法需要获取config信息。
+     * Export the config vars for createLink() js version.
      * 
      * @static
      * @access public
@@ -617,8 +617,8 @@ EOT;
     }
 
     /**
-     * Execute some js code.
      * 执行js代码。
+     * Execute some js code.
      * 
      * @param string $code 
      * @static
@@ -635,16 +635,16 @@ EOT;
 }
 
 /**
- * css class.
  * css类。
+ * css class.
  *
  * @package framework
  */
 class css
 {
     /**
-     * Import a css file.
      * 引入css文件。
+     * Import a css file.
      * 
      * @param  string $url 
      * @param  string $version 
@@ -657,8 +657,8 @@ class css
     }
 
     /**
-     * Print a css code.
      * 打印css代码。
+     * Print a css code.
      * 
      * @param  string    $css 
      * @static
