@@ -87,7 +87,7 @@ class validater
      */
     public static function checkFloat($var, $decimal = '.')
     {
-        return filter_var($var, FILTER_VALIDATE_FLOAT, array('options' => array('decimail' => $decimal)));
+        return filter_var($var, FILTER_VALIDATE_FLOAT, array('options' => array('decimal' => $decimal)));
     }
 
     /**

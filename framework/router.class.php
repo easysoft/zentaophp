@@ -734,10 +734,10 @@ class router
     //-------------------- 与客户端环境有关的函数  --------------------//
 
     /**
-     * Set the language used by the client user.
-     * Using the order of method $lang param, session, cookie, browser and last the default lang.
+     * Set the language.
+     * Using the order of method $lang param, session, cookie, browser and the default lang.
      *
-	 * 根据来访的用户设置相应语言。
+	 * 根据用户浏览器的语言设置和服务器配置，选择显示的语言。
 	 * 优先级：$lang参数 > session > cookie > 浏览器 > 配置文件。
 	 *
      * @param   string $lang  zh-cn|zh-tw|zh-hk|en
@@ -823,6 +823,7 @@ class router
         if(!empty($this->clientTheme))
         {
             $this->clientTheme = strtolower($this->clientTheme);
+            if(!isset($this->config->themes[$this->clientTheme])) $this->clientTheme = $this->config->default->theme;
         }    
         else
         {

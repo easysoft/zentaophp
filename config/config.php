@@ -28,7 +28,9 @@ $config->sessionVar  = 'sid';             // requestType=GET: the session var na
 
 /* Views and themes. */
 $config->views  = ',html,json,';          // Supported view formats.     支持的视图类型。
-$config->themes = 'default';              // Supported themes.           支持的主题。
+
+/* Supported themes.     支持的主题。 */
+$config->themes['default'] = 'default';
 
 /* Supported languages.  支持的语言。 */
 $config->langs['zh-cn'] = '简体';
