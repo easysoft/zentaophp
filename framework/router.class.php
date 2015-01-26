@@ -38,15 +38,6 @@ class router
     private $frameRoot;
 
     /**
-	 * 核心类库的根目录($this->basePath/lib)。
-     * The root directory of the core library($this->basePath/lib)
-     * 
-     * @var string
-     * @access private
-     */
-    private $coreLibRoot;
-
-    /**
 	 * 应用程序的根目录。
      * The root directory of the app.
      * 
@@ -321,7 +312,6 @@ class router
         $this->setPathFix();
         $this->setBasePath();
         $this->setFrameRoot();
-        $this->setCoreLibRoot();
         $this->setAppRoot($appName, $appRoot);
         $this->setAppLibRoot();
         $this->setTmpRoot();
@@ -412,18 +402,6 @@ class router
     protected function setFrameRoot()
     {
         $this->frameRoot = $this->basePath . 'framework' . $this->pathFix;
-    }
-
-    /**
-	 * 设置核心库的根目录。
-     * Set the core library root.
-     * 
-     * @access protected
-     * @return void
-     */
-    protected function setCoreLibRoot()
-    {
-        $this->coreLibRoot = $this->basePath . 'lib' . $this->pathFix;
     }
 
     /**
@@ -620,18 +598,6 @@ class router
     public function getFrameRoot()
     {
         return $this->frameRoot;
-    }
-
-    /**
-	 * 获取$coreLibRoot变量，即核心类库根目录。
-     * Get the $coreLibRoot var.
-     * 
-     * @access public
-     * @return string
-     */
-    public function getCoreLibRoot()
-    {
-        return $this->coreLibRoot;
     }
 
     /**
@@ -1431,10 +1397,8 @@ class router
     
     /**
      * 从类库中加载一个类文件。
-     * 先搜索$appLibRoot，然后搜索$coreLibRoot。
      *
      * Load a class file.
-     * First search in $appLibRoot, then $coreLibRoot.
      *
      * @param   string $className  the class name
      * @param   bool   $static     statis class or not
@@ -1449,15 +1413,7 @@ class router
         $classFile = $this->appLibRoot . $className;
         if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
         $classFile .= '.class.php';
-
-        if(!helper::import($classFile))
-        {
-            /* 搜索$coreLibRoot。  Search in $coreLibRoot. */
-            $classFile = $this->coreLibRoot . $className;
-            if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
-            $classFile .= '.class.php';
-            if(!helper::import($classFile)) $this->triggerError("class file $classFile not found", __FILE__, __LINE__, $exit = true);
-        }
+        if(!helper::import($classFile)) $this->triggerError("class file $classFile not found", __FILE__, __LINE__, $exit = true);
 
         /* 如果是静态调用，则返回。  If staitc, return. */
         if($static) return true;
