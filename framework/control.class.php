@@ -110,7 +110,7 @@ class control
     public $cookie;
 
     /**
-     * $global对象，将$_COOKIE数组改为对象，方便调用。
+     * $global对象，将$_GLOBAL数组改为对象，方便调用。
      * The $global object, used to access the $_GLOBAL var.
      * 
      * @var ojbect
