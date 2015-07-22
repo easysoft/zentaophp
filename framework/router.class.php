@@ -290,9 +290,7 @@ class router
     public $global;
 
     /**
-	 * 构造方法。
-     * 设置路径，类，超级变量等。
-     * 注意：
+	 * 构造方法, 设置路径，类，超级变量等。注意：
      * 1.应该使用createApp()方法实例化router类；
      * 2.如果$appRoot为空，框架会根据$appName计算应用路径。
      *
@@ -365,8 +363,7 @@ class router
         return new $className($appName, $appRoot);
     }
 
-    //-------------------- 路径相关方法。 --------------------//
-    //-------------------- path related methods --------------------//
+    //-------------------- 路径相关方法(Path related methods)--------------------//
 
     /**
 	 * 设置目录分隔符。
@@ -696,8 +693,7 @@ class router
         return $this->themeRoot;
     }
 
-    //-------------------- 与客户端环境有关的函数  --------------------//
-    //-------------------- Client environment related functions --------------------//
+    //------ 客户端环境有关的函数(Client environment related functions) ------//
 
     /**
 	 * 根据用户浏览器的语言设置和服务器配置，选择显示的语言。
@@ -823,8 +819,7 @@ class router
         return $this->config->webRoot;
     }
 
-    //-------------------- 请求相关的方法。 --------------------//
-    //-------------------- Request related methods. --------------------//
+    //-------------------- 请求相关的方法(Request related methods) --------------------//
 
     /**
 	 * 解析本次请求的入口方法，根据请求的类型(PATH_INFO GET)，调用相应的方法。
@@ -958,8 +953,7 @@ class router
         return $this->viewType;
     }
 
-    //-------------------- 路由相关方法。 --------------------//
-    //-------------------- Routing related methods.--------------------//
+    //-------------------- 路由相关方法(Routing related methods) --------------------//
 
     /**
 	 * 加载common模块。
@@ -1223,7 +1217,7 @@ class router
         }
 
         /* 调用该方法   Call the method. */
-        call_user_func_array(array(&$module, $methodName), $this->params);
+        call_user_func_array(array($module, $methodName), $this->params);
         return $module;
     }
 
@@ -1240,35 +1234,19 @@ class router
         /* 分割URI。 Spit the URI. */
         $items     = explode($this->config->requestFix, $this->URI);
         $itemCount = count($items);
+        $params    = array();
 
-        $params = array();
         /** 
-         * clean模式，按照顺序来设置参数。
-         * The clean mode, only passed in values, no keys. 
+         * 前两项为模块名和方法名，参数从下标2开始。
+         * The first two item is moduleName and methodName. So the params should begin at 2.
          **/
-        if($this->config->pathType == 'clean')
+        for($i = 2; $i < $itemCount; $i ++)
         {
-            /** 
-             * 前两项为模块名和方法名，参数从下标2开始。
-             * The first two item is moduleName and methodName. So the params should begin at 2.
-             **/
-            for($i = 2; $i < $itemCount; $i ++)
-            {
-                $key = key($defaultParams);     // Get key from the $defaultParams.
-                $params[$key] = $items[$i];
-                next($defaultParams);
-            }
+            $key = key($defaultParams);     // Get key from the $defaultParams.
+            $params[$key] = $items[$i];
+            next($defaultParams);
         }
-        /* full模式，根据key来合并参数数组。   The full mode, both key and value passed in. */
-        elseif($this->config->pathType == 'full')
-        {
-            for($i = 2; $i < $itemCount; $i += 2)
-            {
-                $key   = $items[$i];
-                $value = $items[$i + 1];
-                $params[$key] = $value;
-            }
-        }
+
         $this->params = $this->mergeParams($defaultParams, $params);
     }
 
@@ -1302,45 +1280,21 @@ class router
      */
     private function mergeParams($defaultParams, $passedParams)
     {
-        /** 
-         * 非严格模式，请求的参数和默认参数的key必须一致。
-         * If the not strict mode, the keys of passed params and default params must be the same. 
-         * */
-        if(!isset($this->config->strictParams) or $this->config->strictParams == false) 
+        $passedParams = array_values($passedParams);
+        $i = 0;
+        foreach($defaultParams as $key => $defaultValue)
         {
-            $passedParams = array_values($passedParams);
-            $i = 0;
-            foreach($defaultParams as $key => $defaultValue)
+            if(isset($passedParams[$i]))
             {
-                if(isset($passedParams[$i]))
-                {
-                    $defaultParams[$key] = $passedParams[$i];
-                }
-                else
-                {
-                    if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
-                }
-                $i ++;
+                $defaultParams[$key] = $passedParams[$i];
             }
-        }
-        /** 
-         * 严格模式， 请求的参数必须与默认参数的key一致，顺序可以不同。
-         * If in strict mode, the keys of the passed params must be the same with the default params, but order can be different.
-         * */
-        else
-        {
-            foreach($defaultParams as $key => $defaultValue)
+            else
             {
-                if(isset($passedParams[$key]))
-                {
-                    $defaultParams[$key] = $passedParams[$key];
-                }
-                else
-                {
-                    if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
-                }
+                if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
             }
+            $i ++;
         }
+
         return $defaultParams;
     }
  
@@ -1392,8 +1346,7 @@ class router
         return $this->params;
     }
 
-    //-------------------- 常用的工具方法 ------------------//
-    //-------------------- Tool methods. ------------------//
+    //-------------------- 常用的工具方法(Tool methods) ------------------//
     
     /**
      * 从类库中加载一个类文件。
@@ -1409,16 +1362,16 @@ class router
     {
         $className = strtolower($className);
 
-        /* 搜索$appLibRoot。    Search in $appLibRoot. */
+        /* 搜索$appLibRoot(Search in $appLibRoot) */
         $classFile = $this->appLibRoot . $className;
         if(is_dir($classFile)) $classFile .= $this->pathFix . $className;
         $classFile .= '.class.php';
         if(!helper::import($classFile)) $this->triggerError("class file $classFile not found", __FILE__, __LINE__, $exit = true);
 
-        /* 如果是静态调用，则返回。  If staitc, return. */
+        /* 如果是静态调用，则返回(If staitc, return) */
         if($static) return true;
 
-        /* 实例化该类。    Instance it. */
+        /* 实例化该类(Instance it) */
         global $$className;
         if(!class_exists($className)) $this->triggerError("the class $className not found in $classFile", __FILE__, __LINE__, $exit = true);
         if(!is_object($$className)) $$className = new $className();
@@ -1462,11 +1415,11 @@ class router
             $extConfigFiles = helper::ls($extConfigPath, '.php');
         }
 
-        /* 设置引用的文件。    Set the files to include. */
+        /* 设置引用的文件(Set the files to include) */
         if(!is_file($mainConfigFile))
         {
             if($exitIfNone) self::triggerError("config file $mainConfigFile not found", __FILE__, __LINE__, true);
-            if(empty($extConfigFiles)) return false;  //  扩展文件也没有的话，返回false。  and no extension file, exit.
+            if(empty($extConfigFiles)) return false;  //  扩展文件也没有的话，返回false。and no extension file, exit.
             $configFiles = $extConfigFiles;
         }
         else
@@ -1474,8 +1427,6 @@ class router
             $configFiles = array_merge(array($mainConfigFile), $extConfigFiles);
         }
         
-        global $config;
-        if(!is_object($config)) $config = new config();
         static $loadedConfigs = array();
         foreach($configFiles as $configFile)
         {
@@ -1514,8 +1465,8 @@ class router
      * 加载语言文件，返回全局$lang对象。
      * Load lang and return it as the global lang object.
      * 
-     * @param   string $moduleName     the module name
      * @access  public
+     * @param   string $moduleName     the module name
      * @return  bool|ojbect the lang object or false.
      */
     public function loadLang($moduleName)
@@ -1525,10 +1476,10 @@ class router
         $extLangPath  = $this->getModuleExtPath($moduleName, 'lang');
         $extLangFiles = helper::ls($extLangPath . $this->clientLang, '.php');
 
-        /* 设置引用的文件。     Set the files to include.  */
+        /* 设置引用的文件(Set the files to include). */
         if(!is_file($mainLangFile))
         {
-            if(empty($extLangFiles)) return false;  // 没有扩展文件，返回false。 also no extension file.
+            if(empty($extLangFiles)) return false;  // 没有扩展文件，返回false(Return false if no extension file).
             $langFiles = $extLangFiles;
         }
         else
@@ -1609,8 +1560,7 @@ class router
         }
     }
 
-    //-------------------- 错误处理方法。 ------------------//
-    //-------------------- Error methods. ------------------//
+    //-------------------- 错误处理方法(Error methods) ------------------//
     
     /**
      * 程序停止时执行的函数。
@@ -1621,7 +1571,7 @@ class router
      */
     public function shutdown()
     {
-        /* 如果debug模式开启，保存sql语句。  If debug on, save sql lines.  */
+        /* 如果debug模式开启，保存sql语句(If debug on, save sql queries) */
         if(!empty($this->config->debug)) $this->saveSQL();
 
         /* 
@@ -1646,7 +1596,7 @@ class router
      */
     public function triggerError($message, $file, $line, $exit = false)
     {
-        /* 设置错误信息。   Set the error info. */
+        /* 设置错误信息(Set the error info) */
         $log = "ERROR: $message in $file on line $line";
         if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
         $trace = debug_backtrace();
@@ -1654,7 +1604,7 @@ class router
         extract($trace[1]);
         $log .= ", last called by $file on line $line through function $function.\n";
 
-        /* 触发错误。  Trigger it. */
+        /* 触发错误(Trigger the error) */
         trigger_error($log, $exit ? E_USER_ERROR : E_USER_WARNING);
     }
 
@@ -1685,15 +1635,15 @@ class router
         $errorLog .= "when visiting <strong>" . $this->getURI() . "</strong>\n";
 
         /* 
-         * 为了安全起见，对公网环境因此脚本路径。
+         * 为了安全起见，对公网环境隐藏脚本路径。
          * If the ip is pulic, hidden the full path of scripts.
-         * */
+         */
         if(!defined('IN_SHELL') and !($this->server->server_addr == '127.0.0.1' or filter_var($this->server->server_addr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false))
         {
             $errorLog  = str_replace($this->getBasePath(), '', $errorLog);
         }
 
-        /* 保存到日志文件。  Save to log file. */
+        /* 保存到日志文件(Save to log file) */
         $errorFile = $this->getLogRoot() . 'php.' . date('Ymd') . '.log';
         $fh = @fopen($errorFile, 'a');
         if($fh) fwrite($fh, strip_tags($errorLog)) && fclose($fh);
