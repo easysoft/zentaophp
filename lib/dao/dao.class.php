@@ -212,8 +212,7 @@ class dao
         $this->setMethod('');
     }
 
-    //-------------------- 根据请求的方式，调用sql类相应的方法。 --------------------//
-    //-------------------- According to the query method, call according method of sql class. --------------------//
+    //-----根据请求的方式，调用sql类相应的方法(Call according method of sql class by query method. -----//
 
     /**
      * 设置请求模式。像findByxxx之类的方法，使用的是magic模式；其他方法使用的是raw模式。
@@ -382,8 +381,7 @@ class dao
         return $this;
     }
 
-    //-------------------- sql相关的方法。 --------------------//
-    //-------------------- The sql related method. --------------------//
+    //-------------------- sql相关的方法(The sql related method) --------------------//
 
     /**
      * 获取sql字符串。
@@ -435,8 +433,7 @@ class dao
         return $sql;
     }
 
-    //-------------------- 查询相关方法。 --------------------//
-    //-------------------- Query related methods. --------------------//
+    //-------------------- 查询相关方法(Query related methods) --------------------//
     
     /**
      * 设置$dbh，数据库连接句柄。
@@ -489,7 +486,7 @@ class dao
     }
 
     /**
-     * 将记录进行分页，自动
+     * 将记录进行分页，自动设置limit语句。
      * Page the records, set the limit part auto.
      * 
      * @param  object $pager 
@@ -569,8 +566,7 @@ class dao
         }
     }
 
-    //-------------------- Fetch相关方法。 -------------------//
-    //-------------------- Fetch related methods. -------------------//
+    //-------------------- Fetch相关方法(Fetch related methods) -------------------//
 
     /**
      * 获取一个记录。
@@ -674,8 +670,7 @@ class dao
         return $this->dbh->lastInsertID();
     }
 
-    //-------------------- 魔术方法。 --------------------//
-    //-------------------- Magic methods. --------------------//
+    //-------------------- 魔术方法(Magic methods) --------------------//
 
     /**
      * 解析dao的方法名，处理魔术方法。
@@ -750,8 +745,7 @@ class dao
         }
     }
 
-    //-------------------- 条件检查。 --------------------//
-    //-------------------- Checking.--------------------//
+    //-------------------- 条件检查( Data Checking)--------------------//
     
     /**
      * 检查字段是否满足条件。
@@ -993,7 +987,7 @@ class dao
     public function getError()
     {
         $errors = dao::$errors;
-        dao::$errors = array();     // 清除dao的错误信息   Must clear it.
+        dao::$errors = array();     // 清除dao的错误信息(Must clear errors)
         return $errors;
     }
 
@@ -1146,14 +1140,13 @@ class sql
      * 构造方法。
      * The construct function.
      * 
-     * @param  string $table 
      * @access private
      * @return void
      */
-    private function __construct($table = '')
+    private function __construct()
     {
         global $dbh;
-        $this->dbh        = $dbh;
+        $this->dbh = $dbh;
         $this->magicQuote = get_magic_quotes_gpc();
     }
 
@@ -1161,13 +1154,12 @@ class sql
      * 工厂方法。
      * The factory method.
      * 
-     * @param  string $table 
      * @access public
      * @return object the sql object.
      */
-    public static function factory($table = '')
+    public static function factory()
     {
-        return new sql($table);
+        return new sql();
     }
 
     /**
