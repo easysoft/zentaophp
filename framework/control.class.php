@@ -218,8 +218,7 @@ class control
         $this->setSuperVars();
     }
 
-    //-------------------- Model相关方法 --------------------//
-    //-------------------- Model related methods --------------------//
+    //-------------------- Model相关方法(Model related methods) --------------------//
 
     /* 
      * 设置模块名。 
@@ -267,7 +266,7 @@ class control
         {
             $this->app->loadConfig($moduleName, false);
             $this->app->loadLang($moduleName);
-            $this->dao = new dao();
+            $this->dao = $this->app->loadClass('dao');
             return false;
         }
 
@@ -296,8 +295,7 @@ class control
         $this->global  = $this->app->global;
     }
 
-    //-------------------- 视图相关方法  --------------------//
-    //-------------------- View related methods --------------------//
+    //-------------------- 视图相关方法(View related methods) --------------------//
     
     /**
      * 设置视图文件，可以获取其他模块的视图文件。
