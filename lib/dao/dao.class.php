@@ -19,8 +19,15 @@
  */
 class dao
 {
+    /* Use these strang strings to avoid conflicting with these keywords in the sql body. */
+    const WHERE   = 'wHeRe';
+    const GROUPBY = 'gRoUp bY';
+    const HAVING  = 'hAvInG';
+    const ORDERBY = 'oRdEr bY';
+    const LIMIT   = 'lImiT';
+
     /**
-     * 全局对象$global
+     * 全局对象$app
      * The global app object.
      * 
      * @var object
@@ -121,6 +128,22 @@ class dao
     public $method;
 
     /**
+     * If auto add lang statement.
+     *
+     * @var bool
+     * @access public
+     */
+    public $autoLang;
+
+    /**
+     * The sql code of need repair table.
+     * 
+     * @var string
+     * @access public
+     */
+    public $repairCode = '|1034|1035|1194|1195|1459|';
+
+    /**
      * 执行的请求，所有的查询都保存在该数组。
      * The queries executed. Every query will be saved in this array.
      * 
@@ -137,6 +160,14 @@ class dao
      * @access public
      */
     static public $errors = array();
+
+    /**
+     * The cache.
+     * 
+     * @var array
+     * @access public
+     */
+    static public $cache = array();
 
     /**
      * 构造方法。
@@ -197,6 +228,19 @@ class dao
     }
 
     /**
+     * Set autoLang item.
+     * 
+     * @param  bool    $autoLang 
+     * @access public
+     * @return void
+     */
+    public function setAutoLang($autoLang)
+    {
+        $this->autoLang = $autoLang;
+        return $this;
+    }
+
+    /**
      * 重置属性。
      * Reset the vars.
      * 
@@ -210,6 +254,14 @@ class dao
         $this->setAlias('');
         $this->setMode('');
         $this->setMethod('');
+        if(defined('LANG_CREATED') and LANG_CREATED == false)
+        {
+            $this->setAutoLang(false);
+        }
+        else
+        {
+            $this->setAutoLang(true);
+        }
     }
 
     //-----根据请求的方式，调用sql类相应的方法(Call according method of sql class by query method. -----//
@@ -241,6 +293,39 @@ class dao
     }
 
     /**
+     * Begin Transaction 
+     * 
+     * @access public
+     * @return void
+     */
+    public function begin()
+    {
+        $this->dbh->beginTransaction();
+    }
+
+    /**
+     * Roll back  
+     * 
+     * @access public
+     * @return void
+     */
+    public function rollBack()
+    {
+        $this->dbh->rollBack();
+    }
+
+    /**
+     * Commit  
+     * 
+     * @access public
+     * @return void
+     */
+    public function commit()
+    {
+        $this->dbh->commit();
+    }
+
+    /**
      * select方法，调用sql::select()。
      * The select method, call sql::select().
      * 
@@ -254,6 +339,44 @@ class dao
         $this->setMethod('select');
         $this->sqlobj = sql::select($fields);
         return $this;
+    }
+
+    /**
+     * The count method, call sql::select() and from().
+     * use as $this->dao->select()->from(TABLE_BUG)->where()->count();
+     *
+     * @access public
+     * @return void
+     */
+    public function count()
+    {
+        /* Get the SELECT, FROM position, thus get the fields, replace it by count(*). */
+        $sql = $this->processSQL();
+        $sql = str_replace('SELECT', 'SELECT SQL_CALC_FOUND_ROWS ', $sql);
+
+        /* Remove the part after order and limit. */
+        $subLength = strlen($sql);
+        $orderPOS  = strripos($sql, DAO::ORDERBY);
+        $limitPOS  = strripos($sql , DAO::LIMIT);
+        if($limitPOS) $subLength = $limitPOS;
+        if($orderPOS) $subLength = $orderPOS;
+        $sql = substr($sql, 0, $subLength);
+        self::$querys[] = $sql;
+
+        /* Get the records count. */
+        try
+        {
+            $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
+        }
+        catch (PDOException $e) 
+        {
+            $this->sqlError($e);
+        }
+
+        $sql  = 'SELECT FOUND_ROWS() as recTotal;';
+        $row = $this->dbh->query($sql)->fetch();
+ 
+        return $row->recTotal;
     }
 
     /**
@@ -374,10 +497,16 @@ class dao
      * @access public
      * @return object the dao object self.
      */
-    public function data($data)
+    public function data($data, $skipFields = '')
     {
         if(!is_object($data)) $data = (object)$data;
-        $this->sqlobj->data($data);
+        if($this->autoLang and !isset($data->lang)) 
+        {
+            $data->lang = $this->app->getClientLang();
+            if(defined('RUN_MODE') and RUN_MODE == 'front' and !empty($this->app->config->cn2tw)) $data->lang = str_replace('zh-tw', 'zh-cn', $data->lang);
+        }
+
+        $this->sqlobj->data($data, $skipFields);
         return $this;
     }
 
@@ -392,7 +521,7 @@ class dao
      */
     public function get()
     {
-        return $this->processSQL();
+        return $this->processKeywords($this->processSQL());
     }
 
     /**
@@ -405,6 +534,20 @@ class dao
     public function printSQL()
     {
         echo $this->processSQL();
+    }
+
+    /**
+     * Explain sql. 
+     * 
+     * @param  string $sql 
+     * @access public
+     * @return void
+     */
+    public function explain($sql = '')
+    {
+        $sql    = empty($sql) ? $this->processSQL() : $sql;
+        $result = $this->dbh->query('explain ' . $sql)->fetch();
+        a($result);
     }
 
     /**
@@ -425,16 +568,70 @@ class dao
         if($this->mode == 'magic')
         {
             if($this->fields == '') $this->fields = '*';
-            if($this->table == '')  $this->app->error('Must set the table name', __FILE__, __LINE__, $exit = true);
+            if($this->table == '')  $this->app->triggerError('Must set the table name', __FILE__, __LINE__, $exit = true);
             $sql = sprintf($this->sqlobj->get(), $this->fields, $this->table);
         }
 
-        self::$querys[] = $sql;
+        /* If the method if select, update or delete, set the lang condition. */
+        if($this->autoLang and $this->table != '' and $this->method != 'insert' and $this->method != 'replace')
+        {
+            $lang = $this->app->getClientLang();
+
+            /* Get the position to insert lang = ?. */
+            $wherePOS  = strrpos($sql, DAO::WHERE);             // The position of WHERE keyword.
+            $groupPOS  = strrpos($sql, DAO::GROUPBY);           // The position of GROUP BY keyword.
+            $havingPOS = strrpos($sql, DAO::HAVING);            // The position of HAVING keyword.
+            $orderPOS  = strrpos($sql, DAO::ORDERBY);           // The position of ORDERBY keyword.
+            $limitPOS  = strrpos($sql, DAO::LIMIT);             // The position of LIMIT keyword.
+            $splitPOS  = $orderPOS ? $orderPOS : $limitPOS;     // If $orderPOS, use it instead of $limitPOS.
+            $splitPOS  = $havingPOS? $havingPOS: $splitPOS;     // If $havingPOS, use it instead of $orderPOS.
+            $splitPOS  = $groupPOS ? $groupPOS : $splitPOS;     // If $groupPOS, use it instead of $havingPOS.
+
+            /* Set the conditon to be appened. */
+            $tableName = !empty($this->alias) ? $this->alias : $this->table;
+
+            if(!empty($this->app->config->cn2tw)) $lang = str_replace('zh-tw', 'zh-cn', $lang);
+
+            $langCondition = " $tableName.lang in('{$lang}', 'all') ";
+
+            /* If $spliPOS > 0, split the sql at $splitPOS. */
+            if($splitPOS)
+            {
+                $firstPart = substr($sql, 0, $splitPOS);
+                $lastPart  = substr($sql, $splitPOS);
+                if($wherePOS)
+                {
+                    $sql = $firstPart . " AND $langCondition " . $lastPart;
+                }
+                else
+                {
+                    $sql = $firstPart . " WHERE $langCondition " . $lastPart;
+                }
+            }
+            else
+            {
+                $sql .= $wherePOS ? " AND $langCondition" : " WHERE $langCondition";
+            }
+        }
+
+        self::$querys[] = $this->processKeywords($sql);
         return $sql;
     }
 
+    /**
+     * Process the sql keywords, replace the constants to normal.
+     * 
+     * @param  string $sql 
+     * @access private
+     * @return string the sql string.
+     */
+    private function processKeywords($sql)
+    {
+        return str_replace(array(DAO::WHERE, DAO::GROUPBY, DAO::HAVING, DAO::ORDERBY, DAO::LIMIT), array('WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT'), $sql);
+    }
+
     //-------------------- 查询相关方法(Query related methods) --------------------//
-    
+
     /**
      * 设置$dbh，数据库连接句柄。
      * Set the dbh. 
@@ -458,13 +655,16 @@ class dao
      * @access public
      * @return object   the PDOStatement object.
      */
-    public function query()
+    public function query($sql = '')
     {
         /* 如果有错误，返回一个空的PDOStatement对象，确保后续方法能够执行。*/
         /* If any error, return an empty statement object to make sure the remain method to execute. */
         if(!empty(dao::$errors)) return new PDOStatement();   
 
+        if($sql) $this->sqlobj->sql = $sql;
         $sql = $this->processSQL();
+        $key = md5($sql);
+
         try
         {
             $method = $this->method;
@@ -472,16 +672,27 @@ class dao
 
             if($this->slaveDBH and $method == 'select')
             {
-                return $this->slaveDBH->query($sql);
+                if(isset(dao::$cache[$key])) return dao::$cache[$key];
+                $result = $this->slaveDBH->query($sql);
+                dao::$cache[$key] = $result;
+                return $result;
             }
             else
             {
+                if($this->method == 'select')
+                {
+                    if(isset(dao::$cache[$key])) return dao::$cache[$key];
+                    $result = $this->slaveDBH->query($sql);
+                    dao::$cache[$key] = $result;
+                    return $result;
+                }
+
                 return $this->dbh->query($sql);
             }
         }
         catch (PDOException $e) 
         {
-            $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+            $this->sqlError($e);
         }
     }
 
@@ -493,7 +704,7 @@ class dao
      * @access public
      * @return object the dao object self.
      */
-    public function page($pager)
+    public function page($pager, $distinctField = '')
     {
         if(!is_object($pager)) return $this;
 
@@ -505,19 +716,20 @@ class dao
         {
             /* 获得SELECT，FROM的位置，使用count(*)替换其字段。 */
             /* Get the SELECT, FROM position, thus get the fields, replace it by count(*). */
-            $sql       = $this->get();
-            $selectPOS = strpos($sql, 'SELECT') + strlen('SELECT');
-            $fromPOS   = strpos($sql, 'FROM');
-            $fields    = substr($sql, $selectPOS, $fromPOS - $selectPOS );
-            $sql       = str_replace($fields, ' COUNT(*) AS recTotal ', $sql);
+            $sql        = $this->get();
+            $selectPOS  = strpos($sql, 'SELECT') + strlen('SELECT');
+            $fromPOS    = strpos($sql, 'FROM');
+            $fields     = substr($sql, $selectPOS, $fromPOS - $selectPOS );
+            $countField = $distinctField ? 'distinct ' . $distinctField : '*';
+            $sql        = str_replace($fields, " COUNT($countField) AS recTotal ", substr($sql, 0, $fromPOS)) . substr($sql, $fromPOS);
 
             /*
              * 去掉SQL语句中order和limit之后的部分。
              * Remove the part after order and limit.
              **/
             $subLength = strlen($sql);
-            $orderPOS  = strripos($sql, 'order');
-            $limitPOS  = strripos($sql , 'limit');
+            $orderPOS  = strripos($sql, 'order by');
+            $limitPOS  = strripos($sql, 'limit');
             if($limitPOS) $subLength = $limitPOS;
             if($orderPOS) $subLength = $orderPOS;
             $sql = substr($sql, 0, $subLength);
@@ -533,7 +745,7 @@ class dao
             }
             catch (PDOException $e) 
             {
-                $this->app->triggerError($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+                $this->sqlError($e);
             }
 
             $pager->setRecTotal($row->recTotal);
@@ -547,14 +759,17 @@ class dao
      * 执行SQL。query()会返回stmt对象，该方法只返回更改或删除的记录数。
      * Execute the sql. It's different with query(), which return the stmt object. But this not.
      * 
+     * @param  string $sql 
      * @access public
      * @return int the modified or deleted records. 更改或删除的记录数。
      */
-    public function exec()
+    public function exec($sql = '')
     {
         if(!empty(dao::$errors)) return new PDOStatement();   // If any error, return an empty statement object to make sure the remain method to execute.
 
+        if($sql) $this->sqlobj->sql = $sql;
         $sql = $this->processSQL();
+
         try
         {
             $this->reset();
@@ -562,7 +777,7 @@ class dao
         }
         catch (PDOException $e) 
         {
-            $this->app->triggerError($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+            $this->sqlError($e);
         }
     }
 
@@ -637,6 +852,9 @@ class dao
      */
     public function fetchPairs($keyField = '', $valueField = '')
     {
+        $keyField   = trim($keyField, '`');
+        $valueField = trim($valueField, '`');
+
         $pairs = array();
         $ready = false;
         $stmt  = $this->query();
@@ -746,7 +964,7 @@ class dao
     }
 
     //-------------------- 条件检查( Data Checking)--------------------//
-    
+
     /**
      * 检查字段是否满足条件。
      * Check a filed is satisfied with the check rule.
@@ -756,21 +974,33 @@ class dao
      * @access public
      * @return object the dao object self.
      */
-    public function check($fieldName, $funcName)
+    public function check($fieldName, $funcName, $condition = '')
     {
         /* 
          * 如果没数据中没有该字段，直接返回。
          * If no this field in the data, return.
          **/
-        if(!isset($this->sqlobj->data->$fieldName)) return $this;
+        if(!isset($this->sqlobj->data->$fieldName) && $funcName != 'notempty') return $this;
 
         /* 设置字段值。 */
         /* Set the field label and value. */
         global $lang, $config, $app;
-        $table      = strtolower(str_replace($config->db->prefix, '', $this->table));
+        if(isset($config->db->prefix))
+        {
+            $table      = strtolower(str_replace(array($config->db->prefix, '`'), '', $this->table));
+        }
+        elseif(strpos($this->table, '_') !== false)
+        {
+            $table = strtolower(substr($this->table, strpos($this->table, '_') + 1));
+            $table = str_replace('`', '', $table);
+        }
+        else
+        {
+            $table = strtolower($this->table);
+        }
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
-        $value = $this->sqlobj->data->$fieldName;
-        
+        $value = isset($this->sqlobj->data->$fieldName) ? $this->sqlobj->data->$fieldName : null;
+
         /* 
          * 检查唯一性。
          * Check unique.
@@ -779,15 +1009,15 @@ class dao
         {
             $args = func_get_args();
             $sql  = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->sqlobj->quote($value); 
-            if(isset($args[2])) $sql .= ' AND ' . $args[2];
+            if($condition) $sql .= ' AND ' . $condition;
             try
             {
-                 $row = $this->dbh->query($sql)->fetch();
-                 if($row->count != 0) $this->logError($funcName, $fieldName, $fieldLabel, array($value));
+                $row = $this->dbh->query($sql)->fetch();
+                if($row->count != 0) $this->logError($funcName, $fieldName, $fieldLabel, array($value));
             }
             catch (PDOException $e) 
             {
-                $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+                $this->sqlError($e);
             }
         }
         else
@@ -972,7 +1202,7 @@ class dao
      * @access public
      * @return bool
      */
-    public function isError()
+    public static function isError()
     {
         return !empty(dao::$errors);
     }
@@ -984,11 +1214,22 @@ class dao
      * @access public
      * @return array
      */
-    public function getError()
+    public static function getError($join = false)
     {
         $errors = dao::$errors;
         dao::$errors = array();     // 清除dao的错误信息(Must clear errors)
-        return $errors;
+
+        if(!$join) return $errors;
+
+        if(is_array($errors))
+        {
+            $message = '';
+            foreach($errors as $item)
+            {
+                is_array($item) ? $message .= join('\n', $item) . '\n' : $message .= $item . '\n';
+            }
+            return $message;
+        }
     }
 
     /**
@@ -1009,7 +1250,7 @@ class dao
         }
         catch (PDOException $e) 
         {
-            $this->app->error($e->getMessage() . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+            $this->sqlError($e);
         }
 
         foreach($rawFields as $rawField)
@@ -1056,6 +1297,29 @@ class dao
         }
         return $fields;
     }
+
+    /**
+     * Process SQL error by code.
+     * 
+     * @param  object    $exception 
+     * @access public
+     * @return void
+     */
+    public function sqlError($exception)
+    {
+        $errorInfo = $exception->errorInfo;
+        $errorCode = $errorInfo[1];
+        $errorMsg  = $errorInfo[2];
+        $message   = $exception->getMessage();
+        if(strpos($this->repairCode, "|$errorCode|") !== false or ($errorCode == '1016' and strpos($errorMsg, 'errno: 145') !== false))
+        {
+            global $config;
+            if(isset($config->framework->autoRepairTable) and $config->framework->autoRepairTable) die(js::locate(helper::createLink('misc', 'checkTable')));
+            $message .=  ' ' . $this->lang->repairTable;
+        }
+        $sql = $this->sqlobj->get();
+        $this->app->triggerError($message . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
+    }
 }
 
 /**
@@ -1078,9 +1342,9 @@ class sql
      * The sql string.
      * 
      * @var string
-     * @access private
+     * @access public
      */
-    private $sql = '';
+    public $sql = '';
 
     /**
      * 全局变量$dbh。
@@ -1128,13 +1392,22 @@ class sql
     private $conditionIsTrue = false;
 
     /**
+     * If in mark or not.
+     * 
+     * @var bool
+     * @access private;
+     */
+    private $inMark = false;
+
+
+    /**
      * 是否开启特殊字符转义。
      * Magic quote or not.
      * 
      * @var bool
      * @access public
      */
-     public $magicQuote; 
+    public $magicQuote; 
 
     /**
      * 构造方法。
@@ -1143,23 +1416,24 @@ class sql
      * @access private
      * @return void
      */
-    private function __construct()
+    private function __construct($table = '')
     {
         global $dbh;
-        $this->dbh = $dbh;
-        $this->magicQuote = get_magic_quotes_gpc();
+        $this->dbh        = $dbh;
+        $this->magicQuote = (version_compare(phpversion(), '5.4', '<') and function_exists('get_magic_quotes_gpc') and get_magic_quotes_gpc());
     }
 
     /**
      * 工厂方法。
      * The factory method.
      * 
+     * @param  string $table 
      * @access public
      * @return object the sql object.
      */
-    public static function factory()
+    public static function factory($table = '')
     {
-        return new sql();
+        return new sql($table);
     }
 
     /**
@@ -1241,14 +1515,28 @@ class sql
      * Join the data items by key = value.
      * 
      * @param  object $data 
+     * @param  string $skipFields   the fields to skip.
      * @access public
      * @return object the sql object.
      */
-    public function data($data)
+    public function data($data, $skipFields = '')
     {
+        $data = (object) $data;
+        if($skipFields) $skipFields = ',' . str_replace(' ', '', $skipFields) . ',';
+
+        foreach($data as $field => $value)
+        {
+            if(!preg_match('|^\w+$|', $field)) 
+            {
+                unset($data->$field);
+                continue;
+            }
+            if(strpos($skipFields, ",$field,") !== false) continue;
+            $this->sql .= "`$field` = " . $this->quote($value) . ',';
+        }
+
         $this->data = $data;
-        foreach($data as $field => $value) $this->sql .= "`$field` = " . $this->quote($value) . ',';
-        $this->sql = rtrim($this->sql, ',');    // Remove the last ','.
+        $this->sql  = rtrim($this->sql, ',');    // Remove the last ','.
         return $this;
     }
 
@@ -1262,7 +1550,9 @@ class sql
      */
     public function markLeft($count = 1)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= str_repeat('(', $count);
+        $this->inMark = true;
         return $this;
     }
 
@@ -1276,7 +1566,9 @@ class sql
      */
     public function markRight($count = 1)
     {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= str_repeat(')', $count);
+        $this->inMark = false;
         return $this;
     }
 
@@ -1290,6 +1582,13 @@ class sql
      */
     public function set($set)
     {
+        /* Add ` to avoid keywords of mysql. */
+        if(strpos($set, '=') ===false)
+        {
+            $set = str_replace(',', '', $set);
+            $set = '`' . str_replace('`', '', $set) . '`';
+        }
+
         if($this->isFirstSet)
         {
             $this->sql .= " $set ";
@@ -1410,7 +1709,8 @@ class sql
             $condition = $arg1;
         }
 
-        $this->sql .= " WHERE $condition ";
+        if(!$this->inMark) $this->sql .= ' ' . DAO::WHERE ." $condition ";
+        if($this->inMark) $this->sql .= " $condition ";
         return $this;
     } 
 
@@ -1422,10 +1722,11 @@ class sql
      * @access public
      * @return object the sql object.
      */
-    public function andWhere($condition)
+    public function andWhere($condition, $addMark = false)
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
-        $this->sql .= " AND $condition ";
+        $mark = $addMark ? '(' : '';
+        $this->sql .= " AND {$mark} $condition ";
         return $this;
     }
 
@@ -1490,6 +1791,20 @@ class sql
     }
 
     /**
+     * Create '>='.
+     * 
+     * @param  string $value 
+     * @access public
+     * @return object the sql object.
+     */
+    public function ge($value)
+    {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
+        $this->sql .= " >= " . $this->quote($value);
+        return $this;
+    }
+
+    /**
      * 创建'<'。
      * Create '<'.
      * 
@@ -1501,6 +1816,20 @@ class sql
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
         $this->sql .= " < " . $this->quote($value);
+        return $this;
+    }
+
+    /**
+     * Create '<='.
+     * 
+     * @param  mixed  $value 
+     * @access public
+     * @return object the sql object.
+     */
+    public function le($value)
+    {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
+        $this->sql .= " <= " . $this->quote($value);
         return $this;
     }
 
@@ -1568,6 +1897,20 @@ class sql
     }
 
     /**
+     * Create the not like by part.
+     * 
+     * @param  string $string 
+     * @access public
+     * @return object the sql object.
+     */
+    public function notLike($string)
+    {
+        if($this->inCondition and !$this->conditionIsTrue) return $this;
+        $this->sql .= "NOT LIKE " . $this->quote($string);
+        return $this;
+    }
+
+    /**
      * 创建ORDER BY部分。
      * Create the order by part.
      * 
@@ -1578,8 +1921,36 @@ class sql
     public function orderBy($order)
     {
         $order = str_replace(array('|', '', '_'), ' ', $order);
-        $order = str_replace('left', '`left`', $order); // process the left to `left`.
-        $this->sql .= " ORDER BY $order";
+
+        /* Add "`" in order string. */
+        /* When order has limit string. */
+        $pos    = stripos($order, 'limit');
+        $orders = $pos ? substr($order, 0, $pos) : $order;
+        $limit  = $pos ? substr($order, $pos) : '';
+
+        $orders = explode(',', $orders);
+        foreach($orders as $i => $order)
+        {
+            $orderParse = explode(' ', trim($order));
+            foreach($orderParse as $key => $value)
+            {
+                $value = trim($value);
+                if(empty($value) or strtolower($value) == 'desc' or strtolower($value) == 'asc') continue;
+                $field = trim($value, '`');
+
+                /* such as t1.id field. */
+                if(strpos($value, '.') !== false) list($table, $field) = explode('.', $field);
+                /* Ignore order with function e.g. order by length(tag) asc. */
+                if(strpos($field, '(') === false) $field = "`$field`";
+
+                $orderParse[$key] = isset($table) ? $table . '.' . $field :  $field;
+                unset($table);
+            }
+            $orders[$i] = join(' ', $orderParse);
+        }
+        $order = join(',', $orders) . ' ' . $limit;
+
+        $this->sql .= ' ' . DAO::ORDERBY . " $order";
         return $this;
     }
 
@@ -1594,7 +1965,7 @@ class sql
     public function limit($limit)
     {
         if(empty($limit)) return $this;
-        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= " LIMIT $limit ";
+        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= ' ' . DAO::LIMIT . " $limit ";
         return $this;
     }
 
@@ -1608,7 +1979,7 @@ class sql
      */
     public function groupBy($groupBy)
     {
-        $this->sql .= " GROUP BY $groupBy";
+        $this->sql .= ' ' . DAO::GROUPBY . " $groupBy";
         return $this;
     }
 
@@ -1622,7 +1993,7 @@ class sql
      */
     public function having($having)
     {
-        $this->sql .= " HAVING $having";
+        $this->sql .= ' ' . DAO::HAVING . " $having";
         return $this;
     }
 
@@ -1649,6 +2020,6 @@ class sql
     public function quote($value)
     {
         if($this->magicQuote) $value = stripslashes($value);
-        return $this->dbh->quote($value);
+        return $this->dbh->quote((string)$value);
     }
 }

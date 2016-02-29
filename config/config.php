@@ -10,12 +10,16 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
+/* Judge class config and function getWebRoot exists or not, make sure php shells can work. */
+if(!class_exists('config')){class config{}}
+if(!function_exists('getWebRoot')){function getWebRoot(){}}
 
 /* 基本设置。        Basic settings. */
 $config->version     = '2.2';             // ZenTaoPHP的版本，不要更改。The version of ZenTaoPHP. Don't change it. 
 $config->encoding    = 'UTF-8';           // ZenTaoPHP的编码。          The encoding of ZenTaoPHP.                 
 $config->cookieLife  = time() + 2592000;  // Cookie的生存时间。         The cookie life time.                      
 $config->timezone    = 'Asia/Shanghai';   // 时区设置。 The time zone setting, for more see http://www.php.net/manual/en/timezones.php.
+$config->webRoot     = '';                // The root path of the pms.
 
 /* 请求设置。        The request settings. */
 $config->requestType = 'PATH_INFO';       // 请求类型：PATH_INFO|GET。  The request type: PATH_INFO|GET, if PATH_INFO, must use url rewrite.
@@ -58,6 +62,10 @@ $config->slaveDB->persistant = false;
 $config->slaveDB->driver     = 'mysql';
 $config->slaveDB->encoding   = 'UTF8';
 $config->slaveDB->strictMode = false;
+
+/* 系统框架配置。 */
+$config->framework = new stdclass();
+$config->framework->jsWithPrefix = true;
 
 /* 引用自定义的配置。 Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';

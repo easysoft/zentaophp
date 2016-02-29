@@ -29,6 +29,14 @@ class control
     protected $app;
 
     /**
+     * The global $appName.
+     * 
+     * @var string
+     * @access public
+     */
+    public $appName;
+
+    /**
      * 全局对象 $config。
      * The global $config object.
      * 
@@ -155,13 +163,20 @@ class control
     private $output;
 
     /**
-     * 目录分隔符(Unix系统为'/'，Windows系统为'\')。
-     * The directory seperator.
+     * The prefix of view file for mobile or PC. 
      * 
-     * @var string
-     * @access protected
+     * @var string   
+     * @access public
      */
-    protected $pathFix;
+    public $viewPrefix;
+
+    /**
+     * The device of visiting client.
+     * 
+     * @var string   
+     * @access public
+     */
+    public $device;
 
     /**
      * 构造方法。 
@@ -179,19 +194,19 @@ class control
      * @access public
      * @return void
      */
-    public function __construct($moduleName = '', $methodName = '')
+    public function __construct($moduleName = '', $methodName = '', $appName = '')
     {
         /*
          * 将全局变量设为control类的成员变量，方便control的派生类调用。
          * Global the globals, and refer them to the class member.
          **/
-        global $app, $config, $lang, $dbh;
-        $this->app        = $app;
-        $this->config     = $config;
-        $this->lang       = $lang;
-        $this->dbh        = $dbh;
-        $this->pathFix    = $this->app->getPathFix();
-        $this->viewType   = $this->app->getViewType();
+        global $app, $config, $lang, $dbh, $common;
+        $this->app      = $app;
+        $this->config   = $config;
+        $this->lang     = $lang;
+        $this->dbh      = $dbh;
+        $this->viewType = $this->app->getViewType();
+        $this->appName  = $appName ? $appName : $this->app->getAppName();
 
         /*
          * 设置当前模块，读取该模块的model类。
@@ -199,7 +214,8 @@ class control
          **/
         $this->setModuleName($moduleName);
         $this->setMethodName($methodName);
-        $this->loadModel();
+        $this->loadModel($this->moduleName, $appName);
+        $this->setViewPrefix();
 
         /*
          * 初始化$view视图类。
@@ -209,6 +225,7 @@ class control
         $this->view->app    = $app;
         $this->view->lang   = $lang;
         $this->view->config = $config;
+        $this->view->common = $common;
         $this->view->title  = '';
 
         /*
@@ -250,13 +267,15 @@ class control
      * Load the model file of one module.
      * 
      * @param   string  $moduleName 模块名，如果为空，使用当前模块  The module name, if empty, use current module's name.
+     * @param   string      $appName       The app name, if empty, use current app's name.
      * @access  public
      * @return  object|bool 如果没有model文件，返回false，否则返回model对象。 If no model file, return false. Else return the model object.
      */
-    public function loadModel($moduleName = '')
+    public function loadModel($moduleName = '', $appName = '')
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
-        $modelFile = helper::setModelFile($moduleName);
+        if(empty($appName))    $appName    = $this->appName;
+        $modelFile = helper::setModelFile($moduleName, $appName);
 
         /* 
          * 如果没有model文件，尝试加载config配置信息。
@@ -264,16 +283,20 @@ class control
          */
         if(!helper::import($modelFile)) 
         {
-            $this->app->loadConfig($moduleName, false);
-            $this->app->loadLang($moduleName);
-            $this->dao = $this->app->loadClass('dao');
+            $this->app->loadConfig($moduleName, $appName, false);
+            $this->app->loadLang($moduleName, $appName);
+            $this->dao = new dao();
             return false;
         }
 
-        $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
-        if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+        $modelClass = class_exists('ext' . $appName . $moduleName. 'model') ? 'ext' . $appName . $moduleName . 'model' : $appName . $moduleName . 'model';
+        if(!class_exists($modelClass))
+        {
+            $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
+            if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+        }
 
-        $this->$moduleName = new $modelClass();
+        $this->$moduleName = new $modelClass($appName);
         $this->dao = $this->$moduleName->dao;
         return $this->$moduleName;
     }
@@ -295,8 +318,31 @@ class control
         $this->global  = $this->app->global;
     }
 
+    /**
+     * Set the prefix of view file for mobile or PC.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setViewPrefix()
+    {
+        $this->viewPrefix = '';
+        if(isset($this->config->viewPrefix[$this->viewType])) $this->viewPrefix = $this->config->viewPrefix[$this->viewType];
+    }
+
+    /**
+     * Set current device of visit website.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setCurrentDevice()
+    {
+        $this->app->setCurrentDevice();
+        $this->device = $this->app->device;
+    }
     //-------------------- 视图相关方法(View related methods) --------------------//
-    
+
     /**
      * 设置视图文件，可以获取其他模块的视图文件。
      * Set the view file, thus can use fetch other module's page.
@@ -306,24 +352,35 @@ class control
      * @access private
      * @return string  the view file
      */
-    private function setViewFile($moduleName, $methodName)
+    public function setViewFile($moduleName, $methodName)
     {
         $moduleName = strtolower(trim($moduleName));
         $methodName = strtolower(trim($methodName));
 
-        $modulePath  = $this->app->getModulePath($moduleName);
-        $viewExtPath = $this->app->getModuleExtPath($moduleName, 'view');
+        $modulePath  = $this->app->getModulePath($this->appName, $moduleName);
+        $viewExtPath = $this->app->getModuleExtPath($this->appName, $moduleName, 'view');
+
+        /* Set infix for view file in mobile or pc. */
+        $viewType = $this->viewType;
+        if(isset($this->config->viewPrefix[$this->viewType])) $viewType = 'html';
 
         /*
          * 主视图文件，扩展视图文件和钩子文件。
          * The main view file, extension view file and hook file.
          **/
-        $mainViewFile = $modulePath . 'view' . $this->pathFix . $methodName . '.' . $this->viewType . '.php';
-        $extViewFile  = $viewExtPath . $methodName . ".{$this->viewType}.php";
-        $extHookFiles = helper::ls($viewExtPath, '.hook.php');
+        $mainViewFile = $modulePath . 'view' . DS . $this->viewPrefix . $methodName . '.' . $viewType . '.php';
 
-        $viewFile = file_exists($extViewFile) ? $extViewFile : $mainViewFile;
+        /* Extension view file. */
+        $commonExtViewFile = $viewExtPath['common'] . $this->viewPrefix . $methodName . ".{$viewType}.php";
+        $siteExtViewFile   = empty($viewExtPath['site']) ? '' : $viewExtPath['site'] . $this->viewPrefix . $methodName . ".{$viewType}.php";
+        $viewFile = file_exists($commonExtViewFile) ? $commonExtViewFile : $mainViewFile;
+        $viewFile = (!empty($siteExtViewFile) and file_exists($siteExtViewFile)) ? $siteExtViewFile : $viewFile;
         if(!is_file($viewFile)) $this->app->triggerError("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
+
+        /* Extension hook file. */
+        $commonExtHookFiles = glob($viewExtPath['common'] . $this->viewPrefix . $methodName . ".*.{$viewType}.hook.php");
+        $siteExtHookFiles   = empty($viewExtPath['site']) ? '' : glob($viewExtPath['site'] . $this->viewPrefix . $methodName . ".*.{$viewType}.hook.php");
+        $extHookFiles       = array_merge((array) $commonExtHookFiles, (array) $siteExtHookFiles);
         if(!empty($extHookFiles)) return array('viewFile' => $viewFile, 'hookFiles' => $extHookFiles);
         return $viewFile;
     }
@@ -338,7 +395,19 @@ class control
      */
     public function getExtViewFile($viewFile)
     {
-        $extPath     = dirname(dirname(realpath($viewFile))) . '/ext/view/';
+        if($this->config->site->code)
+        {
+            $extPath     = dirname(dirname(realpath($viewFile))) . "/ext/_{$this->config->site->code}/view";
+            $extViewFile = $extPath . basename($viewFile);
+
+            if(file_exists($extViewFile))
+            {
+                helper::cd($extPath);
+                return $extViewFile;
+            }
+        }
+
+        $extPath = dirname(dirname(realpath($viewFile))) . '/ext/view/';
         $extViewFile = $extPath . basename($viewFile);
         if(file_exists($extViewFile))
         {
@@ -359,16 +428,56 @@ class control
      */
     private function getCSS($moduleName, $methodName)
     {
-        $moduleName = strtolower(trim($moduleName));
-        $methodName = strtolower(trim($methodName));
-        $modulePath = $this->app->getModulePath($moduleName);
+        $moduleName   = strtolower(trim($moduleName));
+        $methodName   = strtolower(trim($methodName));
+
+        $modulePath   = $this->app->getModulePath($this->appName, $moduleName);
+        $cssExtPath   = $this->app->getModuleExtPath($this->appName, $moduleName, 'css') ;
+        $cssMethodExt = $cssExtPath['common'] . $methodName . DS;
+        $cssCommonExt = $cssExtPath['common'] . 'common' . DS;
 
         $css = '';
-        $mainCssFile   = $modulePath . 'css' . $this->pathFix . 'common.css';
-        $methodCssFile = $modulePath . 'css' . $this->pathFix . $methodName . '.css';
-        if(file_exists($mainCssFile))   $css .= file_get_contents($mainCssFile);
-        if(is_file($methodCssFile))     $css .= file_get_contents($methodCssFile);
+        $mainCssFile   = $modulePath . 'css' . DS . $this->viewPrefix . 'common.css';
+        $methodCssFile = $modulePath . 'css' . DS . $this->viewPrefix . $methodName . '.css';
+        if(file_exists($mainCssFile)) $css .= file_get_contents($mainCssFile);
+        if(is_file($methodCssFile))   $css .= file_get_contents($methodCssFile);
 
+        $cssExtFiles = glob($cssCommonExt . $this->viewPrefix . '*.css');
+        if(is_array($cssExtFiles))
+        {
+            foreach($cssExtFiles as $cssFile)
+            {
+                $css .= file_get_contents($cssFile);
+            }
+        }
+
+        $cssExtFiles = glob($cssMethodExt . $this->viewPrefix . '*.css');
+        if(is_array($cssExtFiles))
+        {
+            foreach($cssExtFiles as $cssFile)
+            {
+                $css .= file_get_contents($cssFile);
+            }
+        }
+        if(!empty($cssExtPath['site']))
+        {
+            $cssMethodExt = $cssExtPath['site'] . $methodName . DS;
+            $cssCommonExt = $cssExtPath['site'] . 'common' . DS;
+            $cssExtFiles = glob($cssCommonExt . $this->viewPrefix . '*.css');
+            if(is_array($cssExtFiles))
+            {
+                foreach($cssExtFiles as $cssFile)
+                {
+                    $css .= file_get_contents($cssFile);
+                }
+            }
+
+            $cssExtFiles = glob($cssMethodExt . $this->viewPrefix . '*.css');
+            if(is_array($cssExtFiles))
+            {
+                foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
+            }
+        }
         return $css;
     }
 
@@ -383,16 +492,60 @@ class control
      */
     private function getJS($moduleName, $methodName)
     {
-        $moduleName = strtolower(trim($moduleName));
-        $methodName = strtolower(trim($methodName));
-        $modulePath = $this->app->getModulePath($moduleName);
+        $moduleName  = strtolower(trim($moduleName));
+        $methodName  = strtolower(trim($methodName));
+
+        $modulePath  = $this->app->getModulePath($this->appName, $moduleName);
+        $jsExtPath   = $this->app->getModuleExtPath($this->appName, $moduleName, 'js');
+        $jsMethodExt = $jsExtPath['common'] . $methodName . DS;
+        $jsCommonExt = $jsExtPath['common'] . 'common' . DS;
 
         $js = '';
-        $mainJsFile   = $modulePath . 'js' . $this->pathFix . 'common.js';
-        $methodJsFile = $modulePath . 'js' . $this->pathFix . $methodName . '.js';
+        $mainJsFile   = $modulePath . 'js' . DS . $this->viewPrefix . 'common.js';
+        $methodJsFile = $modulePath . 'js' . DS . $this->viewPrefix . $methodName . '.js';
         if(file_exists($mainJsFile))   $js .= file_get_contents($mainJsFile);
         if(is_file($methodJsFile))     $js .= file_get_contents($methodJsFile);
 
+        $jsExtFiles = glob($jsCommonExt . $this->viewPrefix . '*.js');
+        if(is_array($jsExtFiles))
+        {
+            foreach($jsExtFiles as $jsFile)
+            {
+                $js .= file_get_contents($jsFile);
+            }
+        }
+
+        $jsExtFiles = glob($jsMethodExt . $this->viewPrefix . '*.js');
+        if(is_array($jsExtFiles))
+        {
+            foreach($jsExtFiles as $jsFile)
+            {
+                $js .= file_get_contents($jsFile);
+            }
+        }
+        if(!empty($jsExtPath['site']))
+        {
+            $jsMethodExt = $jsExtPath['site'] . $methodName . DS;
+            $jsCommonExt = $jsExtPath['site'] . 'common' . DS;
+
+            $jsExtFiles = glob($jsCommonExt . $this->viewPrefix . '*.js');
+            if(is_array($jsExtFiles))
+            {
+                foreach($jsExtFiles as $jsFile)
+                {
+                    $js .= file_get_contents($jsFile);
+                }
+            }
+
+            $jsExtFiles = glob($jsMethodExt . $this->viewPrefix . '*.js');
+            if(is_array($jsExtFiles))
+            {
+                foreach($jsExtFiles as $jsFile)
+                {
+                    $js .= file_get_contents($jsFile);
+                }
+            }
+        }
         return $js;
     }
 
@@ -483,13 +636,14 @@ class control
     private function parseDefault($moduleName, $methodName)
     {
         /* Set the view file. */
-        $viewFile = $this->setViewFile($moduleName, $methodName);
-        if(is_array($viewFile)) extract($viewFile);
+        $results  = $this->setViewFile($moduleName, $methodName);
+        $viewFile = $results;
+        if(is_array($results)) extract($results);
 
         /* Get css and js. */
         $css = $this->getCSS($moduleName, $methodName);
         $js  = $this->getJS($moduleName, $methodName);
-        if($css) $this->view->pageCss = $css;
+        if($css) $this->view->pageCSS = $css;
         if($js)  $this->view->pageJS  = $js;
 
         /* Change the dir to the view file to keep the relative pathes work. */
@@ -499,7 +653,7 @@ class control
         extract((array)$this->view);
         ob_start();
         include $viewFile;
-        if(isset($hookFiles)) foreach($hookFiles as $hookFile) include $hookFile;
+        if(isset($hookFiles)) foreach($hookFiles as $hookFile) if(file_exists($hookFile)) include $hookFile;
         $this->output .= ob_get_contents();
         ob_end_clean();
 
@@ -520,10 +674,11 @@ class control
      * @access  public
      * @return  string  the parsed html.
      */
-    public function fetch($moduleName = '', $methodName = '', $params = array())
+    public function fetch($moduleName = '', $methodName = '', $params = array(), $appName = '')
     {
         if($moduleName == '') $moduleName = $this->moduleName;
         if($methodName == '') $methodName = $this->methodName;
+        if($appName == '')    $appName    = $this->appName;
         if($moduleName == $this->moduleName and $methodName == $this->methodName) 
         {
             $this->parse($moduleName, $methodName);
@@ -534,10 +689,17 @@ class control
          * 设置引用的文件和路径。
          * Set the pathes and files to included.
          **/
-        $modulePath        = $this->app->getModulePath($moduleName);
+        $modulePath        = $this->app->getModulePath($appName, $moduleName);
         $moduleControlFile = $modulePath . 'control.php';
-        $actionExtFile     = $this->app->getModuleExtPath($moduleName, 'control') . strtolower($methodName) . '.php';
-        $file2Included     = file_exists($actionExtFile) ? $actionExtFile : $moduleControlFile;
+        $actionExtPath     = $this->app->getModuleExtPath($appName, $moduleName, 'control');
+
+        $commonActionExtFile = $actionExtPath['common'] . strtolower($methodName) . '.php';
+        $file2Included       = file_exists($commonActionExtFile) ? $commonActionExtFile : $moduleControlFile;
+        if(!empty($actionExtPath['site']))
+        {
+            $siteActionExtFile = $actionExtPath['site'] . strtolower($methodName) . '.php';
+            $file2Included     = file_exists($siteActionExtFile) ? $siteActionExtFile : $file2Included;
+        }
 
         /* 加载控制器文件。 */
         /* Load the control file. */
@@ -545,7 +707,7 @@ class control
         $currentPWD = getcwd();
         chdir(dirname($file2Included));
         if($moduleName != $this->moduleName) helper::import($file2Included);
-        
+
         /* 设置调用的类名。 */
         /* Set the name of the class to be called. */
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
@@ -554,7 +716,7 @@ class control
         /* 解析参数，创建模块control对象。 */
         /* Parse the params, create the $module control object. */
         if(!is_array($params)) parse_str($params, $params);
-        $module = new $className($moduleName, $methodName);
+        $module = new $className($moduleName, $methodName, $appName);
 
         /* 调用对应方法，使用ob方法获取输出内容。 */
         /* Call the method and use ob function to get the output. */
@@ -594,10 +756,39 @@ class control
      * @return void
      */
     public function send($data, $type = 'json')
-    {   
-        if($type == 'json') echo json_encode($data);
+    {
+        $data = (array) $data;
+        if($type == 'json')
+        {
+            if(!helper::isAjaxRequest())
+            {
+                if(isset($data['result']) and $data['result'] == 'success')
+                {
+                    if(!empty($data['message'])) echo js::alert($data['message']);
+                    $locate = isset($data['locate']) ? $data['locate'] : (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+                    if(!empty($locate)) die(js::locate($locate));
+                    die(isset($data['message']) ? $data['message'] : 'success');
+                }
+
+                if(isset($data['result']) and $data['result'] == 'fail')
+                {
+                    if(!empty($data['message']))
+                    {
+                        $message = json_decode(json_encode((array)$data['message']));
+                        foreach((array)$message as $item => $errors)
+                        {
+                            $message->$item = implode(',', $errors);
+                        }
+                        echo js::alert(strip_tags(implode(" ", (array) $message)));
+                        die(js::locate('back'));
+                    }
+                }
+            }
+
+            echo json_encode($data);
+        }
         die(helper::removeUTF8Bom(ob_get_clean()));
-    }   
+    }
 
     /**
      * 创建一个模块方法的链接。
@@ -610,10 +801,10 @@ class control
      * @access  public
      * @return  string the link string.
      */
-    public function createLink($moduleName, $methodName = 'index', $vars = array(), $viewType = '')
+    public function createLink($moduleName, $methodName = 'index', $vars = array(), $viewType = '', $onlybody = false)
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
-        return helper::createLink($moduleName, $methodName, $vars, $viewType);
+        return helper::createLink($moduleName, $methodName, $vars, $viewType, $onlybody);
     }
 
     /**
@@ -626,9 +817,9 @@ class control
      * @access  public
      * @return  string  the link string.
      */
-    public function inlink($methodName = 'index', $vars = array(), $viewType = '')
+    public function inlink($methodName = 'index', $vars = array(), $viewType = '', $onlybody = false)
     {
-        return helper::createLink($this->moduleName, $methodName, $vars, $viewType);
+        return helper::createLink($this->moduleName, $methodName, $vars, $viewType, $onlybody);
     }
 
     /**

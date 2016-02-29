@@ -52,7 +52,7 @@ class validater
     {
         $args = func_get_args();
         if($var != 0) $var = ltrim($var, 0);  // 去掉变量左边的0，00不是Int类型
-                                              // Remove the left 0, filter don't think 00 is an int.
+        // Remove the left 0, filter don't think 00 is an int.
 
         /* 如果设置了最小的整数。  Min is setted.  */
         if(isset($args[1]))
@@ -73,6 +73,19 @@ class validater
         {
             return filter_var($var, FILTER_VALIDATE_INT);
         }
+    }
+
+    /**
+     * Not int checking. 
+     * 
+     * @param  int    $var 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkNotInt($var)
+    {
+        return !self::checkInt($var);
     }
 
     /**
@@ -105,6 +118,45 @@ class validater
     }
 
     /**
+     * Check phone number.
+     * 
+     * @param  string    $var 
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function checkPhone($var)
+    {
+        return (validater::checkTel($var) or validater::checkMobile($var));
+    }
+
+    /**
+     * Check tel number.
+     * 
+     * @param  int    $var 
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function checkTel($var)
+    {
+        return preg_match("/^([0-9]{3,4}-)?[0-9]{7,8}$/", $var);
+    }
+
+    /**
+     * Check mobile number.
+     * 
+     * @param  string    $var 
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function checkMobile($var)
+    {
+        return preg_match("/^1[3-5,8]{1}[0-9]{9}$/", $var);
+    }
+
+    /**
      * 检查网址。
      * 该规则不支持中文字符的网址。
      *
@@ -122,6 +174,21 @@ class validater
     }
 
     /**
+     * Domain checking. 
+     *
+     * The check rule of filter don't support chinese.
+     * 
+     * @param  string $var 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkDomain($var)
+    {
+        return preg_match('/^([a-z0-9-]+\.)+[a-z]{2,15}$/', $var);
+    }
+
+    /**
      * 检查IP地址。
      * IP checking.
      * 
@@ -133,11 +200,11 @@ class validater
      */
     public static function checkIP($var, $range = 'all')
     {
-        if($range == 'all')    return filter_var($var, FILTER_VALIDATE_IP);
+        if($range == 'all') return filter_var($var, FILTER_VALIDATE_IP);
         if($range == 'public static') return filter_var($var, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
         if($range == 'private')
         {
-            if(filter_var($var, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) return $var;
+            if($var == '127.0.0.1' or filter_var($var, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false) return true;
             return false;
         }
     }
@@ -173,7 +240,7 @@ class validater
     {
         return filter_var($var, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $reg)));
     }
-    
+
     /**
      * 检查长度。
      * Length checking.
@@ -187,7 +254,8 @@ class validater
      */
     public static function checkLength($var, $max, $min = 0)
     {
-        return self::checkInt(strlen($var), $min, $max);
+        $length = function_exists('mb_strlen') ? mb_strlen($var, 'utf-8') : strlen($var);
+        return self::checkInt($length, $min, $max);
     }
 
     /**
@@ -229,7 +297,36 @@ class validater
      */
     public static function checkAccount($var)
     {
-        return self::checkREG($var, '|^[a-zA-Z0-9_]{1}[a-zA-Z0-9_]{1,}[a-zA-Z0-9_]{1}$|');
+        global $config;
+        $accountRule = empty($config->accountRule) ? '|^[a-zA-Z0-9_]{1}[a-zA-Z0-9_\.]{1,}[a-zA-Z0-9_]{1}$|' : $config->accountRule;
+        return self::checkREG($var, $accountRule);
+    }
+
+    /**
+     * Check code.
+     * 
+     * @param  string $var 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkCode($var)
+    {
+        return self::checkREG($var, '|^[A-Za-z0-9]+$|');
+    }
+
+    /**
+     * Check captcha.
+     * 
+     * @param  mixed    $var 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkCaptcha($var)
+    {
+        if(!isset($_SESSION['captcha'])) return false;
+        return $var == $_SESSION['captcha'];
     }
 
     /**
@@ -245,6 +342,127 @@ class validater
     public static function checkEqual($var, $value)
     {
         return $var == $value;
+    }
+
+    /**
+     * Must not equal a value.
+     * 
+     * @param  mixed    $var 
+     * @param  mixed    $value 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkNotEqual($var, $value)
+    {
+        return $var != $value;
+    }
+
+    /**
+     * Must greater than a value.
+     * 
+     * @param  mixed    $var 
+     * @param  mixed    $value 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkGT($var, $value)
+    {
+        return $var > $value;
+    }
+
+    /**
+     * Must less than a value.
+     * 
+     * @param  mixed    $var 
+     * @param  mixed    $value 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkLT($var, $value)
+    {
+        return $var < $value;
+    }
+
+    /**
+     * Must greater than a value or equal a value.
+     * 
+     * @param  mixed    $var 
+     * @param  mixed    $value 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkGE($var, $value)
+    {
+        return $var >= $value;
+    }
+
+    /**
+     * Must less than a value or equal a value.
+     * 
+     * @param  mixed    $var 
+     * @param  mixed    $value 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkLE($var, $value)
+    {
+        return $var <= $value;
+    }
+
+    /**
+     * Must in value list.
+     * 
+     * @param  mixed  $var 
+     * @param  mixed $value 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkIn($var, $value)
+    {
+        if(!is_array($value)) $value = explode(',', $value);
+        return in_array($var, $value);
+    }
+   
+    /**
+     * Check file name.
+     * 
+     * @param  string    $var 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkFileName($var)
+    {
+        return !preg_match('/>+|:+|<+/', $var);
+    }
+
+    /**
+     * Check sensitive words.
+     * 
+     * @param  object   $vars 
+     * @param  array    $dicts 
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function checkSensitive($vars, $dicts)
+    {
+        foreach($vars as $var)
+        {
+            if(!$var) continue;
+            foreach($dicts as $dict)
+            {
+                if(strpos($var, $dict) === false) continue;
+                if(strpos($var, $dict) !== false) return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -280,6 +498,7 @@ class fixer
      */
     private $data;
 
+    private $stripedFields = array();
     /**
      * 构造方法，将超级全局变量转换为对象。
      * The construction function, according the scope, convert it to object.
@@ -290,33 +509,33 @@ class fixer
      */
     private function __construct($scope)
     {
-       switch($scope)
-       {
-           case 'post':
-               $this->data = (object)$_POST;
-               break;
-           case 'server':
-               $this->data = (object)$_SERVER;
-               break;
-           case 'get':
-               $this->data = (object)$_GET;
-               break;
-           case 'session':
-               $this->data = (object)$_SESSION;
-               break;
-           case 'cookie':
-               $this->data = (object)$_COOKIE;
-               break;
-           case 'env':
-               $this->data = (object)$_ENV;
-               break;
-           case 'file':
-               $this->data = (object)$_FILES;
-               break;
+        switch($scope)
+        {
+        case 'post':
+            $this->data = (object)$_POST;
+            break;
+        case 'server':
+            $this->data = (object)$_SERVER;
+            break;
+        case 'get':
+            $this->data = (object)$_GET;
+            break;
+        case 'session':
+            $this->data = (object)$_SESSION;
+            break;
+        case 'cookie':
+            $this->data = (object)$_COOKIE;
+            break;
+        case 'env':
+            $this->data = (object)$_ENV;
+            break;
+        case 'file':
+            $this->data = (object)$_FILES;
+            break;
 
-           default:
-               die('scope not supported, should be post|get|server|session|cookie|env');
-       }
+        default:
+            die('scope not supported, should be post|get|server|session|cookie|env');
+        }
     }
 
     /**
@@ -422,8 +641,27 @@ class fixer
     public function specialChars($fieldName)
     {
         $fields = $this->processFields($fieldName);
-        foreach($fields as $fieldName) $this->data->$fieldName = htmlspecialchars($this->data->$fieldName);
+        foreach($fields as $fieldName)
+        {
+            if(empty($this->stripedFields) or !in_array($fieldName, $this->stripedFields)) $this->data->$fieldName = $this->specialArray($this->data->$fieldName);
+        }
         return $this;
+    }
+
+    /**
+     * Special array 
+     * 
+     * @param  mix      $data 
+     * @access public
+     * @return mix
+     */
+    public function specialArray($data)
+    {
+        if(!is_array($data)) return htmlspecialchars($data, ENT_QUOTES);
+
+        foreach($data as &$value) $value = $this->specialArray($value);
+
+        return $data;
     }
 
     /**
@@ -431,13 +669,49 @@ class fixer
      * Strip tags 
      * 
      * @param  string $fieldName 
+     * @param  string $allowableTags 
      * @access public
      * @return object fixer object
      */
-    public function stripTags($fieldName)
+    public function stripTags($fieldName, $allowedTags)
+    {
+        global $app;
+        $app->loadClass('purifier', true);
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('Filter.YouTube', 1);
+
+        /* Disable caching. */
+        $config->set('Cache.DefinitionImpl', null);
+
+        $purifier = new HTMLPurifier($config);
+        $def = $config->getHTMLDefinition(true);
+        $def->addAttribute('a', 'target', 'Enum#_blank,_self,_target,_top');
+
+        $fields = $this->processFields($fieldName);
+        foreach($fields as $fieldName)
+        {
+            if(version_compare(phpversion(), '5.4', '<') and get_magic_quotes_gpc()) $this->data->$fieldName = stripslashes($this->data->$fieldName);
+
+            if(!in_array($fieldName, $this->stripedFields))
+            {
+                if(!defined('RUN_MODE') or RUN_MODE != 'admin') $this->data->$fieldName = $purifier->purify($this->data->$fieldName);
+            }
+            $this->stripedFields[] = $fieldName;
+        }
+        return $this;
+    }
+
+    /**
+     * Skip special chars check.
+     * 
+     * @param  string    $filename 
+     * @access public
+     * @return object fixer object
+     */
+    public function skipSpecial($fieldName)
     {
         $fields = $this->processFields($fieldName);
-        foreach($fields as $fieldName) $this->data->$fieldName = filter_var($this->data->$fieldName, FILTER_SANITIZE_STRING);
+        foreach($fields as $fieldName) $this->stripedFields[] = $fieldName;
         return $this;
     }
 
@@ -605,10 +879,22 @@ class fixer
      * @access public
      * @return object
      */
-    public function get($fieldName = '')
+    public function get($fields = '')
     {
-        if(empty($fieldName)) return $this->data;
-        return $this->data->$fieldName;
+        $fields = str_replace(' ', '', trim($fields));
+        foreach($this->data as $field => $value) $this->specialChars($field);
+
+        if(empty($fields)) return $this->data;
+        if(strpos($fields, ',') === false) return $this->data->$fields;
+
+        $fields = array_flip(explode(',', $fields));
+        foreach($this->data as $field => $value)
+        {
+            if(!isset($fields[$field])) unset($this->data->$field);
+            if(!in_array($field, $this->stripedFields)) $this->data->$field = $this->specialChars($this->data->field);
+        }
+
+        return $this->data;
     }
 
     /**

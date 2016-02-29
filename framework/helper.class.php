@@ -67,10 +67,16 @@ class helper
      * @access public
      * @return string the link string.
      */
-    static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '')
+    static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '', $onlybody = false)
     {
         global $app, $config;
-        $link = $config->requestType == 'PATH_INFO' ? $config->webRoot : $_SERVER['PHP_SELF'];
+        $appName = $app->getAppName();
+        $appName = empty($appName) ? '' : $appName . '/';
+
+        if(strpos($moduleName, '.') !== false) list($appName, $moduleName) = explode('.', $moduleName);
+
+        $link = $config->requestType == 'PATH_INFO' ? $config->webRoot . $appName : $config->webRoot . $appName . basename($_SERVER['SCRIPT_NAME']);
+        if($config->requestType == 'PATH_INFO2') $link .= '/';
 
         /* 设置视图类型和变量。 */
         /* Set the view type and vars. */
@@ -78,8 +84,8 @@ class helper
         if(!is_array($vars)) parse_str($vars, $vars);
 
         /* PATH_INFO方式。 */
-        /* The PATH_INFO type. */
-        if($config->requestType == 'PATH_INFO')
+        /* The PATH_INFO and PATH_INFO2 type. */
+        if($config->requestType != 'GET')
         {
             /* 如果方法名与默认方法相等，并且参数是空的，转换为友好的链接地址。 */
             /* If the method equal the default method defined in the config file and the vars is empty, convert the link. */
@@ -91,30 +97,34 @@ class helper
                 {
                     $link .= 'index.' . $viewType;
                 }
-                else
+                elseif($viewType == $app->getViewType())
                 {
                     $link .= $moduleName . '/';
+                }
+                else
+                {
+                    $link .= $moduleName . '.' . $viewType;
                 }
             }
             else
             {
                 $link .= "$moduleName{$config->requestFix}$methodName";
-                if($config->pathType == 'full')
-                {
-                    foreach($vars as $key => $value) $link .= "{$config->requestFix}$key{$config->requestFix}$value";
-                }
-                else
-                {
-                    foreach($vars as $value) $link .= "{$config->requestFix}$value";
-                }    
+                foreach($vars as $value) $link .= "{$config->requestFix}$value";
                 $link .= '.' . $viewType;
             }
         }
-        elseif($config->requestType == 'GET')
+        else
         {
             $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName";
             if($viewType != 'html') $link .= "&{$config->viewVar}=" . $viewType;
             foreach($vars as $key => $value) $link .= "&$key=$value";
+        }
+
+        /* if page has onlybody param then add this param in all link. the param hide header and footer. */
+        if($onlybody or isonlybody())
+        {
+            $onlybody = $config->requestType != 'GET' ? "?onlybody=yes" : "&onlybody=yes";
+            $link .= $onlybody;
         }
         return $link;
     }
@@ -150,65 +160,188 @@ class helper
      * @access  public
      * @return  string the model file
      */
-    static public function setModelFile($moduleName)
+    static public function setModelFile($moduleName, $appName = '')
     {
         global $app;
+        if($appName == '') $appName = $app->getAppName();
 
         /* 设置主model文件，扩展文件和路径。 */
         /* Set the main model file, extension path and files. */
-        $mainModelFile = $app->getModulePath($moduleName) . 'model.php';
-        $modelExtPath  = $app->getModuleExtPath($moduleName, 'model');
-        $extFiles      = helper::ls($modelExtPath, '.php');
+        $mainModelFile = $app->getModulePath($appName, $moduleName) . 'model.php';
+        $modelExtPaths = $app->getModuleExtPath($appName, $moduleName, 'model');
+
+        $hookFiles = array();
+        $extFiles  = array();
+        foreach($modelExtPaths as $modelExtPath)
+        {
+            $hookFiles = array_merge($hookFiles, helper::ls($modelExtPath . 'hook/', '.php'));
+            $extFiles  = array_merge($extFiles, helper::ls($modelExtPath, '.php'));
+        }
+
+        /* Get ext's app name from realname. */
+        if($appName) $extAppName = basename(dirname(dirname(dirname($modelExtPath))));
 
         /* 如果没有扩展文件，返回主文件目录。 */
         /* If no extension file, return the main file directly. */
-        if(empty($extFiles)) return $mainModelFile;
+        if(empty($extFiles) and empty($hookFiles)) return $mainModelFile;
 
         /* 通过对比合并后的缓存文件和扩展文件的修改时间，确定是否要重新生成缓存 */
         /* Else, judge whether needed update or not .*/
-        $mergedModelFile = $app->getTmpRoot() . 'model' . $app->getPathFix() . $moduleName . '.php';
+        $extModelPrefix  = empty($app->siteCode) ? '' : $app->siteCode{0} . DS . $app->siteCode;
+        $mergedModelDir  = $app->getTmpRoot() . 'model' . DS . $extModelPrefix . DS;
+        $mergedModelFile = $mergedModelDir . (empty($app->siteCode) ? '' : $app->siteCode . '.') . $moduleName . '.php';
         $needUpdate      = false;
         $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
-        foreach($extFiles as $extFile)
+        if(!is_dir($mergedModelDir)) mkdir($mergedModelDir, 0755, true);
+
+        while(!$needUpdate)
         {
-            if(filemtime($extFile) > $lastTime)
+            foreach($extFiles  as $extFile) if(filemtime($extFile)  > $lastTime) break 2;
+            foreach($hookFiles as $hookFile) if(filemtime($hookFile) > $lastTime) break 2;
+
+            $modelExtPath  = $modelExtPaths['common']; 
+            $modelHookPath = $modelExtPaths['common'] . 'hook/';
+            if(is_dir($modelExtPath ) and filemtime($modelExtPath)  > $lastTime) break;
+            if(is_dir($modelHookPath) and filemtime($modelHookPath) > $lastTime) break;
+            if($modelExtPaths['site'])
             {
-                $needUpdate = true;
-                break;
-            }
-        }
-        if(filemtime($mainModelFile) > $lastTime) $needUpdate = true;
-
-        /* 如果不需要更新，返回缓存文件。 */
-        /* If need'nt update, return the cache file. */
-        if(!$needUpdate) return $mergedModelFile;
-
-        /* 更新缓存文件。 */
-        /* Update the cache file. */
-        if($needUpdate)
-        {
-            $modelClass    = $moduleName . 'Model';
-            $extModelClass = 'ext' . $modelClass;
-            $modelLines    = trim(file_get_contents($mainModelFile));
-            $modelLines    = rtrim($modelLines, '?>');     // 确保php标签未闭合  To make sure the last end tag is removed.
-            $modelLines   .= "class $extModelClass extends $modelClass {\n";
-
-            /* Cycle all the extension files. */
-            foreach($extFiles as $extFile)
-            {
-                $extLines = trim(file_get_contents($extFile));
-                if(strpos($extLines, '<?php') !== false) $extLines = ltrim($extLines, '<?php');
-                if(strpos($extLines, '?>')    !== false) $extLines = rtrim($extLines, '?>');
-                $modelLines .= $extLines . "\n";
+                $modelExtPath  = $modelExtPaths['site']; 
+                $modelHookPath = $modelExtPaths['site'] . 'hook/';
+                if(is_dir($modelExtPath ) and filemtime($modelExtPath)  > $lastTime) break;
+                if(is_dir($modelHookPath) and filemtime($modelHookPath) > $lastTime) break;
             }
 
-            /* 创建合并的文件。 */
-            /* Create the merged model file. */
-            $modelLines .= "}";
-            file_put_contents($mergedModelFile, $modelLines);
+            if(filemtime($mainModelFile) > $lastTime) break;
 
             return $mergedModelFile;
         }
+
+        /* If loaded zend opcache module, turn off cache when create tmp model file to avoid the conflics. */
+        if(extension_loaded('Zend OPcache')) ini_set('opcache.enable', 0);
+
+        /* Update the cache file. */
+        $modelClass       = $moduleName . 'Model';
+        $extModelClass    = 'ext' . $modelClass;
+        $extTmpModelClass = 'tmpExt' . $modelClass;
+        $modelLines       = "<?php\n";
+        $modelLines      .= "helper::import('$mainModelFile');\n";
+        $modelLines      .= "class $extTmpModelClass extends $modelClass \n{\n";
+
+        /* Cycle all the extension files. */
+        foreach($extFiles as $extFile)
+        {
+            $extLines = self::removeTagsOfPHP($extFile);
+            $modelLines .= $extLines . "\n";
+        }
+
+        /* Create the merged model file and import it. */
+        $replaceMark = '//**//';    // This mark is for replacing code using.
+        $modelLines .= "$replaceMark\n}";
+
+        /* Unset conflic function for model. */
+        preg_match_all('/.* function\s+(\w+)\s*\(.*\)[^\{]*\{/Ui', $modelLines, $functions);
+        $functions = $functions[1];
+        $conflics  = array_count_values($functions);
+        foreach($conflics as $functionName => $count)
+        {
+            if($count <= 1) unset($conflics[$functionName]);
+        }
+        if($conflics)
+        {
+            $modelLines = explode("\n", $modelLines);
+            $startDel   = false;
+            foreach($modelLines as $line => $code)
+            {
+                if($startDel and preg_match('/.* function\s+(\w+)\s*\(.*\)/Ui', $code)) $startDel = false;
+                if($startDel)
+                {
+                    unset($modelLines[$line]);
+                }
+                else
+                {
+                    foreach($conflics as $functionName => $count)
+                    {
+                        if($count <= 1) continue;
+                        if(preg_match('/.* function\s+' . $functionName . '\s*\(.*\)/Ui', $code)) 
+                        {
+                            $conflics[$functionName] = $count - 1;
+                            $startDel = true;
+                            unset($modelLines[$line]);
+                        }
+                    }
+                }
+            }
+
+            $modelLines = join("\n", $modelLines);
+        }
+
+        $tmpMergedModelFile = $mergedModelDir . 'tmp.' . (empty($app->siteCode) ? '' : $app->siteCode . '.') . $moduleName . '.php';
+        if(!@file_put_contents($tmpMergedModelFile, $modelLines))
+        {
+            die("ERROR: $tmpMergedModelFile not writable, please make sure the " . dirname($tmpMergedModelFile) . ' directory exists and writable');
+        }
+        if(!class_exists($extTmpModelClass)) include $tmpMergedModelFile;
+
+        /* Get hook codes need to merge. */
+        $hookCodes = array();
+        foreach($hookFiles as $hookFile)
+        {
+            $fileName = baseName($hookFile);
+            list($method) = explode('.', $fileName);
+            $hookCodes[$method][] = self::removeTagsOfPHP($hookFile);
+        }
+
+        /* Cycle the hook methods and merge hook codes. */
+        $hookedMethods    = array_keys($hookCodes);
+        $mainModelCodes   = file($mainModelFile);
+        $mergedModelCodes = file($tmpMergedModelFile);
+        foreach($hookedMethods as $method)
+        {
+            /* Reflection the hooked method to get it's defined position. */
+            $methodRelfection = new reflectionMethod($extTmpModelClass, $method);
+            $definedFile = $methodRelfection->getFileName();
+            $startLine   = $methodRelfection->getStartLine() . ' ';
+            $endLine     = $methodRelfection->getEndLine() . ' ';
+
+            /* Merge hook codes. */
+            $oldCodes = $definedFile == $tmpMergedModelFile ? $mergedModelCodes : $mainModelCodes;
+            $oldCodes = join("", array_slice($oldCodes, $startLine - 1, $endLine - $startLine + 1));
+            $openBrace = strpos($oldCodes, '{');
+            $newCodes = substr($oldCodes, 0, $openBrace + 1) . "\n" . join("\n", $hookCodes[$method]) . substr($oldCodes, $openBrace + 1);
+
+            /* Replace it. */
+            if($definedFile == $tmpMergedModelFile)
+            {
+                $modelLines = str_replace($oldCodes, $newCodes, $modelLines);
+            }
+            else
+            {
+                $modelLines = str_replace($replaceMark, $newCodes . "\n$replaceMark", $modelLines);
+            }
+        }
+        unlink($tmpMergedModelFile);
+        
+        /* Save it. */
+        $modelLines = str_replace($extTmpModelClass, $extModelClass, $modelLines);
+        file_put_contents($mergedModelFile, $modelLines);
+
+        return $mergedModelFile;
+    }
+
+    /**
+     * Remove tags of PHP 
+     * 
+     * @param  string    $fileName 
+     * @static
+     * @access public
+     * @return string
+     */
+    static public function removeTagsOfPHP($fileName)
+    {
+        $code = trim(file_get_contents($fileName));
+        if(strpos($code, '<?php') === 0)     $code = ltrim($code, '<?php');
+        if(strrpos($code, '?>')   !== false) $code = rtrim($code, '?>');
+        return trim($code);
     }
 
     /**
@@ -222,8 +355,17 @@ class helper
      */
     static public function dbIN($ids)
     {
-        if(is_array($ids)) return "IN ('" . join("','", $ids) . "')";
-        return "IN ('" . str_replace(',', "','", str_replace(' ', '',$ids)) . "')";
+        if(is_array($ids)) 
+        {
+            if(!function_exists('get_magic_quotes_gpc') or !get_magic_quotes_gpc())
+            {
+                foreach ($ids as $key=>$value)  $ids[$key] = addslashes($value); 
+            }
+            return "IN ('" . join("','", $ids) . "')";
+        }
+
+        if(!function_exists('get_magic_quotes_gpc') or !get_magic_quotes_gpc()) $ids = addslashes($ids);
+        return "IN ('" . str_replace(',', "','", str_replace(' ', '', $ids)) . "')";
     }
 
     /**
@@ -252,6 +394,61 @@ class helper
     static public function safe64Decode($string)
     {
         return base64_decode(strtr($string, '.', '/'));
+    }
+
+    /**
+     * Json encode and addslashe if magic_quotes_gpc is on. 
+     * 
+     * @param   mixed  $data   the object to encode
+     * @static
+     * @access  public
+     * @return  string  decoded string.
+     */
+    static public function jsonEncode($data)
+    {
+        return (version_compare(phpversion(), '5.4', '<') and function_exists('get_magic_quotes_gpc') and get_magic_quotes_gpc()) ? addslashes(json_encode($data)) : json_encode($data);
+    }
+
+    /**
+     * 判断是否是utf8编码
+     * Judge a string is utf-8 or not.
+     * 
+     * @param  string    $string 
+     * @author hmdker@gmail.com
+     * @see    http://php.net/manual/en/function.mb-detect-encoding.php
+     * @static
+     * @access public
+     * @return bool
+     */
+    static public function isUTF8($string)
+    {
+        $c    = 0; 
+        $b    = 0;
+        $bits = 0;
+        $len  = strlen($string);
+        for($i=0; $i<$len; $i++)
+        {
+            $c = ord($string[$i]);
+            if($c > 128)
+            {
+                if(($c >= 254)) return false;
+                elseif($c >= 252) $bits=6;
+                elseif($c >= 248) $bits=5;
+                elseif($c >= 240) $bits=4;
+                elseif($c >= 224) $bits=3;
+                elseif($c >= 192) $bits=2;
+                else return false;
+                if(($i+$bits) > $len) return false;
+                while($bits > 1)
+                {
+                    $i++;
+                    $b=ord($string[$i]);
+                    if($b < 128 || $b > 191) return false;
+                    $bits--;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -293,6 +490,17 @@ class helper
     }
 
     /**
+     *  Get now time use the DT_TIME1 constant defined in the lang file.
+     * 
+     * @access  public
+     * @return  date  today
+     */
+    static public function time()
+    {
+        return date(DT_TIME1);
+    }
+
+    /**
      *  判断日期是不是零
      *  Judge a date is zero or not.
      * 
@@ -313,6 +521,8 @@ class helper
      */
     static public function ls($dir, $pattern = '')
     {
+        if(empty($dir)) return array();
+
         $files = array();
         $dir = realpath($dir);
         if(is_dir($dir)) $files = glob($dir . DIRECTORY_SEPARATOR . '*' . $pattern);
@@ -354,6 +564,439 @@ class helper
     {
         if(substr($string, 0, 3) == pack('CCC', 239, 187, 191)) return substr($string, 3);
         return $string;
+    }
+
+    /**
+     * Get siteCode from domain.
+     * @param  string $domain
+     * @return string $siteCode
+     **/ 
+    public static function getSiteCode($domain)
+    {
+        global $config;
+
+        if(strpos($domain, ':') !== false) $domain = substr($domain, 0, strpos($domain, ':')); // Remove port from domain.
+        $domain = strtolower($domain);
+
+        if(isset($config->siteCode[$domain])) return $config->siteCode[$domain];
+
+        if($domain == 'localhost') return $domain;
+        if(!preg_match('/^([a-z0-9\-_]+\.)+[a-z0-9\-]+$/', $domain)) die('domain denied');
+
+        $domain  = str_replace('-', '_', $domain);    // Replace '-' by '_'.
+        $items   = explode('.', $domain);
+        $postfix = str_replace($items[0] . '.', '', $domain);
+        if(isset($config->chanzhi->node->domain) and $postfix == $config->chanzhi->node->domain) return $items[0];
+        if(isset($config->domainPostfix) and strpos($config->domainPostfix, "|$postfix|") !== false) return $items[0];
+
+        $postfix = str_replace($items[0] . '.' . $items[1] . '.', '', $domain);
+        if(isset($config->domainPostfix) and strpos($config->domainPostfix, "|$postfix|") !== false) return $items[1];
+
+        return null;
+    }
+
+    /**
+     * Enhanced substr version: support multibyte languages like Chinese.
+     *
+     * @param string $string
+     * @param int $length 
+     * @param string $append 
+     * @return string 
+     **/
+    public static function substr($string, $length, $append = '')
+    {
+        if (strlen($string) <= $length ) $append = '';
+        if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
+
+        preg_match_all("/./su", $string, $data);
+        return join("", array_slice($data[0],  0, $length)) . $append;
+    }
+
+    /**
+     * Check in seo mode or not.
+     *
+     * return bool
+     */
+    public static function inSeoMode()
+    {
+        global $config;
+        return (!empty($config->seoMode) and ($config->requestType != 'GET'));
+    }
+
+    /**
+     * 检查是否是AJAX请求
+     * Check is ajax request.
+     * 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function isAjaxRequest()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+    }
+
+    /**
+     * Header 301 Moved Permanently.
+     * 
+     * @param  string    $locate 
+     * @access public
+     * @return void
+     */
+    public static function header301($locate)
+    {
+        header('HTTP/1.1 301 Moved Permanently');
+        die(header('Location:' . $locate));
+    }
+
+    /**
+     * Get browser.
+     * 
+     * @access public
+     * @return string
+     */
+    public static function getBrowser()
+    {
+        if(empty($_SERVER['HTTP_USER_AGENT'])) return 'unknow';
+
+        $agent = $_SERVER["HTTP_USER_AGENT"];
+        if(strpos($agent, 'MSIE') !== false || strpos($agent, 'rv:11.0')) 
+        {
+            return "ie";
+        }
+        else if(strpos($agent, 'Firefox') !== false)
+        {
+            return "firefox";
+        }
+        else if(strpos($agent, 'Chrome') !== false)
+        {
+            return "chrome";
+        }
+        else if(strpos($agent, 'Opera') !== false)
+        {
+            return 'opera';
+        }
+        else if((strpos($agent, 'Chrome') == false) && strpos($agent, 'Safari') !== false)
+        {
+            return 'safari';
+        }
+        else
+        {
+            return 'unknown';
+        }
+    }
+
+    /**
+     * Get browser version. 
+     * 
+     * @access public
+     * @return string
+     */
+    public static function getBrowserVersion()
+    {
+        if(empty($_SERVER['HTTP_USER_AGENT'])) return 'unknow';
+
+        $agent = $_SERVER['HTTP_USER_AGENT'];   
+        if(preg_match('/MSIE\s(\d+)\..*/i', $agent, $regs))
+        {
+            return $regs[1];
+        }
+        else if(preg_match('/FireFox\/(\d+)\..*/i', $agent, $regs))
+        {
+            return $regs[1];
+        }
+        else if(preg_match('/Opera[\s|\/](\d+)\..*/i', $agent, $regs))
+        {
+            return $regs[1];
+        }
+        else if(preg_match('/Chrome\/(\d+)\..*/i', $agent, $regs))
+        {
+            return $regs[1];
+        }
+        else if((strpos($agent,'Chrome') == false) && preg_match('/Safari\/(\d+)\..*$/i', $agent, $regs))
+        {
+            return $regs[1];
+        }
+        else if(preg_match('/rv:(\d+)\..*/i', $agent, $regs))
+        {
+            return $regs[1];
+        }
+        else
+        {
+            return 'unknow';
+        }
+    }
+
+    /**
+     * Get client os from agent info. 
+     * 
+     * @static
+     * @access public
+     * @return string
+     */
+    public static function getOS()
+    {
+        if(empty($_SERVER['HTTP_USER_AGENT'])) return 'unknow';
+
+        $osList = array(
+            '/windows nt 10/i'      =>  'Windows 10',
+            '/windows nt 6.3/i'     =>  'Windows 8.1',
+            '/windows nt 6.2/i'     =>  'Windows 8',
+            '/windows nt 6.1/i'     =>  'Windows 7',
+            '/windows nt 6.0/i'     =>  'Windows Vista',
+            '/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
+            '/windows nt 5.1/i'     =>  'Windows XP',
+            '/windows xp/i'         =>  'Windows XP',
+            '/windows nt 5.0/i'     =>  'Windows 2000',
+            '/windows me/i'         =>  'Windows ME',
+            '/win98/i'              =>  'Windows 98',
+            '/win95/i'              =>  'Windows 95',
+            '/win16/i'              =>  'Windows 3.11',
+            '/macintosh|mac os x/i' =>  'Mac OS X',
+            '/mac_powerpc/i'        =>  'Mac OS 9',
+            '/linux/i'              =>  'Linux',
+            '/ubuntu/i'             =>  'Ubuntu',
+            '/iphone/i'             =>  'iPhone',
+            '/ipod/i'               =>  'iPod',
+            '/ipad/i'               =>  'iPad',
+            '/android/i'            =>  'Android',
+            '/blackberry/i'         =>  'BlackBerry',
+            '/webos/i'              =>  'Mobile'
+        );
+
+        foreach ($osList as $regex => $value)
+        { 
+            if(preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) return $value; 
+        }   
+
+        return 'unknown';
+    }
+
+    /**
+     * Set viewType.
+     * 
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function setViewType()
+    {
+        global $config, $app;
+        if($config->requestType == 'PATH_INFO')
+        {
+            $pathInfo = $app->getPathInfo('PATH_INFO');
+            if(empty($pathInfo)) $pathInfo = $app->getPathInfo('ORIG_PATH_INFO');
+            if(!empty($pathInfo))
+            {
+                $dotPos = strrpos($pathInfo, '.');
+                if($dotPos)
+                {
+                    $viewType = substr($pathInfo, $dotPos + 1);
+                }
+                else
+                {
+                    $config->default->view = $config->default->view == 'mhtml' ? 'html' : $config->default->view;
+                }
+            }
+        }
+        elseif($config->requestType == 'GET')
+        {
+            if(isset($_GET[$config->viewVar]))
+            {
+                $viewType = $_GET[$config->viewVar]; 
+            }
+            else
+            {
+                /* Set default view when url has not module name. such as only domain. */
+                $config->default->view = ($config->default->view == 'mhtml' and isset($_GET[$config->moduleVar])) ? 'html' : $config->default->view;
+            }
+        }
+
+        if(isset($viewType) and strpos($config->views, ',' . $viewType . ',') === false) $viewType = $config->default->view;
+        $app->viewType = isset($viewType) ? $viewType : $config->default->view;
+    }
+
+    /**
+     * Merge config items in database and config files.
+     * 
+     * @param  array  $dbConfig 
+     * @param  string $moduleName 
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function mergeConfig($dbConfig, $moduleName = 'common')
+    {
+        global $config;
+
+        $config2Merge = $config;
+        if($moduleName != 'common') $config2Merge = $config->$moduleName;
+
+        foreach($dbConfig as $item)
+        {
+            foreach($item as $record)
+            {
+                if(!is_object($record))
+                {
+                    $config2Merge->{$item->key} = $item->value;
+                    break;
+                }
+
+                if(!isset($config2Merge->{$record->section})) $config2Merge->{$record->section} = new stdclass();
+                if($record->key) $config2Merge->{$record->section}->{$record->key} = $record->value;
+            }
+        }
+    }
+
+    /**
+     * Unify string to standard chars.
+     * 
+     * @param  string    $string 
+     * @param  string    $to 
+     * @static
+     * @access public
+     * @return string
+     */
+    public static function unify($string, $to = ',')
+    {
+        $labels = array('_', '、', ' ', '-', '?', '@', '&', '%', '~', '`', '+', '*', '/', '\\', '，', '。');
+        $string = str_replace($labels, $to, $string);
+        return preg_replace("/[{$to}]+/", $to, trim($string, $to));
+    }
+
+    /** 
+     * Get remote ip. 
+     * 
+     * @access public
+     * @return string
+     */
+    public static function getRemoteIp()
+    {
+        $ip = '';
+        if(!empty($_SERVER['HTTP_CLIENT_IP']))
+        {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }
+        else if(!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
+        {
+            $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+        }
+        else if(!empty($_SERVER["REMOTE_ADDR"]))
+        {
+            $ip = $_SERVER["REMOTE_ADDR"];
+        }
+
+        return $ip;
+    }
+
+    /**
+     * check ip is in network.  
+     * 
+     * @param  string $ip 
+     * @param  string $network 
+     * @access public
+     * @return void
+     */
+    public static function checkIpScope($ip, $network)
+    {
+        if(strpos($network, '/') === false) return $ip == $network;
+
+        $ip = (double) (sprintf("%u", ip2long($ip)));
+        $s  = explode('/', $network);
+        $networkStart = (double) (sprintf("%u", ip2long($s[0])));
+        $networkLen = pow(2, 32 - $s[1]);
+        $networkEnd = $networkStart + $networkLen - 1;
+
+        if ($ip >= $networkStart && $ip <= $networkEnd)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check ip avaliable.  
+     * 
+     * @param  string $ip 
+     * @access public
+     * @return bool
+     */
+    public static function checkIP($ip)
+    {
+        $ip = trim($ip);
+        if(strpos($ip, '/') !== false)
+        {
+            $s = explode('/', $ip);
+            preg_match('/^(((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d)(\.((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d)){3})$/', $s[0], $matches);
+            if(!empty($matches) and $s[1] > 0 and $s[1] < 36) return true;
+        }
+        else
+        {
+            preg_match('/^(((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d)(\.((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d)){3})$/', $ip, $matches);
+            if(!empty($matches)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Create random string. 
+     * 
+     * @param  int    $length 
+     * @param  string $skip A-Z|a-z|0-9
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function createRandomStr($length, $skip = '')
+    {
+        $str  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $skip = str_replace('A-Z', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', $skip);
+        $skip = str_replace('a-z', 'abcdefghijklmnopqrstuvwxyz', $skip);
+        $skip = str_replace('0-9', '0123456789', $skip);
+        for($i = 0; $i < strlen($skip); $i++)
+        {
+            $str = str_replace($skip[$i], '', $str);
+        }
+
+        $strlen = strlen($str);
+        while($length > strlen($str)) $str .= $str;
+
+        $str = str_shuffle($str); 
+        return substr($str,0,$length); 
+    }
+
+    /**
+     * Get device.
+     * 
+     * @access public
+     * @return void
+     */
+    public static function getDevice()
+    {
+        global $app, $config;
+
+        $viewType = $app->getViewType();
+        if($viewType == 'mhtml') return 'mobile';
+
+        if(RUN_MODE == 'admin')
+        {
+            if($app->session->device) return $app->session->device;
+            return 'desktop';
+        }
+        elseif(RUN_MODE == 'front')
+        {
+            if(isset($_COOKIE['visualDevice'])) return $_COOKIE['visualDevice'];
+
+            /* Detect mobile. */
+            $mobile = $app->loadClass('mobile');
+            if($mobile->isMobile())
+            {
+                if(!isset($config->template->mobile)) return 'desktop';
+                if(isset($config->site->mobileTemplate) and $config->site->mobileTemplate == 'close') return 'desktop';
+                return 'mobile';
+            }
+        }
+        return 'desktop';
     }
 }
 
@@ -413,4 +1056,217 @@ function a($var)
     echo "<xmp class='a-left'>";
     print_r($var);
     echo "</xmp>";
+}
+
+/**
+ * Judge the server ip is local or not.
+ *
+ * @access public
+ * @return void
+ */
+function isLocalIP()
+{
+    $serverIP = $_SERVER['SERVER_ADDR'];
+    if($serverIP == '127.0.0.1') return true;
+    if(strpos($serverIP, '10.60') !== false) return false;
+    return !filter_var($serverIP, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
+}
+
+/**
+ * Get web root. 
+ * 
+ * @access public
+ * @return string 
+ */
+function getWebRoot()
+{
+    $path = $_SERVER['SCRIPT_NAME'];
+    if(PHP_SAPI == 'cli')
+    {
+        $url  = parse_url($_SERVER['argv'][1]);
+        $path = empty($url['path']) ? '/' : rtrim($url['path'], '/');
+        $path = empty($path) ? '/' : preg_replace('/\/www$/', '/www/', $path);
+    }
+
+    return substr($path, 0, (strrpos($path, '/') + 1));
+}
+
+/**
+ * Check exist onlybody param.
+ * 
+ * @access public
+ * @return void
+ */
+function isonlybody()
+{
+    return (isset($_GET['onlybody']) and $_GET['onlybody'] == 'yes');
+}
+
+/**
+ * Format money.
+ * 
+ * @param  float    $money 
+ * @access public
+ * @return string
+ */
+function formatMoney($money)
+{
+    return trim(preg_replace('/\.0*$/', '', number_format($money, 2)));
+}
+
+/**
+ * Format time.
+ * 
+ * @param  int    $time 
+ * @param  string $format 
+ * @access public
+ * @return void
+ */
+function formatTime($time, $format = '')
+{
+    $time = str_replace('0000-00-00', '', $time);
+    $time = str_replace('00:00:00', '', $time);
+    if(trim($time) == '') return ;
+    if($format) return date($format, strtotime($time));
+    return trim($time);
+}
+
+/**
+ * Check curl ssl enabled.
+ * 
+ * @access public
+ * @return void
+ */
+function checkCurlSSL()
+{
+    $version = curl_version();
+    return ($version['features'] & CURL_VERSION_SSL);
+}
+
+/**
+ * When the $var has the $key, return it, esle result one default value.
+ * 
+ * @param  array|object    $var 
+ * @param  string|int      $key 
+ * @param  mixed           $valueWhenNone     value when the key not exits.
+ * @param  mixed           $valueWhenExists   value when the key exits.
+ * @access public
+ * @return void
+ */
+function zget($var, $key, $valueWhenNone = false, $valueWhenExists = false)
+{
+    $var = (array)$var;
+    if(isset($var[$key]))
+    {
+        if($valueWhenExists !== false) return $valueWhenExists;
+        return $var[$key];
+    }
+    if($valueWhenNone !== false) return $valueWhenNone;
+    return $key;
+}
+
+/**
+ * Header lcoation 301. 
+ * 
+ * @param  string    $url 
+ * @access public
+ * @return void
+ */
+function header301($url)
+{
+    header('HTTP/1.1 301 Moved Permanently');
+    die(header('Location:' . $url));
+}
+
+/**
+ * Process evil params.
+ * 
+ * @param  string    $value 
+ * @access public
+ * @return void
+ */
+function processEvil($value)
+{
+    if(strpos(htmlspecialchars_decode($value), '<?') !== false)
+    {
+        $value       = (string) $value;
+        $evils       = array('eval', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system', '$$', 'include', 'require', 'assert');
+        $gibbedEvils = array('e v a l', 'e x e c', ' p a s s t h r u', ' p r o c _ o p e n', 's h e l l _ e x e c', 's y s t e m', '$ $', 'i n c l u d e', 'r e q u i r e', 'a s s e r t');
+        return str_ireplace($evils, $gibbedEvils, $value);
+    }
+    return $value;
+}
+
+/**
+ * Process array evils.
+ * 
+ * @param  array    $params 
+ * @access public
+ * @return array
+ */
+function processArrayEvils($params)
+{
+    $params = (array) $params;
+    foreach($params as $item => $values)
+    {
+        if(!is_array($values))
+        {
+            $params[$item] = processEvil($values);
+            if(processEvil($item) != $item) unset($params[$item]);
+        }
+        else
+        {
+            foreach($values as $key => $value)
+            {
+                if(is_array($value)) continue;
+                $params[$item][$key] = processEvil($value);
+                if(processEvil($key) != $key) unset($params[$item][$key]);
+            }
+        }
+    }
+    return $params;
+}
+
+/**
+ * Get host URL.
+ * 
+ * @access public
+ * @return bool
+ */
+function getHostURL()
+{
+    return ((isset($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+}
+
+/**
+ * Check current request is GET.
+ * 
+ * @access public
+ * @return void
+ */
+function isGetUrl()
+{
+    $webRoot = getWebRoot();
+    if(strpos($_SERVER['REQUEST_URI'], "{$webRoot}?") === 0) return true;
+    if(strpos($_SERVER['REQUEST_URI'], "{$webRoot}index.php?") === 0) return true;
+    if(strpos($_SERVER['REQUEST_URI'], "{$webRoot}index.php/?") === 0) return true;
+    return false;
+}
+
+/**
+ * Get file mime type.
+ * 
+ * @param  int    $file 
+ * @access public
+ * @return void
+ */
+function getFileMimeType($file)
+{
+    if(function_exists('mime_content_type')) return mime_content_type($file);
+    if(function_exists('finfo_open'))
+    {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        return finfo_file($finfo, $file); 
+    }
+    return false;
 }

@@ -12,6 +12,23 @@
 class commonModel extends model
 {
     /**
+     * The construct function.
+     * 
+     * @access public
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        if(!defined('FIRST_RUN'))
+        {
+            $this->common->startSession();
+            $this->common->sendHeader();
+            define('FIRST_RUN', true);
+        }
+    }
+
+    /**
      * Start the session.
      * 
      * @access public
@@ -37,17 +54,18 @@ class commonModel extends model
     }
 
     /**
-     * Get the run info.
+     * Print the run info 
      * 
-     * @param mixed $startTime  the start time of this execution
+     * @param  int    $startTime 
      * @access public
-     * @return array    the run info array.
+     * @return void
      */
-    public function getRunInfo($startTime)
+    public function printRunInfo($startTime)
     {
         $info['timeUsed'] = round(getTime() - $startTime, 4) * 1000;
         $info['memory']   = round(memory_get_peak_usage() / 1024, 1);
         $info['querys']   = count(dao::$querys);
+        vprintf($this->lang->runInfo, $info);
         return $info;
     }
 }

@@ -27,19 +27,13 @@ function createLink(moduleName, methodName, vars, viewType)
         vars = vars.split('&');
         for(i = 0; i < vars.length; i ++) vars[i] = vars[i].split('=');
     }
-    if(config.requestType == 'PATH_INFO')
+    if(config.requestType != 'GET')
     {
-        link = config.webRoot + moduleName + config.requestFix + methodName;
+        if(config.requestType == 'PATH_INFO') link = config.webRoot + moduleName + config.requestFix + methodName;
+        if(config.requestType == 'PATH_INFO2') link = config.webRoot + 'index.php/'  + moduleName + config.requestFix + methodName;
         if(vars)
         {
-            if(config.pathType == "full")
-            {
-                for(i = 0; i < vars.length; i ++) link += config.requestFix + vars[i][0] + config.requestFix + vars[i][1];
-            }
-            else
-            {
-                for(i = 0; i < vars.length; i ++) link += config.requestFix + vars[i][1];
-            }
+            for(i = 0; i < vars.length; i ++) link += config.requestFix + vars[i][1];
         }
         link += '.' + viewType;
     }

@@ -29,6 +29,14 @@ class model
     protected $app;
 
     /**
+     * The global appName.
+     * 
+     * @var string
+     * @access public
+     */
+    public $appName;
+
+    /**
      * 全局对象$config。
      * The global $config object.
      * 
@@ -130,18 +138,19 @@ class model
      * @access public
      * @return void
      */
-    public function __construct()
+    public function __construct($appName = '')
     {
         global $app, $config, $lang, $dbh;
-        $this->app    = $app;
-        $this->config = $config;
-        $this->lang   = $lang;
-        $this->dbh    = $dbh;
+        $this->app     = $app;
+        $this->config  = $config;
+        $this->lang    = $lang;
+        $this->dbh     = $dbh;
+        $this->appName = empty($appName) ? $this->app->getAppName() : $appName;
 
         $moduleName = $this->getModuleName();
-        $this->app->loadLang($moduleName,   $exit = false);
-        $this->app->loadConfig($moduleName, $exit = false);
-     
+        $this->app->loadLang($moduleName, $this->appName);
+        $this->app->loadConfig($moduleName, $this->appName, $exitIfNone = false);
+
         $this->loadDAO();
         $this->setSuperVars();
     }
@@ -167,6 +176,7 @@ class model
         $parentClass = get_parent_class($this);
         $selfClass   = get_class($this);
         $className   = $parentClass == 'model' ? $selfClass : $parentClass;
+        if($className == 'extensionModel') return 'extension';
         return strtolower(str_ireplace(array('ext', 'Model'), '', $className));
     }
 
@@ -197,17 +207,57 @@ class model
      * @access  public
      * @return  object|bool  the model object or false if model file not exists.
      */
-    public function loadModel($moduleName)
+    public function loadModel($moduleName, $appName = '')
     {
         if(empty($moduleName)) return false;
-        $modelFile = helper::setModelFile($moduleName);
+        if(empty($appName)) $appName = $this->appName;
+        $modelFile = helper::setModelFile($moduleName, $appName);
 
         if(!helper::import($modelFile)) return false;
-        $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
-        if(!class_exists($modelClass)) $this->app->error(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+        $modelClass = class_exists('ext' . $appName . $moduleName. 'model') ? 'ext' . $appName . $moduleName . 'model' : $appName . $moduleName . 'model';
+        if(!class_exists($modelClass))
+        {
+            $modelClass = class_exists('ext' . $moduleName. 'model') ? 'ext' . $moduleName . 'model' : $moduleName . 'model';
+            if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
+        }
 
-        $this->$moduleName = new $modelClass();
+        $this->$moduleName = new $modelClass($appName);
         return $this->$moduleName;
+    }
+
+    /**
+     * 加载model的class扩展。
+     * Load extension class of a model. Saved to $moduleName/ext/model/class/$extensionName.class.php.
+     * 
+     * @param  string $extensionName 
+     * @param  string $moduleName 
+     * @access public
+     * @return void
+     */
+    public function loadExtension($extensionName, $moduleName = '')
+    {
+        if(empty($extensionName)) return false;
+
+        /* Set extenson name and extension file. */
+        $extensionName = strtolower($extensionName);
+        $moduleName    = $moduleName ? $moduleName : $this->getModuleName();
+        $moduleExtPath = $this->app->getModuleExtPath($this->appName, $moduleName, 'model');
+        if(!empty($moduleExtPath['site']))$extensionFile = $moduleExtPath['site'] . 'class/' . $extensionName . '.class.php';
+        if(!isset($extensionFile) or !file_exists($extensionFile)) $extensionFile = $moduleExtPath['common'] . 'class/' . $extensionName . '.class.php';
+
+        /* Try to import parent model file auto and then import the extension file. */
+        if(!class_exists($moduleName . 'Model')) helper::import($this->app->getModulePath($this->appName, $moduleName) . 'model.php');
+        if(!helper::import($extensionFile)) return false;
+
+        /* Set the extension class name. */
+        $extensionClass = $extensionName . ucfirst($moduleName);
+        if(!class_exists($extensionClass)) return false;
+
+        /* Create an instance of the extension class and return it. */
+        $extensionObject = new $extensionClass;
+        $extensionClass  = str_replace('Model', '', $extensionClass);
+        $this->$extensionClass = $extensionObject;
+        return $extensionObject;
     }
 
     /**
@@ -220,5 +270,20 @@ class model
     private function loadDAO()
     {
         $this->dao = $this->app->loadClass('dao');
+    }
+
+    /**
+     * Delete one record.
+     * 
+     * @param  string    $table  the table name
+     * @param  string    $id     the id value of the record to be deleted
+     * @access public
+     * @return void
+     */
+    public function delete($table, $id)
+    {
+        $this->dao->update($table)->set('deleted')->eq(1)->where('id')->eq($id)->exec();
+        $object = ltrim(strstr(trim($table, '`'), '_'), '_');
+        $this->loadModel('action')->create($object, $id, 'deleted', '', $extra = ACTIONMODEL::CAN_UNDELETED);
     }
 }

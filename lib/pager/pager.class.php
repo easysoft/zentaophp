@@ -24,7 +24,7 @@ class pager
      *
      * @public int
      */
-    const DEFAULT_REC_PRE_PAGE = 20;
+    const DEFAULT_REC_PER_PAGE = 20;
 
     /**
      * 总个数。
@@ -43,6 +43,14 @@ class pager
      * @access public
      */
     public $recPerPage;
+
+    /**
+     * The cookie name of recPerPage.
+     * 
+     * @var string
+     * @access public
+     */
+    public $pageCookie;
 
     /**
      * 总页面数。
@@ -118,14 +126,15 @@ class pager
      */
     public function __construct($recTotal = 0, $recPerPage = 20, $pageID = 1)
     {
-        $this->setRecTotal($recTotal);
-        $this->setRecPerPage($recPerPage);
-        $this->setPageTotal();
-        $this->setPageID($pageID);
         $this->setApp();
         $this->setLang();
         $this->setModuleName();
         $this->setMethodName();
+
+        $this->setRecTotal($recTotal);
+        $this->setRecPerPage($recPerPage);
+        $this->setPageTotal();
+        $this->setPageID($pageID);
     }
 
     /**
@@ -138,7 +147,7 @@ class pager
      * @access public
      * @return object
      */
-    public function init($recTotal = 0, $recPerPage = 20, $pageID = 1)
+    public static function init($recTotal = 0, $recPerPage = 20, $pageID = 1)
     {
         return new pager($recTotal, $recPerPage, $pageID);
     }
@@ -166,7 +175,11 @@ class pager
      */
     public function setRecPerPage($recPerPage)
     {
-        $this->recPerPage = ($recPerPage > 0) ? $recPerPage : PAGER::DEFAULT_REC_PRE_PAGE;
+        /* Set the cookie name. */
+        $this->pageCookie = 'pager' . ucfirst($this->app->getModuleName()) . ucfirst($this->app->getMethodName());
+
+        if(isset($_COOKIE[$this->pageCookie])) $recPerPage = $_COOKIE[$this->pageCookie];
+        $this->recPerPage = ($recPerPage > 0) ? $recPerPage : PAGER::DEFAULT_REC_PER_PAGE;
     }
 
     /**
@@ -191,7 +204,7 @@ class pager
      */
     public function setPageID($pageID)
     {
-        if($pageID > 0 and $pageID <= $this->pageTotal)
+        if($pageID > 0 and ($this->pageTotal == 0 or $pageID <= $this->pageTotal))
         {
             $this->pageID = $pageID;
         }
@@ -267,6 +280,15 @@ class pager
             if(strtolower($key) == 'recperpage') $this->params[$key] = $this->recPerPage;
             if(strtolower($key) == 'pageid')     $this->params[$key] = $this->pageID;
         }
+
+        parse_str(strip_tags(urldecode($_SERVER['QUERY_STRING'])), $query);
+
+        unset($query['m']);
+        unset($query['f']);
+        unset($query['t']);
+
+        $this->params = array_merge($this->params, $query);
+
     }
 
     /**
@@ -282,7 +304,7 @@ class pager
         if($this->pageTotal > 1) $limit = ' limit ' . ($this->pageID - 1) * $this->recPerPage . ", $this->recPerPage";
         return $limit;
     }
-   
+
     /**
      * 向页面显示分页信息。 
      * Print the pager's html.
@@ -294,7 +316,41 @@ class pager
      */
     public function show($align = 'right', $type = 'full')
     {
-        echo $this->get($align, $type);
+        if($align === 'justify')
+        {
+            echo $this->getJustify($type);
+        }
+        else
+        {
+            echo $this->get($align, $type);
+        }
+    }
+
+    /**
+     * Get the justify pager html string
+     * @return [type] [description]
+     */
+    public function getJustify()
+    {
+        if($this->recTotal <= 0) return '';
+
+        $this->setParams();
+        $pager = '';
+
+        $pager .= "<li class='previous" . ($this->pageID == 1 ? ' disabled' : '') . "'>";
+        $this->params['pageID'] = 1;
+        $pager .= $this->createLink('« ' . $this->lang->pager->previousPage) . '</li>';
+
+        $pager .= "<li class='caption'>";
+        $firstId = $this->recPerPage * ($this->pageID - 1) + 1;
+        $pager .= sprintf($this->lang->pager->summery, $firstId, max(min($this->recPerPage * $this->pageID, $this->recTotal), $firstId), $this->recTotal);
+        $pager .= '</li>';
+
+        $pager .= "<li class='next" . (($this->pageID == $this->pageTotal || $this->pageTotal <= 1) ? ' disabled' : '') . "'>";
+        $this->params['pageID'] = min($this->pageTotal, $this->pageID + 1);
+        $pager .= $this->createLink($this->lang->pager->nextPage . ' »') . '</li>';
+
+        return "<ul class='pager pager-justify'>{$pager}</ul>";
     }
 
     /**
@@ -310,21 +366,31 @@ class pager
     {
         /* 如果记录个数为0，返回没有记录。 */
         /* If the RecTotal is zero, return with no record. */
-        if($this->recTotal == 0) { return "<div style='float:$align; clear:none;' class='pager'>{$this->lang->pager->noRecord}</div>"; }
+        if($this->recTotal == 0) return $type == 'mobile' ? '' : "<div style='float:$align; clear:none;' class='page'>{$this->lang->pager->noRecord}</div>"; 
 
         /* Set the params. */
         $this->setParams();
-        
+
         /* 创建前一页和后一页链接。 */
         /* Create the prePage and nextpage, all types have them. */
-        $pager  = $this->createPrePage();
-        $pager .= $this->createNextPage();
+        $pager  = $this->createPrePage($type);
+        $pager .= $this->createNextPage($type);
 
         /* 简单和完全模式。  The short and full type. */
-        if($type !== 'shortest')
+        if($type !== 'shortest' and $type !== 'mobile')
         {
             $pager  = $this->createFirstPage() . $pager;
             $pager .= $this->createLastPage();
+        }
+
+        if($type == 'mobile')
+        {
+            $position = $this->pageTotal == 1 ? '' : $this->pageID . '/' . $this->pageTotal;
+            $pager    = $pager . ' ' . $position;
+        }
+        else if($type != 'full') 
+        {
+            $pager = $this->pageID . '/' . $this->pageTotal . ' ' . $pager;
         }
 
         /* 只是完全模式。   Only the full type . */
@@ -335,7 +401,7 @@ class pager
             $pager .= $this->createRecPerPageJS();
         }
 
-        return "<div style='float:$align; clear:none;' class='pager'>$pager</div>";
+        return "<div style='float:$align; clear:none;' class='pager form-inline'>$pager</div>";
     }
 
     /**
@@ -361,7 +427,7 @@ class pager
     {
         if($this->pageID == 1) return $this->lang->pager->first . ' ';
         $this->params['pageID'] = 1;
-        return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->first);
+        return $this->createLink($this->lang->pager->first);
     }
 
     /**
@@ -371,11 +437,20 @@ class pager
      * @access private
      * @return string
      */
-    private function createPrePage()
+    private function createPrePage($type = 'full')
     {
-        if($this->pageID == 1) return $this->lang->pager->pre . ' ';
-        $this->params['pageID'] = $this->pageID - 1;
-        return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->pre);
+        if($type == 'mobile')
+        {
+            if($this->pageID == 1) return '';
+            $this->params['pageID'] = $this->pageID - 1;
+            return $this->createLink($this->lang->pager->pre);
+        }
+        else
+        {
+            if($this->pageID == 1) return $this->lang->pager->pre . ' ';
+            $this->params['pageID'] = $this->pageID - 1;
+            return $this->createLink($this->lang->pager->pre);
+        }
     }    
 
     /**
@@ -385,11 +460,20 @@ class pager
      * @access private
      * @return string
      */
-    private function createNextPage()
+    private function createNextPage($type = 'full')
     {
-        if($this->pageID == $this->pageTotal) return $this->lang->pager->next . ' ';
-        $this->params['pageID'] = $this->pageID + 1;
-        return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->next);
+        if($type == 'mobile')
+        {
+            if($this->pageID == $this->pageTotal) return '';
+            $this->params['pageID'] = $this->pageID + 1;
+            return $this->createLink($this->lang->pager->next);
+        }
+        else
+        {
+            if($this->pageID == $this->pageTotal) return $this->lang->pager->next . ' ';
+            $this->params['pageID'] = $this->pageID + 1;
+            return $this->createLink($this->lang->pager->next);
+        }
     }
 
     /**
@@ -403,7 +487,7 @@ class pager
     {
         if($this->pageID == $this->pageTotal) return $this->lang->pager->last . ' ';
         $this->params['pageID'] = $this->pageTotal;
-        return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $this->lang->pager->last);
+        return $this->createLink($this->lang->pager->last);
     }    
 
     /**
@@ -433,11 +517,12 @@ class pager
         $js  = <<<EOT
         <script language='Javascript'>
         vars = '$vars';
-        function submitPage(mode)
+        pageCookie = '$this->pageCookie';
+        function submitPage(mode, perPage)
         {
             pageTotal  = parseInt(document.getElementById('_pageTotal').value);
             pageID     = document.getElementById('_pageID').value;
-            recPerPage = document.getElementById('_recPerPage').value;
+            recPerPage = document.getElementById('_recPerPage').getAttribute('data-value');
             recTotal   = document.getElementById('_recTotal').value;
             if(mode == 'changePageID')
             {
@@ -446,8 +531,10 @@ class pager
             }
             else if(mode == 'changeRecPerPage')
             {
+                recPerPage = perPage;
                 pageID = 1;
             }
+            $.cookie(pageCookie, recPerPage, {expires:config.cookieLife, path:config.webRoot});
 
             vars = vars.replace('_recTotal_', recTotal)
             vars = vars.replace('_recPerPage_', recPerPage)
@@ -473,7 +560,14 @@ EOT;
         $range[200]  = 200;
         $range[500]  = 500;
         $range[1000] = 1000;
-        return html::select('_recPerPage', $range, $this->recPerPage, "onchange='submitPage(\"changeRecPerPage\");'");
+        $range[2000] = 2000;
+        $html = "<div class='dropdown dropup'><a href='javascript:;' data-toggle='dropdown' id='_recPerPage' data-value='{$this->recPerPage}'>" . (sprintf($this->lang->pager->recPerPage, $this->recPerPage)) . "<span class='caret'></span></a><ul class='dropdown-menu'>";
+        foreach ($range as $key => $value)
+        {
+            $html .= '<li' . ($this->recPerPage == $value ? " class='active'" : '') .'>' . "<a href='javascript:submitPage(\"changeRecPerPage\", $value)'>{$value}</a>" . '</li>';
+        }
+        $html .= '</ul></div>';
+        return $html;
     }
 
     /**
@@ -487,8 +581,34 @@ EOT;
     {
         $goToHtml  = "<input type='hidden' id='_recTotal'  value='$this->recTotal' />\n";
         $goToHtml .= "<input type='hidden' id='_pageTotal' value='$this->pageTotal' />\n";
-        $goToHtml .= "<input type='text'   id='_pageID'    value='$this->pageID' style='text-align:center;width:30px;' /> \n";
-        $goToHtml .= "<input type='button' id='goto'       value='{$this->lang->pager->locate}' onclick='submitPage(\"changePageID\");' />";
+        $goToHtml .= "<input type='text'   id='_pageID'    value='$this->pageID' style='text-align:center;width:30px;' class='form-control' /> \n";
+        $goToHtml .= "<input type='button' id='goto'       value='{$this->lang->pager->locate}' onclick='submitPage(\"changePageID\");' class='btn'/>";
         return $goToHtml;
     }    
+
+    /**
+     * Create link.
+     * 
+     * @param  string    $title 
+     * @access private
+     * @return string
+     */
+    private function createLink($title)
+    {
+        global $config; 
+        if(helper::inSeoMode() && method_exists('uri', 'create' . $this->moduleName . $this->methodName)) 
+        {
+            $link  = strip_tags(urldecode($_SERVER['REQUEST_URI']));
+
+            if($this->params['pageID'] == 1) return html::a(preg_replace('/\/p\d+\./', '.', $link), $title);
+
+            if(preg_match('/\/p\d+/', $link)) return html::a(preg_replace('/\/p\d+\./', '/p' . $this->params['pageID'] . '.', $link), $title);
+
+            if($config->requestType == 'PATH_INFO2') $link = str_replace('index.php/', 'index_php/', $link);
+            $link = str_replace('.', "/p{$this->params['pageID']}.", $link);
+            if($config->requestType == 'PATH_INFO2') $link =  str_replace('index_php/', 'index.php/', $link);
+            return html::a($link, $title);
+        }
+        return html::a(helper::createLink($this->moduleName, $this->methodName, $this->params), $title);
+    }
 }
