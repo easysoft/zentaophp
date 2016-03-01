@@ -1933,6 +1933,20 @@ class router
     {
         if(empty($this->config->debug)) return true;
 
+        /*
+         * 删除设定时间之前的日志。
+         * Delete the log before the set time.
+         **/
+        if(mt_rand(0, 1) == 1)
+        {
+            $logDays = isset($this->config->framework->logDays) ? $this->config->framework->logDays : 14;
+            $dayTime = time() - $logDays * 24 * 3600;
+            foreach(glob($this->getLogRoot() . '*') as $logFile)
+            {
+                if(filemtime($logFile) <= $dayTime) unlink($logFile);
+            }
+        }
+
         /* 
          * 忽略该错误：Redefining already defined constructor。
          * Skip the error: Redefining already defined constructor.

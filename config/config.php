@@ -66,6 +66,7 @@ $config->slaveDB->strictMode = false;
 /* 系统框架配置。 */
 $config->framework = new stdclass();
 $config->framework->jsWithPrefix = true;
+$config->framework->logDays      = 14;
 
 /* 引用自定义的配置。 Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';

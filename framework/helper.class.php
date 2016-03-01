@@ -1204,8 +1204,8 @@ function processEvil($value)
     if(strpos(htmlspecialchars_decode($value), '<?') !== false)
     {
         $value       = (string) $value;
-        $evils       = array('eval', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system', '$$', 'include', 'require', 'assert', 'appendchild', 'createElement', 'autofocus', 'xss.re');
-        $gibbedEvils = array('e v a l', 'e x e c', ' p a s s t h r u', ' p r o c _ o p e n', 's h e l l _ e x e c', 's y s t e m', '$ $', 'i n c l u d e', 'r e q u i r e', 'a s s e r t', 'a p p e n d c h i l d', 'c r e a t e E l e m e n t', 'a u t o f o c u s', 'x s s . r e');
+        $evils       = array('eval', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system', '$$', 'include', 'require', 'assert');
+        $gibbedEvils = array('e v a l', 'e x e c', ' p a s s t h r u', ' p r o c _ o p e n', 's h e l l _ e x e c', 's y s t e m', '$ $', 'i n c l u d e', 'r e q u i r e', 'a s s e r t');
         return str_ireplace($evils, $gibbedEvils, $value);
     }
     return $value;
