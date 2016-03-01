@@ -18,7 +18,7 @@
         <th width='50'><?php echo $lang->blog->id;?></th>  
         <th><?php echo $lang->blog->title;?></th>  
         <th width='150'><?php echo $lang->blog->date;?></th>  
-        <th width='100'><?php echo $lang->blog->action;?></th>  
+        <th width='120'><?php echo $lang->blog->action;?></th>  
       </tr>
     </thead>
     <tbody>
@@ -36,12 +36,12 @@
         </td>
       </tr>  
       <?php endforeach;?>  
-      </tbody>
+    </tbody>
     <tfoot>
       <tr>
         <td colspan='4'>
           <?php 
-          echo html::a(inlink('create'), $lang->blog->add, '', "class='btn btn-primary'");
+          echo html::a(inlink('create'), $lang->blog->add, "class='btn btn-primary btn-sm'");
           $pager->show('right', 'short');
           ?>
         </td>

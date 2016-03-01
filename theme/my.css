@@ -10,8 +10,8 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-body {padding-top: 60px; padding-bottom: 40px;}
-.hero-unit{margin-top:0px; margin-bottom:0px;}
+body {padding-bottom: 40px;}
+.hero-unit {padding: 60px; margin-bottom: 30px; font-size: 18px; font-weight: 200; line-height: 30px; color: inherit; background-color: #eee; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px;}
 #nav-right .btn{margin-top:3px; width:40px;}
 .pager{margin:0}
 

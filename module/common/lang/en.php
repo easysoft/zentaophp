@@ -13,12 +13,14 @@ $lang->zentaophp = 'zentaohp framework';
 $lang->welcome   = 'Welcome to use ZenTaoPHP framework.';
 $lang->runInfo   = "<div class='a-center'>Time: %s ms, Memory: %s KB, SQL: %s.  </div>";
 $lang->save      = 'Save';
+$lang->loading   = 'Loading...';
+$lang->goback    = 'Go back';
 
 /* The menu items. */
 $lang->menu = new stdclass();
 $lang->menu->index = 'Home';
 $lang->menu->blog  = 'Demo';
-$lang->menu->doc   = 'Doc';
+//$lang->menu->doc   = 'Doc';
 
 /* Error info. */
 $lang->error->companyNotFound = "The domain %s does not exist.";

@@ -22,8 +22,8 @@ class commonModel extends model
         parent::__construct();
         if(!defined('FIRST_RUN'))
         {
-            $this->common->startSession();
-            $this->common->sendHeader();
+            $this->startSession();
+            $this->sendHeader();
             define('FIRST_RUN', true);
         }
     }

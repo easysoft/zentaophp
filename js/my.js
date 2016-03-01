@@ -57,10 +57,3 @@ function switchLang(switcher)
     $.cookie('lang', $(switcher).data('lang'));
     location.href = location.href;
 }
-
-/* Methods when document is ready. */
-$(document).ready(function()
-{
-    $(document).pjax('a', '#main');
-    $('#navbar').affix();
-})

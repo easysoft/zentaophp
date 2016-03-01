@@ -16,11 +16,11 @@
     <table class='table table-bordered' align='center' style='width:450px'> 
       <tr>
         <th><?php echo $lang->blog->title;?></th>  
-        <td><?php echo html::input('title');?></td>
+        <td><?php echo html::input('title', '', "class=form-control");?></td>
       </tr>  
       <tr>
         <th><?php echo $lang->blog->content;?></th>  
-        <td><?php echo html::textarea('content', '', "cols='50' rows='10'");?></td>
+        <td><?php echo html::textarea('content', '', "class='form-control' cols='50' rows='10'");?></td>
       </tr>
       <tr><td colspan='2'><?php echo html::submitButton();?></td></tr>  
     </table>

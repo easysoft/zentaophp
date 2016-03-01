@@ -12,8 +12,11 @@
 ?>
 <?php include '../../common/view/header.html.php';?>
 <div class='container'>
-  <h1><?php echo $article->title;?></h1>
-  <p><?php echo nl2br(strip_tags($article->content));?></p>
-  <?php echo html::a(inlink('index'), $lang->blog->index);?>
+  <div class='article'>
+    <h1><?php echo $article->title;?></h1>
+    <p><?php echo nl2br(strip_tags($article->content));?></p>
+  </div>
+  <?php echo html::backButton();?>
+  <?php echo html::a(inlink('index'), $lang->blog->index, "class='btn'");?>
 </div>
 <?php include '../../common/view/footer.html.php';?>

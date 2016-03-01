@@ -761,8 +761,10 @@ class js
         $pathInfo = parse_url($url);
         $mark  = !empty($pathInfo['query']) ? '&' : '?';
 
-        if(empty($ieParam)) echo "<script src='$url{$mark}v={$config->version}' type='text/javascript'></script>\n";
-        echo "<!--[if $ieParam]>\n <script src='$url{$mark}v={$config->version}'></script>\n<![endif]-->\n";
+        $hasLimit = ($ieParam and stripos($ieParam, 'ie') !== false);
+        if($hasLimit) echo "<!--[if $ieParam]>\n";
+        echo "<script src='$url{$mark}v={$config->version}' type='text/javascript'></script>\n";
+        if($hasLimit) echo "<![endif]-->\n";
     }
 
     /**

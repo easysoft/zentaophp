@@ -25,7 +25,7 @@ include './framework/helper.class.php';
 
 /* Instance the app. */
 $startTime = getTime();
-$app = router::createApp('demo');
+$app = router::createApp('demo', dirname(__FILE__));
 
 /* Run the app. */
 $common = $app->loadCommon();

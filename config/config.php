@@ -68,6 +68,7 @@ $config->framework = new stdclass();
 $config->framework->jsWithPrefix = true;
 $config->framework->logDays      = 14;
 
+define('LANG_CREATED', false);
 /* 引用自定义的配置。 Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
 if(file_exists($myConfig)) include $myConfig;
