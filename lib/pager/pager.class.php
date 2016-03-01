@@ -327,7 +327,10 @@ class pager
     }
 
     /**
+     * 获取优化后的分页。
      * Get the justify pager html string
+     * 
+     * @access public
      * @return [type] [description]
      */
     public function getJustify()
@@ -434,6 +437,7 @@ class pager
      * 创建前一页链接。
      * Create the pre page html.
      * 
+     * @param  string $type 
      * @access private
      * @return string
      */
@@ -457,6 +461,7 @@ class pager
      * 创建下一页链接。
      * Create the next page html.
      * 
+     * @param  string $type 
      * @access private
      * @return string
      */
@@ -587,6 +592,7 @@ EOT;
     }    
 
     /**
+     * 创建链接。
      * Create link.
      * 
      * @param  string    $title 

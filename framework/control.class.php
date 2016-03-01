@@ -29,6 +29,7 @@ class control
     protected $app;
 
     /**
+     * 应用名称 $appName
      * The global $appName.
      * 
      * @var string
@@ -191,6 +192,9 @@ class control
      * 2. set the pathes of current module, and load it's model class.
      * 3. auto assign the $lang and $config to the view.
      * 
+     * @param  string $moduleName 
+     * @param  string $methodName 
+     * @param  string $appName 
      * @access public
      * @return void
      */
@@ -222,11 +226,11 @@ class control
          * Init the view vars.
          **/
         $this->view = new stdclass();
-        $this->view->app    = $app;
-        $this->view->lang   = $lang;
-        $this->view->config = $config;
-        $this->view->common = $common;
-        $this->view->title  = '';
+        $this->view->app     = $app;
+        $this->view->lang    = $lang;
+        $this->view->config  = $config;
+        $this->view->common  = $common;
+        $this->view->title   = '';
 
         /*
          * 设置超级变量，从$app引用过来。
@@ -267,7 +271,7 @@ class control
      * Load the model file of one module.
      * 
      * @param   string  $moduleName 模块名，如果为空，使用当前模块  The module name, if empty, use current module's name.
-     * @param   string      $appName       The app name, if empty, use current app's name.
+     * @param   string  $appName       The app name, if empty, use current app's name.
      * @access  public
      * @return  object|bool 如果没有model文件，返回false，否则返回model对象。 If no model file, return false. Else return the model object.
      */
@@ -319,6 +323,7 @@ class control
     }
 
     /**
+     * 为客户端是PC还是移动设备，设置视图文件前缀名。
      * Set the prefix of view file for mobile or PC.
      * 
      * @access public
@@ -331,6 +336,7 @@ class control
     }
 
     /**
+     * 设置客户端的设备类型
      * Set current device of visit website.
      * 
      * @access public
@@ -373,6 +379,7 @@ class control
         /* Extension view file. */
         $commonExtViewFile = $viewExtPath['common'] . $this->viewPrefix . $methodName . ".{$viewType}.php";
         $siteExtViewFile   = empty($viewExtPath['site']) ? '' : $viewExtPath['site'] . $this->viewPrefix . $methodName . ".{$viewType}.php";
+
         $viewFile = file_exists($commonExtViewFile) ? $commonExtViewFile : $mainViewFile;
         $viewFile = (!empty($siteExtViewFile) and file_exists($siteExtViewFile)) ? $siteExtViewFile : $viewFile;
         if(!is_file($viewFile)) $this->app->triggerError("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
@@ -443,37 +450,28 @@ class control
         if(is_file($methodCssFile))   $css .= file_get_contents($methodCssFile);
 
         $cssExtFiles = glob($cssCommonExt . $this->viewPrefix . '*.css');
-        if(is_array($cssExtFiles))
+        if(!empty($cssExtFiles) and is_array($cssExtFiles))
         {
-            foreach($cssExtFiles as $cssFile)
-            {
-                $css .= file_get_contents($cssFile);
-            }
+            foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
         }
 
         $cssExtFiles = glob($cssMethodExt . $this->viewPrefix . '*.css');
-        if(is_array($cssExtFiles))
+        if(!empty($cssExtFiles) and is_array($cssExtFiles))
         {
-            foreach($cssExtFiles as $cssFile)
-            {
-                $css .= file_get_contents($cssFile);
-            }
+            foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
         }
         if(!empty($cssExtPath['site']))
         {
             $cssMethodExt = $cssExtPath['site'] . $methodName . DS;
             $cssCommonExt = $cssExtPath['site'] . 'common' . DS;
             $cssExtFiles = glob($cssCommonExt . $this->viewPrefix . '*.css');
-            if(is_array($cssExtFiles))
+            if(!empty($cssExtFiles) and is_array($cssExtFiles))
             {
-                foreach($cssExtFiles as $cssFile)
-                {
-                    $css .= file_get_contents($cssFile);
-                }
+                foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
             }
 
             $cssExtFiles = glob($cssMethodExt . $this->viewPrefix . '*.css');
-            if(is_array($cssExtFiles))
+            if(!empty($cssExtFiles) and is_array($cssExtFiles))
             {
                 foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
             }
@@ -507,43 +505,32 @@ class control
         if(is_file($methodJsFile))     $js .= file_get_contents($methodJsFile);
 
         $jsExtFiles = glob($jsCommonExt . $this->viewPrefix . '*.js');
-        if(is_array($jsExtFiles))
+        if(!empty($jsExtFiles) and is_array($jsExtFiles))
         {
-            foreach($jsExtFiles as $jsFile)
-            {
-                $js .= file_get_contents($jsFile);
-            }
+            foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
         }
 
         $jsExtFiles = glob($jsMethodExt . $this->viewPrefix . '*.js');
-        if(is_array($jsExtFiles))
+        if(!empty($jsExtFiles) and is_array($jsExtFiles))
         {
-            foreach($jsExtFiles as $jsFile)
-            {
-                $js .= file_get_contents($jsFile);
-            }
+            foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
         }
+
         if(!empty($jsExtPath['site']))
         {
             $jsMethodExt = $jsExtPath['site'] . $methodName . DS;
             $jsCommonExt = $jsExtPath['site'] . 'common' . DS;
 
             $jsExtFiles = glob($jsCommonExt . $this->viewPrefix . '*.js');
-            if(is_array($jsExtFiles))
+            if(!empty($jsExtFiles) and is_array($jsExtFiles))
             {
-                foreach($jsExtFiles as $jsFile)
-                {
-                    $js .= file_get_contents($jsFile);
-                }
+                foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
             }
 
             $jsExtFiles = glob($jsMethodExt . $this->viewPrefix . '*.js');
-            if(is_array($jsExtFiles))
+            if(!empty($jsExtFiles) and is_array($jsExtFiles))
             {
-                foreach($jsExtFiles as $jsFile)
-                {
-                    $js .= file_get_contents($jsFile);
-                }
+                foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
             }
         }
         return $js;

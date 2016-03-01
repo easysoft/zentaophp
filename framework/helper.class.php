@@ -63,6 +63,7 @@ class helper
      * @param string       $methodName     method name
      * @param string|array $vars           the params passed to the method, can be array('key' => 'value') or key1=value1&key2=value2) or key1=value1&key2=value2
      * @param string       $viewType       the view type
+     * @param bool         $onlybody       whether onlybody
      * @static
      * @access public
      * @return string the link string.
@@ -156,6 +157,7 @@ class helper
      * Set the model file of one module. If there's an extension file, merge it with the main model file.
      * 
      * @param   string $moduleName the module name
+     * @param   string $appName the app name
      * @static
      * @access  public
      * @return  string the model file
@@ -490,6 +492,7 @@ class helper
     }
 
     /**
+     *  获取当前日期，使用common语言文件定义的DT_DATE1常量
      *  Get now time use the DT_TIME1 constant defined in the lang file.
      * 
      * @access  public
@@ -524,7 +527,7 @@ class helper
         if(empty($dir)) return array();
 
         $files = array();
-        $dir = realpath($dir);
+        $dir   = realpath($dir);
         if(is_dir($dir)) $files = glob($dir . DIRECTORY_SEPARATOR . '*' . $pattern);
         return empty($files) ? array() : $files;
     }
@@ -541,15 +544,8 @@ class helper
     static function cd($path = '')
     {
         static $cwd = '';
-        if($path)
-        {
-            $cwd = getcwd();
-            chdir($path);
-        }
-        else
-        {
-            chdir($cwd);
-        }
+        if($path) $cwd = getcwd();
+        !empty($path) ? chdir($path) : chdir($cwd);
     }
 
     /**
@@ -567,6 +563,7 @@ class helper
     }
 
     /**
+     * 通过域名获取站点代号。
      * Get siteCode from domain.
      * @param  string $domain
      * @return string $siteCode
@@ -596,6 +593,7 @@ class helper
     }
 
     /**
+     * 增强substr方法：支持多字节语言，比如中文。
      * Enhanced substr version: support multibyte languages like Chinese.
      *
      * @param string $string
@@ -613,6 +611,7 @@ class helper
     }
 
     /**
+     * 检查是否是SEO模式
      * Check in seo mode or not.
      *
      * return bool
@@ -637,6 +636,7 @@ class helper
     }
 
     /**
+     * 301跳转
      * Header 301 Moved Permanently.
      * 
      * @param  string    $locate 
@@ -650,6 +650,7 @@ class helper
     }
 
     /**
+     * 获取浏览器类型。
      * Get browser.
      * 
      * @access public
@@ -687,6 +688,7 @@ class helper
     }
 
     /**
+     * 获取浏览器版本
      * Get browser version. 
      * 
      * @access public
@@ -728,6 +730,7 @@ class helper
     }
 
     /**
+     * 获取客户端操作系统
      * Get client os from agent info. 
      * 
      * @static
@@ -773,6 +776,7 @@ class helper
     }
 
     /**
+     * 设置$viewType，html还是mhtml或其他。
      * Set viewType.
      * 
      * @static
@@ -817,6 +821,7 @@ class helper
     }
 
     /**
+     * 数据配置合并到主配置
      * Merge config items in database and config files.
      * 
      * @param  array  $dbConfig 
@@ -849,6 +854,7 @@ class helper
     }
 
     /**
+     * 将字符串中的字符统一到标准字符。
      * Unify string to standard chars.
      * 
      * @param  string    $string 
@@ -865,6 +871,7 @@ class helper
     }
 
     /** 
+     * 获取远程IP。
      * Get remote ip. 
      * 
      * @access public
@@ -890,6 +897,7 @@ class helper
     }
 
     /**
+     * 检查IP是否在给定的IP范围内。
      * check ip is in network.  
      * 
      * @param  string $ip 
@@ -915,6 +923,7 @@ class helper
     }
 
     /**
+     * 检查IP是否合法。
      * Check ip avaliable.  
      * 
      * @param  string $ip 
@@ -939,6 +948,7 @@ class helper
     }
 
     /**
+     * 创建随机的字符串。
      * Create random string. 
      * 
      * @param  int    $length 
@@ -966,6 +976,7 @@ class helper
     }
 
     /**
+     * 获取设备类型。
      * Get device.
      * 
      * @access public
@@ -978,23 +989,15 @@ class helper
         $viewType = $app->getViewType();
         if($viewType == 'mhtml') return 'mobile';
 
-        if(RUN_MODE == 'admin')
-        {
-            if($app->session->device) return $app->session->device;
-            return 'desktop';
-        }
-        elseif(RUN_MODE == 'front')
-        {
-            if(isset($_COOKIE['visualDevice'])) return $_COOKIE['visualDevice'];
+        if(isset($_COOKIE['visualDevice'])) return $_COOKIE['visualDevice'];
 
-            /* Detect mobile. */
-            $mobile = $app->loadClass('mobile');
-            if($mobile->isMobile())
-            {
-                if(!isset($config->template->mobile)) return 'desktop';
-                if(isset($config->site->mobileTemplate) and $config->site->mobileTemplate == 'close') return 'desktop';
-                return 'mobile';
-            }
+        /* Detect mobile. */
+        $mobile = $app->loadClass('mobile');
+        if($mobile->isMobile())
+        {
+            if(!isset($config->template->mobile)) return 'desktop';
+            if(isset($config->site->mobileTemplate) and $config->site->mobileTemplate == 'close') return 'desktop';
+            return 'mobile';
         }
         return 'desktop';
     }
@@ -1059,6 +1062,7 @@ function a($var)
 }
 
 /**
+ * 判断是否内外IP。
  * Judge the server ip is local or not.
  *
  * @access public
@@ -1073,6 +1077,7 @@ function isLocalIP()
 }
 
 /**
+ * 获取webRoot。
  * Get web root. 
  * 
  * @access public
@@ -1092,6 +1097,7 @@ function getWebRoot()
 }
 
 /**
+ * 检查是否是onlybody模式。
  * Check exist onlybody param.
  * 
  * @access public
@@ -1103,6 +1109,7 @@ function isonlybody()
 }
 
 /**
+ * 格式化钱。
  * Format money.
  * 
  * @param  float    $money 
@@ -1115,6 +1122,7 @@ function formatMoney($money)
 }
 
 /**
+ * 格式化时间
  * Format time.
  * 
  * @param  int    $time 
@@ -1132,6 +1140,7 @@ function formatTime($time, $format = '')
 }
 
 /**
+ * 检查可用curl ssl。
  * Check curl ssl enabled.
  * 
  * @access public
@@ -1144,6 +1153,7 @@ function checkCurlSSL()
 }
 
 /**
+ * 当数组/对象变量$var存在$key项时，返回存在的对应值或设定值，否则返回$key或不存在的设定值。
  * When the $var has the $key, return it, esle result one default value.
  * 
  * @param  array|object    $var 
@@ -1151,21 +1161,24 @@ function checkCurlSSL()
  * @param  mixed           $valueWhenNone     value when the key not exits.
  * @param  mixed           $valueWhenExists   value when the key exits.
  * @access public
- * @return void
+ * @return string
  */
 function zget($var, $key, $valueWhenNone = false, $valueWhenExists = false)
 {
-    $var = (array)$var;
-    if(isset($var[$key]))
+    if(!is_array($var) and !is_object($var)) return false;
+    $type = is_array($var) ? 'array' : 'object';
+    $checkExists = $type == 'array' ? isset($var[$key]) : isset($var->$key);
+    if($checkExists)
     {
         if($valueWhenExists !== false) return $valueWhenExists;
-        return $var[$key];
+        return $type == 'array' ? $var[$key] : $var->$key;
     }
     if($valueWhenNone !== false) return $valueWhenNone;
     return $key;
 }
 
 /**
+ * 301跳转。
  * Header lcoation 301. 
  * 
  * @param  string    $url 
@@ -1179,6 +1192,7 @@ function header301($url)
 }
 
 /**
+ * 处理恶意参数.
  * Process evil params.
  * 
  * @param  string    $value 
@@ -1198,6 +1212,7 @@ function processEvil($value)
 }
 
 /**
+ * 批量处理恶意参数.
  * Process array evils.
  * 
  * @param  array    $params 
@@ -1228,6 +1243,7 @@ function processArrayEvils($params)
 }
 
 /**
+ * 获取主机地址。
  * Get host URL.
  * 
  * @access public
@@ -1239,6 +1255,7 @@ function getHostURL()
 }
 
 /**
+ * 判断requestType是否是GET类型。
  * Check current request is GET.
  * 
  * @access public
@@ -1254,6 +1271,7 @@ function isGetUrl()
 }
 
 /**
+ * 获取文件mime。
  * Get file mime type.
  * 
  * @param  int    $file 

@@ -76,6 +76,7 @@ class validater
     }
 
     /**
+     * 检查不是Int类型。
      * Not int checking. 
      * 
      * @param  int    $var 
@@ -118,6 +119,7 @@ class validater
     }
 
     /**
+     * 检查电话或手机号码
      * Check phone number.
      * 
      * @param  string    $var 
@@ -131,6 +133,7 @@ class validater
     }
 
     /**
+     * 检查电话号码
      * Check tel number.
      * 
      * @param  int    $var 
@@ -144,6 +147,7 @@ class validater
     }
 
     /**
+     * 检查手机号码
      * Check mobile number.
      * 
      * @param  string    $var 
@@ -174,6 +178,7 @@ class validater
     }
 
     /**
+     * 检查域名，不支持中文。
      * Domain checking. 
      *
      * The check rule of filter don't support chinese.
@@ -303,6 +308,7 @@ class validater
     }
 
     /**
+     * 检查Code。
      * Check code.
      * 
      * @param  string $var 
@@ -316,6 +322,7 @@ class validater
     }
 
     /**
+     * 检查验证码。
      * Check captcha.
      * 
      * @param  mixed    $var 
@@ -345,6 +352,7 @@ class validater
     }
 
     /**
+     * 检查不等于给定的值
      * Must not equal a value.
      * 
      * @param  mixed    $var 
@@ -359,6 +367,7 @@ class validater
     }
 
     /**
+     * 检查大于给定的值。
      * Must greater than a value.
      * 
      * @param  mixed    $var 
@@ -373,6 +382,7 @@ class validater
     }
 
     /**
+     * 检查小于给定的值
      * Must less than a value.
      * 
      * @param  mixed    $var 
@@ -387,6 +397,7 @@ class validater
     }
 
     /**
+     * 检查大于等于给定的值
      * Must greater than a value or equal a value.
      * 
      * @param  mixed    $var 
@@ -401,6 +412,7 @@ class validater
     }
 
     /**
+     * 检查小于等于给定的值
      * Must less than a value or equal a value.
      * 
      * @param  mixed    $var 
@@ -415,6 +427,7 @@ class validater
     }
 
     /**
+     * 检查是否在给定的列表里面。
      * Must in value list.
      * 
      * @param  mixed  $var 
@@ -428,8 +441,9 @@ class validater
         if(!is_array($value)) $value = explode(',', $value);
         return in_array($var, $value);
     }
-   
+
     /**
+     * 检查文件名。
      * Check file name.
      * 
      * @param  string    $var 
@@ -443,6 +457,7 @@ class validater
     }
 
     /**
+     * 检查敏感词。
      * Check sensitive words.
      * 
      * @param  object   $vars 
@@ -498,7 +513,15 @@ class fixer
      */
     private $data;
 
+    /**
+     * 跳过处理的字段。
+     * The fields to striped.
+     * 
+     * @var array 
+     * @access private
+     */
     private $stripedFields = array();
+
     /**
      * 构造方法，将超级全局变量转换为对象。
      * The construction function, according the scope, convert it to object.
@@ -702,6 +725,7 @@ class fixer
     }
 
     /**
+     * 忽略处理给定的字段。
      * Skip special chars check.
      * 
      * @param  string    $filename 

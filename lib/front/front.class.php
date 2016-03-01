@@ -24,6 +24,7 @@ class html
      * Create the title tag. 
      * 
      * @param  mixed $title 
+     * @static
      * @access public
      * @return string.
      */
@@ -38,6 +39,7 @@ class html
      * 
      * @param mixed $name   the meta name
      * @param mixed $value  the meta value
+     * @static
      * @access public
      * @return string          
      */
@@ -48,24 +50,26 @@ class html
     }
 
     /**
-     * 生成icon标签。
-     * Create icon tag
+     * 生成favicon标签。
+     * Create favicon tag
      *
      * @param mixed $url  the url of the icon.
+     * @static
      * @access public
      * @return string
      */
     public static function favicon($url)
     {
-        return "<link rel='icon' href='$url' type='image/x-icon' />\n" . 
-            "<link rel='shortcut icon' href='$url' type='image/x-icon' />\n";
+        return "<link rel='icon' href='$url' type='image/x-icon' />\n<link rel='shortcut icon' href='$url' type='image/x-icon' />\n";
     }
 
     /**
-     * Create icon tag
+     * 创建图标。
+     * Create icon.
      * 
      * @param name $name  the name of the icon.
      * @param cssClass $class  the extra css class of the icon.
+     * @static
      * @access public
      * @return string          
      */
@@ -98,6 +102,9 @@ class html
      * @param  string $href      the link url.
      * @param  string $title     the link title.
      * @param  string $misc      other params.
+     * @param  string $newline
+     * @static
+     * @access public
      * @return string
      */
     static public function a($href = '', $title = '', $misc = '', $newline = true)
@@ -122,6 +129,8 @@ class html
      *
      * @param  string $mail      the email address
      * @param  string $title     the email title.
+     * @static
+     * @access public
      * @return string
      */
     static public function mailto($mail = '', $title = '')
@@ -132,7 +141,7 @@ class html
         foreach($mails as $key => $m)
         {
             if(empty($m)) continue;
-            $t = empty($titles[$key]) ? $mail : $titles[$key];
+            $t     = empty($titles[$key]) ? $mail : $titles[$key];
             $html .= " <a href='mailto:$m'>$t</a>";
         }
         return $html;
@@ -147,6 +156,8 @@ class html
      * @param  string $selectedItems the item(s) to be selected, can like item1,item2.
      * @param  string $attrib        other params such as multiple, size and style.
      * @param  string $append        adjust if add options[$selectedItems].
+     * @static
+     * @access public
      * @return string
      */
     static public function select($name = '', $options = array(), $selectedItems = "", $attrib = "", $append = false)
@@ -159,7 +170,6 @@ class html
         $id = $name;
         if($pos = strpos($name, '[')) $id = substr($name, 0, $pos);
         $id = "id='{$id}'";
-
         if(strpos($attrib, 'id=') !== false) $id = '';
 
         $string = "<select name='$name' {$id} $attrib>\n";
@@ -186,6 +196,8 @@ class html
      * @param  array  $groups        the option groups.
      * @param  string $selectedItems the item(s) to be selected, can like item1,item2.
      * @param  string $attrib        other params such as multiple, size and style.
+     * @static
+     * @access public
      * @return string
      */
     static public function selectGroup($name = '', $groups = array(), $selectedItems = "", $attrib = "")
@@ -224,6 +236,8 @@ class html
      * @param  string $checked    the value to checked by default.
      * @param  string $attrib     other attribs.
      * @param  string $type       inline or block
+     * @static
+     * @access public
      * @return string
      */
     static public function radio($name = '', $options = array(), $checked = '', $attrib = '', $type = 'inline')
@@ -257,6 +271,8 @@ class html
      * @param  string $checked   the value to checked by default, can be item1,item2
      * @param  string $attrib    other attribs.
      * @param  string $type       inline or block
+     * @static
+     * @access public
      * @return string
      */
     static public function checkbox($name, $options, $checked = "", $attrib = "", $type = 'inline')
@@ -292,6 +308,8 @@ class html
      * @param  string $name     the name of the text input tag.
      * @param  string $value    the default value.
      * @param  string $attrib   other attribs.
+     * @static
+     * @access public
      * @return string
      */
     static public function input($name, $value = "", $attrib = "")
@@ -308,6 +326,8 @@ class html
      * @param  string $name     the name of the text input tag.
      * @param  string $value    the default value.
      * @param  string $attrib   other attribs.
+     * @static
+     * @access public
      * @return string
      */
     static public function hidden($name, $value = "", $attrib = "")
@@ -322,6 +342,8 @@ class html
      * @param  string $name     the name of the text input tag.
      * @param  string $value    the default value.
      * @param  string $attrib   other attribs.
+     * @static
+     * @access public
      * @return string
      */
     static public function password($name, $value = "", $attrib = "")
@@ -336,6 +358,8 @@ class html
      * @param  string $name      the name of the textarea tag.
      * @param  string $value     the default value of the textarea tag.
      * @param  string $attrib    other attribs.
+     * @static
+     * @access public
      * @return string
      */
     static public function textarea($name, $value = "", $attrib = "")
@@ -349,6 +373,8 @@ class html
      *
      * @param  string $name      the name of the file name.
      * @param  string $attrib    other attribs.
+     * @static
+     * @access public
      * @return string
      */
     static public function file($name, $attrib = "")
@@ -357,6 +383,7 @@ class html
     }
 
     /**
+     * 创建日期输入框。
      * Create date picker.
      *
      * @param  string $name     the name of the text input tag.
@@ -376,6 +403,7 @@ class html
     }
 
     /**
+     * 创建日期时间输入框。
      * Create dateTime picker.
      *
      * @param  string $name     the name of the text input tag.
@@ -395,10 +423,14 @@ class html
     }
 
     /**
+     * 创建img标签。
      * create tags like "<img src='' />".
      *
      * @param string $name      the name of the image name.
      * @param string $attrib    other attribs.
+     * @static
+     * @access public
+     * @return string
      */
     static public function image($image, $attrib = '')
     {
@@ -416,7 +448,7 @@ class html
      * @access public
      * @return string the submit button tag.
      */
-     public static function submitButton($label = '', $misc = '', $class = 'btn btn-primary')
+    public static function submitButton($label = '', $class = 'btn btn-primary', $misc = '')
     {
         global $lang;
 
@@ -430,11 +462,13 @@ class html
      * 创建重置按钮。
      * Create reset button.
      * 
+     * @param  string $label 
+     * @param  string $class 
      * @static
      * @access public
      * @return string the reset button tag.
      */
-    public static function resetButton($label = '', $misc = '', $class = '')
+    public static function resetButton($label = '', $class = '')
     {
         if(empty($label))
         {
@@ -445,8 +479,11 @@ class html
     }
 
     /**
+     * 创建返回按钮。
      * Back button. 
      * 
+     * @param  string $label 
+     * @param  string $misc 
      * @static
      * @access public
      * @return string the back button tag.
@@ -471,11 +508,12 @@ class html
      * @param  string $label the label of the button
      * @param  string $class the class of the button
      * @param  string $misc  other params
+     * @param  string $icon  icon
      * @static
      * @access public
      * @return string the common button tag.
      */
-     public static function commonButton($label = '', $misc = '', $class = 'btn btn-default', $icon = '')
+    public static function commonButton($label = '', $class = 'btn btn-default', $misc = '', $icon = '')
     {
         if($icon) $label = "<i class='icon-" . $icon . "'></i> " . $label;
         return " <input type='button' value='$label' class='$class' $misc /> ";
@@ -510,8 +548,10 @@ class html
     }
 
     /**
+     * 创建关闭模态框按钮。
      * Create a button to close.
      *
+     * @static
      * @access public
      * @return string
      */
@@ -521,11 +561,15 @@ class html
     }
 
     /**
+     * 创建全选标签。
      * Create tags like "<input type='$type' onclick='selectAll()'/>"
      * 
      * @param  string  $scope  the scope of select all.
      * @param  string  $type   the type of input tag.
      * @param  boolean $checked if the type is checkbox, set the checked attribute.
+     * @param  string  $class
+     * @static
+     * @access public
      * @return string
      */
     static public function selectAll($scope = "", $type = "button", $checked = false, $class = '')
@@ -540,14 +584,14 @@ function selectAll(checker, scope, type)
         {
             $('#' + scope + ' input').each(function() 
             {
-                $(this).attr("checked", true)
+                $(this).prop("checked", true)
             });
         }
         else if(type == 'checkbox')
         {
             $('#' + scope + ' input').each(function() 
             {
-                $(this).attr("checked", checker.checked)
+                $(this).prop("checked", checker.checked)
             });
          }
     }
@@ -574,14 +618,7 @@ EOT;
         global $lang;
         if($type == 'checkbox')
         {
-            if($checked)
-            {
-                $string .= " <input type='checkbox' name='allchecker[]' checked=$checked onclick='selectAll(this, \"$scope\", \"$type\")' />";
-            }
-            else
-            {
-                $string .= " <input type='checkbox' name='allchecker[]' onclick='selectAll(this, \"$scope\", \"$type\")' />";
-            }
+            $string .= " <input type='checkbox' name='allchecker[]'" . ($checked ? " checked=$checked" : '') . " onclick='selectAll(this, \"$scope\", \"$type\")' />";
         }
         elseif($type == 'button')
         {
@@ -592,9 +629,12 @@ EOT;
     }
 
     /**
+     * 创建反选标签。
      * Create tags like "<input type='button' onclick='selectReverse()'/>"
      * 
      * @param  string $scope  the scope of select reverse.
+     * @static
+     * @access public
      * @return string
      */
     static public function selectReverse($scope = "")
@@ -627,14 +667,19 @@ EOT;
     }
 
     /**
-     * Create select buttons include 'selectAll' and 'selectAll'.
+     * 创建全选、反选按钮组。
+     * Create select buttons include 'selectAll' and 'selectReverse'.
      * 
      * @param  string $scope  the scope of select reverse.
+     * @param  bool   $asGroup 
+     * @param  string $appendClass 
+     * @static
+     * @access public
      * @return string
      */
-     static public function selectButton($scope = "", $asGroup = true, $appendClass = '')
+    static public function selectButton($scope = "", $asGroup = true, $appendClass = '')
     {
-                $string = <<<EOT
+        $string = <<<EOT
 <script>
 $(function()
 {
@@ -661,9 +706,12 @@ EOT;
     }
 
     /**
+     * 打印星星。
      * Print the star images.
      * 
      * @param  float    $stars 0 1 1.5 2 2.5 3 3.5 4 4.5 5
+     * @access public
+     * @static
      * @access public
      * @return void
      */
@@ -674,6 +722,9 @@ EOT;
         $whiteStars = 5;
         if($stars)
         {
+            /* If stars more than max, then fix it. */
+            if($stars > $whiteStars) $stars = $whiteStars;
+
             $redStars  = floor($stars);
             $halfStars = $stars - $redStars ? 1 : 0;
             $whiteStars = 5 - ceil($stars);
@@ -699,8 +750,8 @@ class js
      * Import a js file.
      * 
      * @param  string $url 
-     * @param  string $version 
      * @param  string $ieParam    like 'lt IE 9'
+     * @static
      * @access public
      * @return string
      */
@@ -718,6 +769,7 @@ class js
      * 开始输出js。
      * The start of javascript. 
      * 
+     * @param  bool   $full 
      * @static
      * @access private
      * @return string
@@ -758,6 +810,7 @@ class js
     }
 
     /**
+     * 关闭浏览器窗口。
      * Close window 
      * 
      * @static
@@ -796,6 +849,7 @@ class js
     }
 
     /**
+     * 重置禁用的提交按钮。
      * Reset the submit form. 
      * 
      * @static
@@ -816,9 +870,11 @@ class js
      * @param  string $cancleURL    点击取消后跳转的地址。    the url to go to when press 'cancle'.
      * @param  string $okTarget     点击确定后跳转的target。  the target to go to when press 'ok'.
      * @param  string $cancleTarget 点击取消后跳转的target。  the target to go to when press 'cancle'.
+     * @static
+     * @access public
      * @return string
      */
-    static public function confirm($message = '', $okURL = '', $cancleURL = '', $okTarget = "self", $cancleTarget = "self", $Echo = true)
+    static public function confirm($message = '', $okURL = '', $cancleURL = '', $okTarget = "self", $cancleTarget = "self")
     {
         $js = self::start();
 
@@ -862,6 +918,8 @@ EOT;
      *
      * @param   string $url    the url will go to.
      * @param   string $target the target of the url.
+     * @static
+     * @access  public
      * @return  string the javascript string.
      */
     static public function locate($url, $target = "self")
@@ -905,6 +963,8 @@ EOT;
      * @param   string $url    the url will go to.
      * @param   string $target the target of the url.
      * @param   int    $time   the timer, msec.
+     * @static
+     * @access  public
      * @return  string the javascript string.
      */
     static public function refresh($url, $target = "self", $time = 3000)
@@ -920,6 +980,8 @@ EOT;
      * Reload a window.
      *
      * @param   string $window the window to reload.
+     * @static
+     * @access  public
      * @return  string the javascript string.
      */
     static public function reload($window = 'self')
@@ -933,13 +995,14 @@ EOT;
     }
 
     /**
+     * 用Javascript关闭colorbox弹出框。
      * Close colorbox in javascript.
      * This is a obsolete method, you can use 'closeModal' instead.
      * 
      * @param  string $window 
      * @static
      * @access public
-     * @return void
+     * @return string
      */
     static public function closeColorbox($window = 'self')
     {
@@ -947,12 +1010,15 @@ EOT;
     }
 
     /**
+     * 用Javascript关闭模态框。
      * Close modal with javascript.
      * 
      * @param  string $window 
+     * @param  string $location 
+     * @param  string $callback 
      * @static
      * @access public
-     * @return void
+     * @return string
      */
     static public function closeModal($window = 'self', $location = 'this', $callback = 'null')
     {
@@ -1034,15 +1100,16 @@ EOT;
         $js .= self::end();
         echo $js;
     }
-    
+
     /**
+     * 设置Javascript变量值。
      * Set js value.
      * 
      * @param  string   $key 
      * @param  mix      $value 
      * @static
      * @access public
-     * @return void
+     * @return string
      */
     static public function set($key, $value)
     {
@@ -1072,7 +1139,7 @@ EOT;
                     if(is_numeric($v)) $value[$k] = (string)$v;
                 }
             }
-            
+
             $value = json_encode($value);
             $js .= "{$prefix}{$key} = {$value};";
         }

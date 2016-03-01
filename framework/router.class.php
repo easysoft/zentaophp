@@ -19,21 +19,6 @@
  */
 class router
 {
-    /**
-     * The device type of client.
-     * 
-     * @var string   
-     * @access public
-     */
-    public $device;
-
-    /**
-     * The appName.
-     * 
-     * @var string
-     * @access public
-     */
-    public $appName = '';
 
     /**
      * ZenTaoPHP的基础目录，一般是程序的根目录。
@@ -90,6 +75,24 @@ class router
     public $cacheRoot;
 
     /**
+     *WWW目录 
+     * The root directory of www.
+     * 
+     * @var string
+     * @access public
+     */
+    public $wwwRoot;
+
+    /**
+     * 附件存放目录
+     * The root directory of data.
+     * 
+     * @var string
+     * @access public
+     */
+    public $dataRoot;
+
+    /**
      * 日志文件的根目录。
      * The root directory of log.
      * 
@@ -124,14 +127,6 @@ class router
      * @access public
      */
     public $themeRoot;
-
-    /**
-     * The root directory of data.
-     * 
-     * @var string
-     * @access public
-     */
-    public $dataRoot;
 
     /**
      * 用户使用的语言。
@@ -314,12 +309,31 @@ class router
     public $global;
 
     /**
+     * 网站代号
      * The code of current site.
      * 
      * @var string
      * @access public
      */
     public $siteCode;
+
+    /**
+     * 客户端设备类型
+     * The device type of client.
+     * 
+     * @var string   
+     * @access public
+     */
+    public $device;
+
+    /**
+     * 应用名称
+     * The appName.
+     * 
+     * @var string
+     * @access public
+     */
+    public $appName = '';
 
     /**
      * 构造方法, 设置路径，类，超级变量等。注意：
@@ -392,15 +406,16 @@ class router
      * @access public
      * @return object   the app object
      */
-    public static function createApp($appName = 'demo', $appRoot = '', $className = 'router')
+    public static function createApp($appName = 'demo', $appRoot = '', $className = '')
     {
         if(empty($className)) $className = __CLASS__;
         return new $className($appName, $appRoot);
     }
 
     //-------------------- 路径相关方法(Path related methods)--------------------//
-    
+
     /**
+     * 设置应用名称
      * Set app name.
      * 
      * @param  string    $appName 
@@ -423,8 +438,9 @@ class router
     {
         define('DS', DIRECTORY_SEPARATOR);
     }
- 
+
     /**
+     * 设置设备类型
      * Set current device of visit website.
      * 
      * @access public
@@ -550,7 +566,7 @@ class router
      */
     public function setModuleRoot()
     {
-        $this->moduleRoot = $this->appRoot . 'module' . DS;
+        $this->moduleRoot = $this->basePath . 'module' . DS;
     }
 
     /**
@@ -584,7 +600,7 @@ class router
      */
     public function setThemeRoot()
     {
-        $this->themeRoot = $this->appRoot . 'www' . DS . 'theme' . DS;
+        $this->themeRoot = $this->wwwRoot . 'theme' . DS;
     }
 
     /**
@@ -631,7 +647,10 @@ class router
                 }
             }
         }
-        unset($_GLOBALS);
+        $_POST   = processArrayEvils($_POST);
+        $_GET    = processArrayEvils($_GET);
+        $_COOKIE = processArrayEvils($_COOKIE);
+        unset($GLOBALS);
         unset($_REQUEST);
     }
 
@@ -653,6 +672,7 @@ class router
     }
 
     /**
+     * 设置站点代号
      * Set the code of current site. 
      * 
      * www.xirang.com => xirang
@@ -708,6 +728,7 @@ class router
     }
 
     /**
+     * 获取应用名称
      * Get app name 
      * 
      * @access public
@@ -755,6 +776,7 @@ class router
     }
 
     /**
+     * 获取$wwwRoot变量。
      * Get the $wwwRoot var
      * 
      * @access public
@@ -829,6 +851,7 @@ class router
      * 获取$moduleRoot变量，即应用模块的根目录。
      * Get the $moduleRoot var.
      * 
+     * @param  string $appName 
      * @access public
      * @return string
      */
@@ -837,8 +860,10 @@ class router
         if($appName == '') return $this->moduleRoot;
         return dirname($this->moduleRoot) . DS . $appName . DS;
     }
+
     /**
-     * Get the $dataroot var
+     * 获取$dataRoot目录
+     * Get the $dataRoot var
      * 
      * @access public
      * @return string
@@ -1010,7 +1035,6 @@ class router
         if($this->config->requestType == 'PATH_INFO' or $this->config->requestType == 'PATH_INFO2')
         {
             $this->parsePathInfo();
-
             $this->setRouteByPathInfo();
         }
         elseif($this->config->requestType == 'GET')
@@ -1103,10 +1127,7 @@ class router
         if(isset($_GET[$this->config->viewVar]))
         {
             $this->viewType = $_GET[$this->config->viewVar]; 
-            if(strpos($this->config->views, ',' . $this->viewType . ',') === false)
-            {
-                $this->viewType = $this->config->default->view;
-            }
+            if(strpos($this->config->views, ',' . $this->viewType . ',') === false) $this->viewType = $this->config->default->view;
         }
         else
         {
@@ -1237,8 +1258,8 @@ class router
      * 获取一个模块的路径。
      * Get the path of one module.
      * 
-     * @param  string $moduleName    the module name
      * @param  string $appName    the app name
+     * @param  string $moduleName    the module name
      * @access public
      * @return string the module path
      */
@@ -1727,7 +1748,7 @@ class router
         $view->rand        = $this->session->rand;
         $view->expiredTime = ini_get('session.gc_maxlifetime');
         $view->serverTime  = time();
-        
+
         $view->ip          = gethostbyname($_SERVER['HTTP_HOST']);
         $view->name        = isset($this->config->socket->name) ? $this->config->socket->name : '';
         $view->port        = isset($this->config->socket->port) ? $this->config->socket->port : '';
@@ -1738,8 +1759,9 @@ class router
      * 加载语言文件，返回全局$lang对象。
      * Load lang and return it as the global lang object.
      * 
-     * @access  public
      * @param   string $moduleName     the module name
+     * @param   string $appName     the app name
+     * @access  public
      * @return  bool|ojbect the lang object or false.
      */
     public function loadLang($moduleName, $appName = '')
@@ -2124,7 +2146,7 @@ class super
         }
         elseif($this->scope == 'global')
         {
-            $GLOBAL[$key] = $value;
+            $GLOBALS[$key] = $value;
         }
     }
 
@@ -2197,6 +2219,6 @@ class super
         if($this->scope == 'cookie')  a($_COOKIE);
         if($this->scope == 'session') a($_SESSION);
         if($this->scope == 'env')     a($_ENV);
-        if($this->scope == 'global')  a($GLOBAL);
+        if($this->scope == 'global')  a($GLOBALS);
     }
 }

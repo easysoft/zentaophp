@@ -29,6 +29,7 @@ class model
     protected $app;
 
     /**
+     * 应用名称$appName。
      * The global appName.
      * 
      * @var string
@@ -135,6 +136,7 @@ class model
      * 1. global the global vars, refer them by the class member such as $this->app.
      * 2. set the pathes, config, lang of current module
      *
+     * @param  string $appName 
      * @access public
      * @return void
      */
@@ -273,6 +275,7 @@ class model
     }
 
     /**
+     * 删除记录
      * Delete one record.
      * 
      * @param  string    $table  the table name
@@ -282,8 +285,6 @@ class model
      */
     public function delete($table, $id)
     {
-        $this->dao->update($table)->set('deleted')->eq(1)->where('id')->eq($id)->exec();
-        $object = ltrim(strstr(trim($table, '`'), '_'), '_');
-        $this->loadModel('action')->create($object, $id, 'deleted', '', $extra = ACTIONMODEL::CAN_UNDELETED);
+        $this->dao->delete()->from($table)->where('id')->eq($id)->exec();
     }
 }

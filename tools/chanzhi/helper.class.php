@@ -76,6 +76,33 @@
         $config->requestType = $requestType;
         return $link;
     }
+    public static function getDevice()
+    {
+        global $app, $config;
+
+        $viewType = $app->getViewType();
+        if($viewType == 'mhtml') return 'mobile';
+
+        if(RUN_MODE == 'admin')
+        {
+            if($app->session->device) return $app->session->device;
+            return 'desktop';
+        }
+        elseif(RUN_MODE == 'front')
+        {
+            if(isset($_COOKIE['visualDevice'])) return $_COOKIE['visualDevice'];
+
+            /* Detect mobile. */
+            $mobile = $app->loadClass('mobile');
+            if($mobile->isMobile())
+            {
+                if(!isset($config->template->mobile)) return 'desktop';
+                if(isset($config->site->mobileTemplate) and $config->site->mobileTemplate == 'close') return 'desktop';
+                return 'mobile';
+            }
+        }
+        return 'desktop';
+    }
 function inLink($methodName = 'index', $vars = '', $alias = '', $viewType = '')
 {
     global $app;

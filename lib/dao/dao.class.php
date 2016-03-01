@@ -128,6 +128,7 @@ class dao
     public $method;
 
     /**
+     * 是否自动增加lang条件。
      * If auto add lang statement.
      *
      * @var bool
@@ -136,6 +137,7 @@ class dao
     public $autoLang;
 
     /**
+     * 需要修复表的错误代码
      * The sql code of need repair table.
      * 
      * @var string
@@ -162,6 +164,7 @@ class dao
     static public $errors = array();
 
     /**
+     * 缓存。
      * The cache.
      * 
      * @var array
@@ -228,6 +231,7 @@ class dao
     }
 
     /**
+     * 设置autoLang项。
      * Set autoLang item.
      * 
      * @param  bool    $autoLang 
@@ -293,6 +297,7 @@ class dao
     }
 
     /**
+     * 开始事务。
      * Begin Transaction 
      * 
      * @access public
@@ -304,6 +309,7 @@ class dao
     }
 
     /**
+     * 事务回滚。
      * Roll back  
      * 
      * @access public
@@ -315,7 +321,8 @@ class dao
     }
 
     /**
-     * Commit  
+     * 提交事务。
+     * Commits a transaction.
      * 
      * @access public
      * @return void
@@ -342,28 +349,41 @@ class dao
     }
 
     /**
+     * 获取查询记录条数。
      * The count method, call sql::select() and from().
      * use as $this->dao->select()->from(TABLE_BUG)->where()->count();
      *
+     * @param  string $distinctField 
      * @access public
      * @return void
      */
-    public function count()
+    public function count($distinctField = '')
     {
+        /* 获得SELECT，FROM的位置，使用count(*)替换其字段。 */
         /* Get the SELECT, FROM position, thus get the fields, replace it by count(*). */
-        $sql = $this->processSQL();
-        $sql = str_replace('SELECT', 'SELECT SQL_CALC_FOUND_ROWS ', $sql);
+        $sql        = $this->get();
+        $selectPOS  = strpos($sql, 'SELECT') + strlen('SELECT');
+        $fromPOS    = strpos($sql, 'FROM');
+        $fields     = substr($sql, $selectPOS, $fromPOS - $selectPOS );
+        $countField = $distinctField ? 'distinct ' . $distinctField : '*';
+        $sql        = str_replace($fields, " COUNT($countField) AS recTotal ", substr($sql, 0, $fromPOS)) . substr($sql, $fromPOS);
 
-        /* Remove the part after order and limit. */
+        /*
+         * 去掉SQL语句中order和limit之后的部分。
+         * Remove the part after order and limit.
+         **/
         $subLength = strlen($sql);
-        $orderPOS  = strripos($sql, DAO::ORDERBY);
-        $limitPOS  = strripos($sql , DAO::LIMIT);
+        $orderPOS  = strripos($sql, 'order by');
+        $limitPOS  = strripos($sql, 'limit');
         if($limitPOS) $subLength = $limitPOS;
         if($orderPOS) $subLength = $orderPOS;
         $sql = substr($sql, 0, $subLength);
         self::$querys[] = $sql;
 
-        /* Get the records count. */
+        /* 
+         * 获取记录数。
+         * Get the records count.
+         **/
         try
         {
             $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
@@ -373,9 +393,6 @@ class dao
             $this->sqlError($e);
         }
 
-        $sql  = 'SELECT FOUND_ROWS() as recTotal;';
-        $row = $this->dbh->query($sql)->fetch();
- 
         return $row->recTotal;
     }
 
@@ -537,6 +554,7 @@ class dao
     }
 
     /**
+     * 查看SQL索引。
      * Explain sql. 
      * 
      * @param  string $sql 
@@ -619,6 +637,7 @@ class dao
     }
 
     /**
+     * 替换sql常量关键字。
      * Process the sql keywords, replace the constants to normal.
      * 
      * @param  string $sql 
@@ -714,41 +733,8 @@ class dao
          **/
         if($pager->recTotal == 0)
         {
-            /* 获得SELECT，FROM的位置，使用count(*)替换其字段。 */
-            /* Get the SELECT, FROM position, thus get the fields, replace it by count(*). */
-            $sql        = $this->get();
-            $selectPOS  = strpos($sql, 'SELECT') + strlen('SELECT');
-            $fromPOS    = strpos($sql, 'FROM');
-            $fields     = substr($sql, $selectPOS, $fromPOS - $selectPOS );
-            $countField = $distinctField ? 'distinct ' . $distinctField : '*';
-            $sql        = str_replace($fields, " COUNT($countField) AS recTotal ", substr($sql, 0, $fromPOS)) . substr($sql, $fromPOS);
-
-            /*
-             * 去掉SQL语句中order和limit之后的部分。
-             * Remove the part after order and limit.
-             **/
-            $subLength = strlen($sql);
-            $orderPOS  = strripos($sql, 'order by');
-            $limitPOS  = strripos($sql, 'limit');
-            if($limitPOS) $subLength = $limitPOS;
-            if($orderPOS) $subLength = $orderPOS;
-            $sql = substr($sql, 0, $subLength);
-            self::$querys[] = $sql;
-
-            /* 
-             * 获取记录数。
-             * Get the records count.
-             **/
-            try
-            {
-                $row = $this->dbh->query($sql)->fetch(PDO::FETCH_OBJ);
-            }
-            catch (PDOException $e) 
-            {
-                $this->sqlError($e);
-            }
-
-            $pager->setRecTotal($row->recTotal);
+            $recTotal = $this->count($distinctField);
+            $pager->setRecTotal($recTotal);
             $pager->setPageTotal();
         }
         $this->sqlobj->limit($pager->limit());
@@ -971,6 +957,7 @@ class dao
      * 
      * @param  string $fieldName    the field to check
      * @param  string $funcName     the check rule
+     * @param  string $condition     the condition
      * @access public
      * @return object the dao object self.
      */
@@ -1392,6 +1379,7 @@ class sql
     private $conditionIsTrue = false;
 
     /**
+     * WHERE条件嵌套小括号标记。
      * If in mark or not.
      * 
      * @var bool
@@ -1589,15 +1577,8 @@ class sql
             $set = '`' . str_replace('`', '', $set) . '`';
         }
 
-        if($this->isFirstSet)
-        {
-            $this->sql .= " $set ";
-            $this->isFirstSet = false;
-        }
-        else
-        {
-            $this->sql .= ", $set";
-        }
+        $this->sql .= $this->isFirstSet ? " $set" : ", $set";
+        if($this->isFirstSet) $this->isFirstSet = false;
         return $this;
     }
 
@@ -1791,6 +1772,7 @@ class sql
     }
 
     /**
+     * 创建'>='
      * Create '>='.
      * 
      * @param  string $value 
@@ -1820,6 +1802,7 @@ class sql
     }
 
     /**
+     * 创建 '<='。
      * Create '<='.
      * 
      * @param  mixed  $value 
@@ -1897,6 +1880,7 @@ class sql
     }
 
     /**
+     * 创建NOT LIKE部分。
      * Create the not like by part.
      * 
      * @param  string $string 

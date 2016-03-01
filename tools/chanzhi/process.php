@@ -164,37 +164,6 @@ $baseControl[$i] = "\n" . $addLines . $baseControl[$i];
 file_put_contents($chanzhiPath . 'framework/control.class.php', join("\n", $baseControl));
 unset($addLines);
 
-$baseModel  = trim(file_get_contents($chanzhiPath . 'framework/model.class.php'));
-$mergeModel = file_get_contents(dirname(__FILE__) . '/model.class.php');
-$baseModel  = explode("\n", $baseModel);
-
-$delete    = $mergeModel;
-$startLine = 0;
-$mark      = '';
-$endTag    = -1;
-foreach($baseModel as $i => $line)
-{
-    if($startLine and strpos($line, '{') !== false) $endTag ++;
-    if($startLine and strpos($line, '}') !== false) $endTag --;
-    if($endTag == 0 and $mark)
-    {
-        $baseModel[$startLine] = rtrim($$mark);
-        unset($baseModel[$i]);
-        $startLine = 0;
-        $endTag    = -1;
-        $mark      = '';
-    }
-    if(strpos($line, 'function delete(') !== false)
-    {
-        $startLine = $i;
-        $mark = 'delete';
-    }
-    if($mark and $endTag == -1) $endTag = 0;
-    if($startLine) unset($baseModel[$i]);
-}
-ksort($baseModel);
-file_put_contents($chanzhiPath . 'framework/model.class.php', join("\n", $baseModel));
-
 $baseHelper  = trim(file_get_contents($chanzhiPath . 'framework/helper.class.php'));
 $mergeHelper = file(dirname(__FILE__) . '/helper.class.php');
 $baseHelper  = explode("\n", $baseHelper);
@@ -207,6 +176,12 @@ foreach($mergeHelper as $i => $line)
     {
         $createLink = $line;
         $mark   = 'createLink';
+        $first  = true;
+    }
+    if(strpos($line, 'function getDevice(') !== false)
+    {
+        $inLink = $line;
+        $mark   = 'getDevice';
         $first  = true;
     }
     if(strpos($line, 'function inLink(') !== false)
@@ -250,6 +225,11 @@ foreach($baseHelper as $i => $line)
     {
         $startLine = $i;
         $mark = 'createLink';
+    }
+    if(strpos($line, 'function getDevice(') !== false)
+    {
+        $startLine = $i;
+        $mark = 'getDevice';
     }
     if(strpos($line, 'function inLink(') !== false)
     {
