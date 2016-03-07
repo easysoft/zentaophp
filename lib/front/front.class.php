@@ -455,7 +455,7 @@ class html
         $label = empty($label) ? $lang->save : $label;
         $misc .= strpos($misc, 'data-loading') === false ? " data-loading='$lang->loading'" : '';
 
-        return " <input type='submit' id='submit' class='$class' value='$label' $misc /> ";
+        return " <button type='submit' id='submit' class='$class' $misc>$label</button>";
     }
 
     /**
@@ -498,7 +498,7 @@ class html
             global $lang;
             $label = $lang->goback;
         }
-        return  "<a href='javascript:history.go(-1);' class='btn btn-back' $misc >{$label}</a>";
+        return  "<a href='javascript:history.go(-1);' class='btn btn-back' $misc>{$label}</a>";
     }
 
     /**
@@ -516,7 +516,7 @@ class html
     public static function commonButton($label = '', $class = 'btn btn-default', $misc = '', $icon = '')
     {
         if($icon) $label = "<i class='icon-" . $icon . "'></i> " . $label;
-        return " <input type='button' value='$label' class='$class' $misc /> ";
+        return " <button type='button' class='$class' $misc>$label</button>";
     }
 
     /**
@@ -544,7 +544,7 @@ class html
             $onlybody = strpos($link, '?') === false ? "?onlybody=yes" : "&onlybody=yes";
             $link .= $onlybody;
         }
-        return " <input type='button' value='$label' class='$class' $misc onclick='$target.location.href=\"$link\"' /> ";
+        return " <button type='button' class='$class' $misc onclick='$target.location.href=\"$link\"'>$label</button>";
     }
 
     /**

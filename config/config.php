@@ -67,6 +67,8 @@ $config->slaveDB->strictMode = false;
 $config->framework = new stdclass();
 $config->framework->jsWithPrefix = true;
 $config->framework->logDays      = 14;
+$config->framework->stripXSS     = false;
+$config->framework->purifier     = true;
 
 define('LANG_CREATED', false);
 /* 引用自定义的配置。 Include the custom config file. */

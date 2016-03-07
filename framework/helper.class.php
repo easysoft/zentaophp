@@ -176,6 +176,7 @@ class helper
         $extFiles  = array();
         foreach($modelExtPaths as $modelExtPath)
         {
+            if(empty($modelExtPath)) continue;
             $hookFiles = array_merge($hookFiles, helper::ls($modelExtPath . 'hook/', '.php'));
             $extFiles  = array_merge($extFiles, helper::ls($modelExtPath, '.php'));
         }
@@ -786,10 +787,9 @@ class helper
     public static function setViewType()
     {
         global $config, $app;
-        if($config->requestType == 'PATH_INFO')
+        if($config->requestType != 'GET')
         {
-            $pathInfo = $app->getPathInfo('PATH_INFO');
-            if(empty($pathInfo)) $pathInfo = $app->getPathInfo('ORIG_PATH_INFO');
+            $pathInfo = $app->getPathInfo();
             if(!empty($pathInfo))
             {
                 $dotPos = strrpos($pathInfo, '.');
@@ -843,12 +843,15 @@ class helper
             {
                 if(!is_object($record))
                 {
-                    $config2Merge->{$item->key} = $item->value;
+                    if($item->section and !isset($config2Merge->{$item->section})) $config2Merge->{$item->section} = new stdclass();
+                    $configItem = $item->section ? $config2Merge->{$item->section} : $config2Merge;
+                    if($item->key) $configItem->{$item->key} = $item->value;
                     break;
                 }
 
-                if(!isset($config2Merge->{$record->section})) $config2Merge->{$record->section} = new stdclass();
-                if($record->key) $config2Merge->{$record->section}->{$record->key} = $record->value;
+                if($record->section and !isset($config2Merge->{$record->section})) $config2Merge->{$record->section} = new stdclass();
+                $configItem = $record->section ? $config2Merge->{$record->section} : $config2Merge;
+                if($record->key) $configItem->{$record->key} = $record->value;
             }
         }
     }
@@ -1201,12 +1204,20 @@ function header301($url)
  */
 function processEvil($value)
 {
+    global $config;
     if(strpos(htmlspecialchars_decode($value), '<?') !== false)
     {
         $value       = (string) $value;
         $evils       = array('eval', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system', '$$', 'include', 'require', 'assert');
         $gibbedEvils = array('e v a l', 'e x e c', ' p a s s t h r u', ' p r o c _ o p e n', 's h e l l _ e x e c', 's y s t e m', '$ $', 'i n c l u d e', 'r e q u i r e', 'a s s e r t');
-        return str_ireplace($evils, $gibbedEvils, $value);
+        $value       = str_ireplace($evils, $gibbedEvils, $value);
+    }
+    if(isset($config->framework->stripXSS) and $config->framework->stripXSS and stripos($value, '<script') !== false)
+    {
+        $value       = (string) $value;
+        $evils       = array('appendchild', 'insertBefore', 'createElement', 'xss.re', 'autofocus', 'onfocus', 'onclick', 'innerHTML');
+        $gibbedEvils = array('a p p e n d c h i l d', 'i n s e r t B e f o r e', 'c r e a t e E l e m e n t', 'x s s . r e', 'a u t o f o c u s', 'o n f o c u s', 'o n c l i c k', 'i n n e r H T M L');
+        $value       = str_ireplace($evils, $gibbedEvils, $value);
     }
     return $value;
 }
