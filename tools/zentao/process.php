@@ -34,10 +34,28 @@ ksort($baseModel);
 file_put_contents($zentaoPath . 'framework/model.class.php', join("\n", $baseModel));
 
 $baseFront  = trim(file_get_contents($zentaoPath . 'lib/front/front.class.php'));
-$mergeFront = file_get_contents(dirname(__FILE__) . '/front.class.php');
+$mergeFront = file(dirname(__FILE__) . '/front.class.php');
 $baseFront  = explode("\n", $baseFront);
 
-$a         = $mergeFront;
+$mark  = '';
+foreach($mergeFront as $i => $line)
+{
+    $first = false;
+    if(strpos($line, 'function a(') !== false)
+    {
+        $a = $line;
+        $mark = 'a';
+        $first = true;
+    }
+    if(strpos($line, 'function selectButton(') !== false)
+    {
+        $selectButton = $line;
+        $mark = 'selectButton';
+        $first = true;
+    }
+    if($mark and !$first) $$mark .= $line;
+}
+
 $startLine = 0;
 $mark      = '';
 $endTag    = -1;
@@ -57,6 +75,11 @@ foreach($baseFront as $i => $line)
     {
         $startLine = $i;
         $mark = 'a';
+    }
+    if(strpos($line, 'function selectButton(') !== false)
+    {
+        $startLine = $i;
+        $mark = 'selectButton';
     }
     if($mark and $endTag == -1) $endTag = 0;
     if($startLine) unset($baseFront[$i]);

@@ -14,3 +14,8 @@
         if($target == '_self') return "<a href='$href' $misc>$title</a>$newline";
         return "<a href='$href' target='$target' $misc>$title</a>$newline";
     }
+    static public function selectButton($scope = "", $appendClass = 'btn')
+    {
+        global $lang;
+        return "<div class='checkbox $appendClass'><label><input type='checkbox' data-scope='$scope' class='rows-selector'> $lang->select</label></div>";
+    }
