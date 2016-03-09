@@ -507,8 +507,8 @@ class dao
     }
 
     /**
-     * 设置需要更新或插入的数据。
-     * Set the data to update or insert.
+     * 设置需要更新的数据。
+     * Set the data to update .
      * 
      * @param  object $data  the data object or array
      * @access public
@@ -525,6 +525,21 @@ class dao
 
         $this->sqlobj->data($data, $skipFields);
         return $this;
+    }
+	
+	 /**
+     * 设置需要插入的数据。
+     * Set the data to insert.
+     * 
+     * @param  object $data  the data object or array
+     * @access public
+     * @return object the dao object self.
+     */
+	    public function datatoInsert($data)
+    {
+    	if(!is_object($data)) $data = (object)$data;
+    	$this->sqlobj->dataforInsert($data);
+    	return $this;
     }
 
     //-------------------- sql相关的方法(The sql related method) --------------------//
@@ -1527,6 +1542,27 @@ class sql
         $this->sql  = rtrim($this->sql, ',');    // Remove the last ','.
         return $this;
     }
+    
+    /**
+     * 将关联数组转换为sql语句中 ($field1,$field2,....)VALUES($value1,$value2,...) 的形式。
+     * Join the data items by ($field1,$field2,....)VALUES($value1,$value2,...).
+     * 
+     * @param  object $data 
+     * @access public
+     * @return object the sql object.
+     */
+	    public function datatoInsert($data)
+    {
+    	$this->data = $data;
+    	$fileds = $values = array();
+    	foreach($data as $field => $value) 
+    	{
+    		$fields[]= $field; 
+    		$values[]=$this->quote($value);
+    	}
+    	$this->sql.=' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')';
+    	return $this;
+	}
 
     /**
      * 在左边添加'('。
