@@ -7,7 +7,7 @@
         /* if page has onlybody param then add this param in all link. the param hide header and footer. */
         if(strpos($href, 'onlybody=yes') === false and isonlybody())
         {
-            $onlybody = $config->requestType != 'GET' ? "?onlybody=yes" : "&onlybody=yes";
+            $onlybody = strpos($link, '?') === false ? "?onlybody=yes" : "&onlybody=yes";
             $href .= $onlybody;
         }
 

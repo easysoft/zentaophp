@@ -181,26 +181,4 @@ class myrouter extends router
         $this->lang = $lang;
         return $lang;
     }
-
-    public function getPathInfo()
-    {
-        if(isset($_SERVER['PATH_INFO']))
-        {
-            $value = $_SERVER['PATH_INFO'];
-        }
-        elseif(isset($_SERVER['ORIG_PATH_INFO']))
-        {
-            $value = $_SERVER['ORIG_PATH_INFO'];
-        }
-        else
-        {
-            $value = @getenv('PATH_INFO');
-            if(empty($value)) $value = @getenv('ORIG_PATH_INFO');
-            if(strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
-        }
-
-        if(strpos($value, '?') === false) return trim($value, '/');
-        $value = parse_url($value);
-        return trim($value['path'], '/');
-    }
 }
