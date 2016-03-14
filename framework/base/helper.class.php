@@ -950,21 +950,13 @@ class baseHelper
      */
     public static function getClientDevice()
     {
-        global $app, $config;
-
-        $viewType = $app->getViewType();
-        if($viewType == 'mhtml') return 'mobile';
+        global $config;
 
         if(isset($_COOKIE['visualDevice'])) return $_COOKIE['visualDevice'];
 
         /* Detect mobile. */
-        $mobile = $app->loadClass('mobile');
-        if($mobile->isMobile())
-        {
-            if(!isset($config->template->mobile)) return 'desktop';
-            if(isset($config->site->mobileTemplate) and $config->site->mobileTemplate == 'close') return 'desktop';
-            return 'mobile';
-        }
+        $mobile = new mobile();
+        if(!$mobile->isTablet() and $mobile->isMobile()) return 'mobile';
         return 'desktop';
     }
 }

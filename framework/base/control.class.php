@@ -205,7 +205,7 @@ class baseControl
         $this->viewType = $this->app->getViewType();
         $this->appName  = $appName ? $appName : $this->app->getAppName();
 
-        /*
+        /**
          * 设置当前模块，读取该模块的model类。
          * Load the model file auto.
          */
@@ -213,10 +213,17 @@ class baseControl
         $this->setMethodName($methodName);
         $this->loadModel($this->moduleName, $appName);
 
-        /*
+        /**
+         * 如果客户端是手机的话，视图文件增加m.前缀。
+         * If the clent is mobile, add m. as prefix for view file.
+         */
+        $this->setClientDevice();
+        $this->setDevicePrefix();
+
+        /**
          * 初始化$view视图类。
          * Init the view vars.
-         **/
+         */
         $this->view = new stdclass();
         $this->view->app     = $app;
         $this->view->lang    = $lang;
@@ -224,13 +231,7 @@ class baseControl
         $this->view->common  = $common;
         $this->view->title   = '';
 
-        /*
-         * 如果客户端是手机的话，视图文件增加m.前缀。
-         * If the clent is mobile, add m. as prefix for view file.
-         */
-        $this->setDevicePrefix();
-
-        /*
+        /**
          * 设置超级变量，从$app引用过来。
          * Set super vars.
          */
@@ -252,7 +253,8 @@ class baseControl
         $this->moduleName = $moduleName ? strtolower($moduleName) : $this->app->getModuleName();
     }
 
-    /* Set the method name.
+    /**
+     * set the method name.
      * 设置方法名。
      * 
      * @param   string  $methodName   方法名，如果为空，则从$app中获取。The method name, if empty, get it from $app.   
@@ -279,7 +281,7 @@ class baseControl
         if(empty($appName))    $appName    = $this->appName;
         $modelFile = helper::setModelFile($moduleName, $appName);
 
-        /* 
+        /**
          * 如果没有model文件，尝试加载config配置信息。
          * If no model file, try load config. 
          */
@@ -291,7 +293,7 @@ class baseControl
             return false;
         }
 
-        /* 
+        /** 
          * 如果没有扩展文件，model类名是$moduleName + 'model'，如果有扩展，还需要增加ext前缀。
          * If no extension file, model class name is $moduleName + 'model', else with 'ext' as the prefix.
          */
@@ -302,7 +304,7 @@ class baseControl
             if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
         }
 
-        /* 
+        /** 
          * 初始化model对象，在control对象中可以通过$this->$moduleName来引用。同时将dao对象赋为control对象的成员变量，方便引用。
          * Init the model object thus you can try $this->$moduleName to access it. Also assign the $dao object as a member of control object.
          */
@@ -329,6 +331,18 @@ class baseControl
     }
 
     /**
+     * 设置客户端的设备类型。
+     * Set client device.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setClientDevice()
+    {
+        $this->clientDevice = $this->app->clientDevice;
+    }
+
+    /**
      * 如果客户端是手机的话，视图文件增加m.前缀。
      * If the clent is mobile, add m. as prefix for view file.
      *
@@ -338,19 +352,6 @@ class baseControl
     public function setDevicePrefix()
     {
         $this->devicePrefix = zget($this->config->devicePrefix, $this->viewType, '');
-    }
-
-    /**
-     * 设置客户端的设备类型
-     * Set client device.
-     * 
-     * @access public
-     * @return void
-     */
-    public function setClientDevice()
-    {
-        $this->clientDevice      = helper::getClientDevice();
-        $this->app->clientDevice = $this->clientDevice;
     }
 
     //-------------------- 视图相关方法(View related methods) --------------------//
@@ -473,7 +474,7 @@ class baseControl
     /**
      * 获取适用于当前方法的js：该模块公用的js + 当前方法的js + 扩展的js。
      * Get js codes applied to current method: module common js + method js + extension js.
-    * 
+     * 
      * @param  string    $moduleName 
      * @param  string    $methodName 
      * @access public
@@ -579,6 +580,9 @@ class baseControl
         unset($this->view->header);
         unset($this->view->position);
         unset($this->view->moduleTree);
+        unset($this->view->common);
+        unset($this->view->pager->app);
+        unset($this->view->pager->lang);
 
         $output['status'] = is_object($this->view) ? 'success' : 'fail';
         $output['data']   = json_encode($this->view);
@@ -664,7 +668,7 @@ class baseControl
             return $this->output;
         }
 
-        /*
+        /**
          * 设置引用的文件和路径。
          * Set the pathes and files to included.
          **/
