@@ -214,12 +214,6 @@ class baseControl
         $this->loadModel($this->moduleName, $appName);
 
         /*
-         * 设置访问
-         * Init the view vars.
-         */
-        $this->setDevicePrefix();
-
-        /*
          * 初始化$view视图类。
          * Init the view vars.
          **/
@@ -229,6 +223,12 @@ class baseControl
         $this->view->config  = $config;
         $this->view->common  = $common;
         $this->view->title   = '';
+
+        /*
+         * 如果客户端是手机的话，视图文件增加m.前缀。
+         * If the clent is mobile, add m. as prefix for view file.
+         */
+        $this->setDevicePrefix();
 
         /*
          * 设置超级变量，从$app引用过来。
@@ -243,7 +243,7 @@ class baseControl
      * 设置模块名。 
      * Set the module name. 
      * 
-     * @param   string  $moduleName  模块名，如果为空，则从$app中获取   The module name, if empty, get it from $app.
+     * @param   string  $moduleName  模块名，如果为空，则从$app中获取. The module name, if empty, get it from $app.
      * @access  public
      * @return  void
      */
@@ -255,7 +255,7 @@ class baseControl
     /* Set the method name.
      * 设置方法名。
      * 
-     * @param   string  $methodName   方法名，如果为空，则从$app中获取   The method name, if empty, get it from $app.   
+     * @param   string  $methodName   方法名，如果为空，则从$app中获取。The method name, if empty, get it from $app.   
      * @access  public
      * @return  void
      */
@@ -268,10 +268,10 @@ class baseControl
      * 加载指定模块的model文件。
      * Load the model file of one module.
      * 
-     * @param   string  $moduleName 模块名，如果为空，使用当前模块  The module name, if empty, use current module's name.
+     * @param   string  $moduleName 模块名，如果为空，使用当前模块。The module name, if empty, use current module's name.
      * @param   string  $appName    The app name, if empty, use current app's name.
      * @access  public
-     * @return  object|bool 如果没有model文件，返回false，否则返回model对象。 If no model file, return false. Else return the model object.
+     * @return  object|bool 如果没有model文件，返回false，否则返回model对象。If no model file, return false, else return the model object.
      */
     public function loadModel($moduleName = '', $appName = '')
     {
@@ -291,6 +291,10 @@ class baseControl
             return false;
         }
 
+        /* 
+         * 如果没有扩展文件，model类名是$moduleName + 'model'，如果有扩展，还需要增加ext前缀。
+         * If no extension file, model class name is $moduleName + 'model', else with 'ext' as the prefix.
+         */
         $modelClass = class_exists('ext' . $appName . $moduleName. 'model') ? 'ext' . $appName . $moduleName . 'model' : $appName . $moduleName . 'model';
         if(!class_exists($modelClass))
         {
@@ -298,6 +302,10 @@ class baseControl
             if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
         }
 
+        /* 
+         * 初始化model对象，在control对象中可以通过$this->$moduleName来引用。同时将dao对象赋为control对象的成员变量，方便引用。
+         * Init the model object thus you can try $this->$moduleName to access it. Also assign the $dao object as a member of control object.
+         */
         $this->$moduleName = new $modelClass($appName);
         $this->dao = $this->$moduleName->dao;
         return $this->$moduleName;
@@ -321,9 +329,9 @@ class baseControl
     }
 
     /**
-     * 为客户端是PC还是移动设备，设置视图文件前缀名。
-     * Set the prefix of view file for mobile or PC.
-     * 
+     * 如果客户端是手机的话，视图文件增加m.前缀。
+     * If the clent is mobile, add m. as prefix for view file.
+     *
      * @access public
      * @return void
      */
@@ -348,8 +356,8 @@ class baseControl
     //-------------------- 视图相关方法(View related methods) --------------------//
 
     /**
-     * 设置视图文件，可以获取其他模块的视图文件。
-     * Set the view file, thus can use fetch other module's page.
+     * 设置视图文件：主视图文件，扩展视图文件， 站点扩展视图文件，以及钩子脚本。
+     * Set view files: the main file, extension view file, site extension view file and hook files.
      * 
      * @param  string   $moduleName    module name
      * @param  string   $methodName    method name
@@ -363,17 +371,9 @@ class baseControl
 
         $modulePath  = $this->app->getModulePath($this->appName, $moduleName);
         $viewExtPath = $this->app->getModuleExtPath($this->appName, $moduleName, 'view');
+        $viewType    = $this->viewType == 'mhtml' ? 'html' : $this->viewType;
 
-        /* Set viewType to html when it is mhtml. */
-        $viewType = $this->viewType == 'mhtml' ? 'html' : $this->viewType;
-
-        /*
-         * 主视图文件，扩展视图文件和钩子文件。
-         * The main view file, extension view file and hook file.
-         **/
-        $mainViewFile = $modulePath . 'view' . DS . $this->devicePrefix . $methodName . '.' . $viewType . '.php';
-
-        /* Extension view file. */
+        $mainViewFile      = $modulePath . 'view' . DS . $this->devicePrefix . $methodName . '.' . $viewType . '.php';
         $commonExtViewFile = $viewExtPath['common'] . $this->devicePrefix . $methodName . ".{$viewType}.php";
         $siteExtViewFile   = empty($viewExtPath['site']) ? '' : $viewExtPath['site'] . $this->devicePrefix . $methodName . ".{$viewType}.php";
 
@@ -381,16 +381,16 @@ class baseControl
         $viewFile = (!empty($siteExtViewFile) and file_exists($siteExtViewFile)) ? $siteExtViewFile : $viewFile;
         if(!is_file($viewFile)) $this->app->triggerError("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
 
-        /* Extension hook file. */
         $commonExtHookFiles = glob($viewExtPath['common'] . $this->devicePrefix . $methodName . ".*.{$viewType}.hook.php");
         $siteExtHookFiles   = empty($viewExtPath['site']) ? '' : glob($viewExtPath['site'] . $this->devicePrefix . $methodName . ".*.{$viewType}.hook.php");
         $extHookFiles       = array_merge((array) $commonExtHookFiles, (array) $siteExtHookFiles);
+
         if(!empty($extHookFiles)) return array('viewFile' => $viewFile, 'hookFiles' => $extHookFiles);
         return $viewFile;
     }
 
     /**
-     * 获取视图的扩展文件，在ext/view/目录下
+     * 获取某一个视图文件的扩展。
      * Get the extension file of an view.
      * 
      * @param  string $viewFile 
@@ -426,8 +426,8 @@ class baseControl
     }
 
     /**
-     * 获取方法的css内容，common.css + 该方法的css。 
-     * Get css code for a method. 
+     * 获取适用于当前方法的css：该模块公用的css + 当前方法的css + 扩展的css。
+     * Get css codes applied to current method: module common css + method css + extension css.
      * 
      * @param  string    $moduleName 
      * @param  string    $methodName 
@@ -451,39 +451,29 @@ class baseControl
         if(is_file($methodCssFile))   $css .= file_get_contents($methodCssFile);
 
         $cssExtFiles = glob($cssCommonExt . $this->devicePrefix . '*.css');
-        if(!empty($cssExtFiles) and is_array($cssExtFiles))
-        {
-            foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-        }
+        if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
 
         $cssExtFiles = glob($cssMethodExt . $this->devicePrefix . '*.css');
-        if(!empty($cssExtFiles) and is_array($cssExtFiles))
-        {
-            foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-        }
+        if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
+
         if(!empty($cssExtPath['site']))
         {
             $cssMethodExt = $cssExtPath['site'] . $methodName . DS;
             $cssCommonExt = $cssExtPath['site'] . 'common' . DS;
             $cssExtFiles = glob($cssCommonExt . $this->devicePrefix . '*.css');
-            if(!empty($cssExtFiles) and is_array($cssExtFiles))
-            {
-                foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-            }
+            if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
 
             $cssExtFiles = glob($cssMethodExt . $this->devicePrefix . '*.css');
-            if(!empty($cssExtFiles) and is_array($cssExtFiles))
-            {
-                foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-            }
+            if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
         }
+
         return $css;
     }
 
     /**
-     * 获取方法的js，common.js + 该方法的js。
-     * Get js code for a method. 
-     * 
+     * 获取适用于当前方法的js：该模块公用的js + 当前方法的js + 扩展的js。
+     * Get js codes applied to current method: module common js + method js + extension js.
+    * 
      * @param  string    $moduleName 
      * @param  string    $methodName 
      * @access public
@@ -506,16 +496,10 @@ class baseControl
         if(is_file($methodJsFile))     $js .= file_get_contents($methodJsFile);
 
         $jsExtFiles = glob($jsCommonExt . $this->devicePrefix . '*.js');
-        if(!empty($jsExtFiles) and is_array($jsExtFiles))
-        {
-            foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-        }
+        if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
 
         $jsExtFiles = glob($jsMethodExt . $this->devicePrefix . '*.js');
-        if(!empty($jsExtFiles) and is_array($jsExtFiles))
-        {
-            foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-        }
+        if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
 
         if(!empty($jsExtPath['site']))
         {
@@ -523,17 +507,12 @@ class baseControl
             $jsCommonExt = $jsExtPath['site'] . 'common' . DS;
 
             $jsExtFiles = glob($jsCommonExt . $this->devicePrefix . '*.js');
-            if(!empty($jsExtFiles) and is_array($jsExtFiles))
-            {
-                foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-            }
+            if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
 
             $jsExtFiles = glob($jsMethodExt . $this->devicePrefix . '*.js');
-            if(!empty($jsExtFiles) and is_array($jsExtFiles))
-            {
-                foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-            }
+            if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
         }
+
         return $js;
     }
 
@@ -552,7 +531,7 @@ class baseControl
     }
 
     /**
-     * 将之前打算输出的内容清空。
+     * 清空$output。
      * Clear the output.
      *
      * @access public
@@ -564,7 +543,7 @@ class baseControl
     }
 
     /**
-     * 根据请求的视图类型，生成输出内容。
+     * 渲染视图文件。
      * Parse view file. 
      *
      * @param  string $moduleName    module name, if empty, use current module.
@@ -577,19 +556,14 @@ class baseControl
         if(empty($moduleName)) $moduleName = $this->moduleName;
         if(empty($methodName)) $methodName = $this->methodName;
 
-        if($this->viewType == 'json')
-        {
-            $this->parseJSON($moduleName, $methodName);
-        }
-        else
-        {
-            $this->parseDefault($moduleName, $methodName);
-        }
+        if($this->viewType == 'json') $this->parseJSON($moduleName, $methodName);
+        if($this->viewType != 'json') $this->parseDefault($moduleName, $methodName);
+
         return $this->output;
     }
 
     /**
-     * 请求为json格式的处理逻辑。 
+     * 渲染json格式。
      * Parse json format.
      *
      * @param string $moduleName    module name
@@ -609,12 +583,13 @@ class baseControl
         $output['status'] = is_object($this->view) ? 'success' : 'fail';
         $output['data']   = json_encode($this->view);
         $output['md5']    = md5(json_encode($this->view));
+
         $this->output     = json_encode($output);
     }
 
     /**
-     * 其他请求格式的处理逻辑，输出视图文件的内容。
-     * Parse default html format.
+     * 默认渲染方法，适用于viewType = html的时候。
+     * Default parse method when viewType != json, like html.
      *
      * @param string $moduleName    module name
      * @param string $methodName    method name
@@ -623,21 +598,34 @@ class baseControl
      */
     public function parseDefault($moduleName, $methodName)
     {
-        /* Set the view file. Fix it for php7. */
+        /**
+         * 设置视图文件。(PHP7有一个bug，不能直接$viewFile = $this->setViewFile())。
+         * Set viewFile. (Can't assign $viewFile = $this->setViewFile() directly because one php7's bug.)
+         */
         $results  = $this->setViewFile($moduleName, $methodName);
         $viewFile = $results;
         if(is_array($results)) extract($results);
 
-        /* Get css and js. */
+        /**
+         * 获得当前页面的CSS和JS。
+         * Get css and js codes for current method. 
+         */
         $css = $this->getCSS($moduleName, $methodName);
         $js  = $this->getJS($moduleName, $methodName);
         if($css) $this->view->pageCSS = $css;
         if($js)  $this->view->pageJS  = $js;
 
-        /* Change the dir to the view file to keep the relative pathes work. */
+        /**
+         * 切换到视图文件所在的目录，以保证视图文件里面的include语句能够正常运行。
+         * Change the dir to the view file to keep the relative pathes work. 
+         */
         $currentPWD = getcwd();
         chdir(dirname($viewFile));
 
+        /**
+         * 使用extract安定ob方法渲染$viewFile里面的代码。
+         * Use extract and ob functions to eval the codes in $viewFile.
+         */
         extract((array)$this->view);
         ob_start();
         include $viewFile;
@@ -645,7 +633,10 @@ class baseControl
         $this->output .= ob_get_contents();
         ob_end_clean();
 
-        /* At the end, chang the dir to the previous. */
+        /**
+         * 渲染完毕后，再切换回之前的路径。
+         * At the end, chang the dir to the previous. 
+         */
         chdir($currentPWD);
     }
 
@@ -689,32 +680,42 @@ class baseControl
             $file2Included     = file_exists($siteActionExtFile) ? $siteActionExtFile : $file2Included;
         }
 
-        /* 加载控制器文件。 */
-        /* Load the control file. */
+        /**
+         * 加载控制器文件。
+         * Load the control file. 
+         */
         if(!is_file($file2Included)) $this->app->triggerError("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
         $currentPWD = getcwd();
         chdir(dirname($file2Included));
         if($moduleName != $this->moduleName) helper::import($file2Included);
 
-        /* 设置调用的类名。 */
-        /* Set the name of the class to be called. */
+        /**
+         * 设置调用的类名。
+         * Set the name of the class to be called. 
+         */
         $className = class_exists("my$moduleName") ? "my$moduleName" : $moduleName;
         if(!class_exists($className)) $this->app->triggerError(" The class $className not found", __FILE__, __LINE__, $exit = true);
 
-        /* 解析参数，创建模块control对象。 */
-        /* Parse the params, create the $module control object. */
+        /**
+         * 解析参数，创建模块control对象。
+         * Parse the params, create the $module control object. 
+         */
         if(!is_array($params)) parse_str($params, $params);
         $module = new $className($moduleName, $methodName, $appName);
 
-        /* 调用对应方法，使用ob方法获取输出内容。 */
-        /* Call the method and use ob function to get the output. */
+        /**
+         * 调用对应方法，使用ob方法获取输出内容。
+         * Call the method and use ob function to get the output. 
+         */
         ob_start();
         call_user_func_array(array($module, $methodName), $params);
         $output = ob_get_contents();
         ob_end_clean();
 
-        /* 返回内容。 */
-        /* Return the content. */
+        /**
+         * 返回内容。
+         * Return the content. 
+         */
         unset($module);
         chdir($currentPWD);
         return $output;
@@ -734,11 +735,12 @@ class baseControl
         if(empty($this->output)) $this->parse($moduleName, $methodName);
         echo $this->output;
     }
+
     /** 
      * 直接输出data数据，通常用于ajax请求中。
      * Send data directly, for ajax requests.
      *
-     * @param  misc    $data 
+     * @param  misc   $data 
      * @param  string $type 
      * @access public
      * @return void
@@ -753,8 +755,7 @@ class baseControl
         /**
          * 响应非ajax的请求。
          * Response request not ajax. 
-         **/
-
+         */
         if(isset($data['result']) and $data['result'] == 'success')
         {
             if(!empty($data['message'])) echo js::alert($data['message']);
