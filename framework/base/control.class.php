@@ -217,6 +217,7 @@ class baseControl
          * 设置访问
          * Init the view vars.
          */
+        $this->setClientDevice();
         $this->setDevicePrefix();
 
         /*
@@ -341,8 +342,7 @@ class baseControl
      */
     public function setClientDevice()
     {
-        $this->clientDevice      = helper::getClientDevice();
-        $this->app->clientDevice = $this->clientDevice;
+        $this->clientDevice = $this->app->clientDevice;
     }
 
     //-------------------- 视图相关方法(View related methods) --------------------//
@@ -605,6 +605,9 @@ class baseControl
         unset($this->view->header);
         unset($this->view->position);
         unset($this->view->moduleTree);
+        unset($this->view->common);
+        unset($this->view->pager->app);
+        unset($this->view->pager->lang);
 
         $output['status'] = is_object($this->view) ? 'success' : 'fail';
         $output['data']   = json_encode($this->view);
