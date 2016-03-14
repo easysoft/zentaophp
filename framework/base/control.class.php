@@ -119,7 +119,7 @@ class baseControl
     public $cookie;
 
     /**
-     * $global对象，将$_GLOBAL数组改为对象，方便调用。
+     * $global对象，将$_COOKIE数组改为对象，方便调用。
      * The $global object, used to access the $_GLOBAL var.
      * 
      * @var ojbect
@@ -752,7 +752,7 @@ class baseControl
         if($type != 'json') die();
 
         $data = (array) $data;
-        if(helper::isAjaxRequest()) print(json_encode($data)) && die(helper::removeUTF8Bom(ob_get_clean()));
+        if(helper::isAjaxRequest()) print(json_encode($data)) and die(helper::removeUTF8Bom(ob_get_clean()));
 
         /**
          * 响应非ajax的请求。
