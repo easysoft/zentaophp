@@ -12,7 +12,7 @@
  */
 
 /**
- * baseControl基类，所有模块的control类都派生于它。
+ * baseControl基类.
  * The base class of control.
  *
  * @package framework
@@ -65,8 +65,8 @@ class baseControl
     public $dbh;
 
     /**
-     * $dao对象，封装SQL语句，方便数据库访问和更新。
-     * The $dao object, used to access or update database.
+     * $dao对象，实现sql的拼装和执行。
+     * The $dao object, used to join sql and excute sql.
      * 
      * @var object
      * @access public
@@ -74,8 +74,8 @@ class baseControl
     public $dao;
 
     /**
-     * $post对象，将$_POST数组改为对象，方便调用。
-     * The $post object, used to access the $_POST var.
+     * $post对象，用户可以通过$this->post->key来引用$_POST变量。
+     * The $post object, useer can access a post var by $this->post->key.
      * 
      * @var ojbect
      * @access public
@@ -83,8 +83,8 @@ class baseControl
     public $post;
 
     /**
-     * $get对象，将$_GET数组改为对象，方便调用。
-     * The $get object, used to access the $_GET var.
+     * $get对象，用户可以通过$this->get->key来引用$_GET变量。
+     * The $get object, useer can access a get var by $this->get->key.
      * 
      * @var ojbect
      * @access public
@@ -92,8 +92,8 @@ class baseControl
     public $get;
 
     /**
-     * $session对象，将$_SESSION数组改为对象，方便调用。
-     * The $session object, used to access the $_SESSION var.
+     * $session对象，用户可以通过$this->session->key来引用$_SESSION变量。
+     * The $session object, useer can access a session var by $this->session->key.
      * 
      * @var ojbect
      * @access public
@@ -101,8 +101,8 @@ class baseControl
     public $session;
 
     /**
-     * $server对象，将$_SERVER数组改为对象，方便调用。
-     * The $server object, used to access the $_SERVER var.
+     * $server对象，用户可以通过$this->server->key来引用$_SERVER变量。
+     * The $server object, useer can access a server var by $this->server->key.
      * 
      * @var ojbect
      * @access public
@@ -110,22 +110,13 @@ class baseControl
     public $server;
 
     /**
-     * $cookie对象，将$_COOKIE数组改为对象，方便调用。
-     * The $cookie object, used to access the $_COOKIE var.
+     * $cookie对象，用户可以通过$this->cookie->key来引用$_COOKIE变量。
+     * The $cookie object, useer can access a cookie var by $this->cookie->key.
      * 
      * @var ojbect
      * @access public
      */
     public $cookie;
-
-    /**
-     * $global对象，将$_COOKIE数组改为对象，方便调用。
-     * The $global object, used to access the $_GLOBAL var.
-     * 
-     * @var ojbect
-     * @access public
-     */
-    public $global;
 
     /**
      * 当前模块的名称。
@@ -146,7 +137,7 @@ class baseControl
     public $view; 
 
     /**
-     * 视图的类型，比如html json。
+     * 视图的类型，比如html, json。
      * The type of the view, such html, json.
      * 
      * @var string
@@ -164,7 +155,7 @@ class baseControl
     public $output;
 
     /**
-     * 客户端设备
+     * 客户端设备。
      * The client device.
      * 
      * @var string   
@@ -184,7 +175,7 @@ class baseControl
     /**
      * 构造方法。 
      * 
-     * 1. 将全局变量设为control类的成员变量，方便control的派生类调用； 
+     * 1. 将全局变量设为baseControl类的成员变量，方便baseControl的派生类调用； 
      * 2. 设置当前模块，读取该模块的model类；
      * 3. 初始化$view视图类。
      *
@@ -203,9 +194,9 @@ class baseControl
     public function __construct($moduleName = '', $methodName = '', $appName = '')
     {
         /*
-         * 将全局变量设为control类的成员变量，方便control的派生类调用。
-         * Global the globals, and refer them to the class member.
-         **/
+         * 将全局变量设为baseControl类的成员变量，方便baseControl的派生类调用。
+         * Global the globals, and refer them as a class member.
+         */
         global $app, $config, $lang, $dbh, $common;
         $this->app      = $app;
         $this->config   = $config;
@@ -217,10 +208,15 @@ class baseControl
         /*
          * 设置当前模块，读取该模块的model类。
          * Load the model file auto.
-         **/
+         */
         $this->setModuleName($moduleName);
         $this->setMethodName($methodName);
         $this->loadModel($this->moduleName, $appName);
+
+        /*
+         * 设置访问
+         * Init the view vars.
+         */
         $this->setDevicePrefix();
 
         /*
@@ -237,7 +233,7 @@ class baseControl
         /*
          * 设置超级变量，从$app引用过来。
          * Set super vars.
-         **/
+         */
         $this->setSuperVars();
     }
 
