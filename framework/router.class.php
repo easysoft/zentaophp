@@ -1,7 +1,9 @@
 <?php
 /**
- * 此文件包括ZenTaoPHP框架的三个类：router, config, lang。
- * The router, config and lang class file of ZenTaoPHP framework.
+ * router类从baseRouter类集成而来，您可以通过修改这个文件实现对baseRouter类的扩展。
+ * The router class extend from baseRouter class, you can extend baseRouter class by change this file.
+ *
+ * @package framework
  *
  * The author disclaims copyright to this source code. In place of 
  * a legal notice, here is a blessing:
@@ -10,14 +12,7 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-
 include dirname(__FILE__) . '/base/router.class.php';
-/**
- * router类。
- * The router class.
- *
- * @package framework
- */
 class router extends baseRouter
 {
 }
