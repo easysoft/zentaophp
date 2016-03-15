@@ -13,14 +13,14 @@
 
 /**
  * 该类实现了一些常用的方法
- * The baseHelper class, contains the tool functions.
+ * The baseHelper class, contains basic functions.
  *
  * @package framework
  */
 class baseHelper
 {
     /**
-     * 设置一个对象的成员变量
+     * 设置一个对象的成员变量。
      * Set the member's value of one object.
      * <code>
      * <?php
@@ -47,11 +47,8 @@ class baseHelper
     }
 
     /**
-     * 创建一个模块方法的链接
-     * control类的createLink实际上调用的是这个方法
-     *
-     * Create a link to a module's method.
-     * This method also mapped in control class to call conveniently.
+     * 生成一个模块方法的链接。control类的createLink实际上调用的是这个方法。
+     * Create a link to a module's method, mapped in control class to call conveniently.
      *
      * <code>
      * <?php
@@ -59,7 +56,7 @@ class baseHelper
      * helper::createLink('hello', 'index', array('var1' => 'value1', 'var2' => 'value2');
      * ?>
      * </code>
-     * @param string       $moduleName     module name
+     * @param string       $moduleName     module name, can pass appName like app.module.
      * @param string       $methodName     method name
      * @param string|array $vars           the params passed to the method, can be array('key' => 'value') or key1=value1&key2=value2) or key1=value1&key2=value2
      * @param string       $viewType       the view type
@@ -70,23 +67,41 @@ class baseHelper
      */
     static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '', $onlybody = false)
     {
+        /**
+         * 设置$appName和$moduleName。
+         * Set appName and moduleName. 
+         */
         global $app, $config;
         $appName = $app->getAppName();
         $appName = empty($appName) ? '' : $appName . '/';
-
         if(strpos($moduleName, '.') !== false) list($appName, $moduleName) = explode('.', $moduleName);
 
-        $link = $config->requestType == 'PATH_INFO' ? $config->webRoot . $appName : $config->webRoot . $appName . basename($_SERVER['SCRIPT_NAME']);
-        if($config->requestType == 'PATH_INFO2') $link .= '/';
-
-        /* 设置视图类型和变量。 */
-        /* Set the view type and vars. */
+        /**
+         * 处理$viewType和$vars。
+         * Set $viewType and $vars.
+         */
         if(empty($viewType)) $viewType = $app->getViewType();
         if(!is_array($vars)) parse_str($vars, $vars);
 
-        /* PATH_INFO方式。 */
-        /* The PATH_INFO and PATH_INFO2 type. */
-        if($config->requestType != 'GET')
+        /**
+         * 生成url链接的开始部分。
+         * Set the begin parts of the link.
+         */
+        if($config->requestType == 'PATH_INFO')  $link = $config->webRoot . $appName;
+        if($config->requestType != 'PATH_INFO')  $link = $config->webRoot . $appName . basename($_SERVER['SCRIPT_NAME']);
+        if($config->requestType == 'PATH_INFO2') $link .= '/';
+
+        /**
+         * 追加参数到url地址里面。
+         * Append vars to the link.
+         */
+        if($config->requestType == 'GET')
+        {
+            $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName";
+            if($viewType != 'html') $link .= "&{$config->viewVar}=" . $viewType;
+            foreach($vars as $key => $value) $link .= "&$key=$value";
+        }
+        else
         {
             /* 如果方法名与默认方法相等，并且参数是空的，转换为友好的链接地址。 */
             /* If the method equal the default method defined in the config file and the vars is empty, convert the link. */
@@ -113,12 +128,6 @@ class baseHelper
                 foreach($vars as $value) $link .= "{$config->requestFix}$value";
                 $link .= '.' . $viewType;
             }
-        }
-        else
-        {
-            $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName";
-            if($viewType != 'html') $link .= "&{$config->viewVar}=" . $viewType;
-            foreach($vars as $key => $value) $link .= "&$key=$value";
         }
 
         /* if page has onlybody param then add this param in all link. the param hide header and footer. */
@@ -846,18 +855,9 @@ class baseHelper
     public static function getRemoteIp()
     {
         $ip = '';
-        if(!empty($_SERVER['HTTP_CLIENT_IP']))
-        {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        }
-        else if(!empty($_SERVER["HTTP_X_FORWARDED_FOR"]))
-        {
-            $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-        }
-        else if(!empty($_SERVER["REMOTE_ADDR"]))
-        {
-            $ip = $_SERVER["REMOTE_ADDR"];
-        }
+        if(!empty($_SERVER["REMOTE_ADDR"]))          $ip = $_SERVER["REMOTE_ADDR"];
+        if(!empty($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+        if(!empty($_SERVER['HTTP_CLIENT_IP']))       $ip = $_SERVER['HTTP_CLIENT_IP'];
 
         return $ip;
     }
@@ -881,10 +881,7 @@ class baseHelper
         $networkLen = pow(2, 32 - $s[1]);
         $networkEnd = $networkStart + $networkLen - 1;
 
-        if ($ip >= $networkStart && $ip <= $networkEnd)
-        {
-            return true;
-        }
+        if ($ip >= $networkStart && $ip <= $networkEnd) return true;
         return false;
     }
 
@@ -910,6 +907,7 @@ class baseHelper
             preg_match('/^(((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d)(\.((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]\d)|\d)){3})$/', $ip, $matches);
             if(!empty($matches)) return true;
         }
+
         return false;
     }
 
