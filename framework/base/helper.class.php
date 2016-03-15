@@ -73,8 +73,8 @@ class baseHelper
          */
         global $app, $config;
         $appName = $app->getAppName();
-        $appName = empty($appName) ? '' : $appName . '/';
         if(strpos($moduleName, '.') !== false) list($appName, $moduleName) = explode('.', $moduleName);
+        $appName = empty($appName) ? '' : $appName . '/';
 
         /**
          * 处理$viewType和$vars。
