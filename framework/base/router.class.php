@@ -612,7 +612,7 @@ class baseRouter
             }
         }
 
-        if(!empty($_FILES))
+        if(!empty($_FILES) and isset($this->config->file->dangers))
         {
             foreach($_FILES as $varName => $files)
             {
@@ -621,20 +621,17 @@ class baseRouter
                     foreach($files['name'] as $i => $fileName)
                     {
                         $extension = ltrim(strrchr($fileName, '.'), '.');
-                        if(strrpos($this->config->file->dangers, $extension) !== false)
+                        if(strrpos(",{$this->config->file->dangers},", ",{$extension},") !== false)
                         {
-                            foreach($files as $fileKey => $value)
-                            {
-                                unset($_FILES);
-                                break 2;
-                            }
+                            unset($_FILES);
+                            break;
                         }
                     }
                 }
                 else
                 {
                     $extension = ltrim(strrchr($files['name'], '.'), '.');
-                    if(strrpos($this->config->file->dangers, $extension) !== false) unset($_FILES);
+                    if(strrpos(",{$this->config->file->dangers},", ",{$extension},") !== false) unset($_FILES);
                 }
             }
         }
@@ -984,7 +981,7 @@ class baseRouter
         if(!empty($this->clientTheme))
         {
             $this->clientTheme = strtolower($this->clientTheme);
-            if(!isset($this->config->themes[$this->clientTheme])) $this->clientTheme = $this->config->default->theme;
+            if(!isset($this->lang->themes[$this->clientTheme])) $this->clientTheme = $this->config->default->theme;
         }    
         else
         {
@@ -1538,6 +1535,7 @@ class baseRouter
         }
 
         unset($passedParams['onlybody']);
+        unset($passedParams['HTTP_X_REQUESTED_WITH']);
         $passedParams = array_values($passedParams);
         $i = 0;
         foreach($defaultParams as $key => $defaultValue)
@@ -1711,7 +1709,7 @@ class baseRouter
                 if(is_file($multiConfigFile)) include $multiConfigFile;
             }
 
-            if(empty($this->siteCode))
+            if(!empty($this->siteCode))
             {
                 $siteConfigFile = $this->configRoot . "sites/{$this->siteCode}.php";
                 if(is_file($siteConfigFile)) include $siteConfigFile;
