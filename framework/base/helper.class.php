@@ -3,19 +3,14 @@
  * ZenTaoPHP的baseHelper类。
  * The baseHelper class file of ZenTaoPHP framework.
  *
+ * @package framework
+ *
  * The author disclaims copyright to this source code. In place of
  * a legal notice, here is a blessing:
  * 
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
- */
-
-/**
- * 该类实现了一些常用的方法
- * The baseHelper class, contains basic functions.
- *
- * @package framework
  */
 class baseHelper
 {
@@ -60,83 +55,106 @@ class baseHelper
      * @param string       $methodName     method name
      * @param string|array $vars           the params passed to the method, can be array('key' => 'value') or key1=value1&key2=value2) or key1=value1&key2=value2
      * @param string       $viewType       the view type
-     * @param bool         $onlybody       whether onlybody
+     * @param bool         $onlyBody       pass onlyBody=yes to the link thus the app can control the header and footer hide or show..
      * @static
      * @access public
      * @return string the link string.
      */
-    static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '', $onlybody = false)
+    static public function createLink($moduleName, $methodName = 'index', $vars = '', $viewType = '', $onlyBody = false)
     {
-        /**
-         * 设置$appName和$moduleName。
-         * Set appName and moduleName. 
-         */
+        /* 设置$appName和$moduleName。Set appName and moduleName. */
         global $app, $config;
-        $appName = $app->getAppName();
-        if(strpos($moduleName, '.') !== false) list($appName, $moduleName) = explode('.', $moduleName);
-        $appName = empty($appName) ? '' : $appName . '/';
+        if(strpos($moduleName, '.') === true)  list($appName, $moduleName) = explode('.', $moduleName);
+        if(strpos($moduleName, '.') === false) $appName = empty($app->getAppName()) ? '' : $app->getAppName();
+        if(!empty($appName)) $appName .= '/';
 
-        /**
-         * 处理$viewType和$vars。
-         * Set $viewType and $vars.
-         */
+        /* 处理$viewType和$vars。Set $viewType and $vars. */
         if(empty($viewType)) $viewType = $app->getViewType();
         if(!is_array($vars)) parse_str($vars, $vars);
 
-        /**
-         * 生成url链接的开始部分。
-         * Set the begin parts of the link.
-         */
+        /* 生成url链接的开始部分。Set the begin parts of the link. */
         if($config->requestType == 'PATH_INFO')  $link = $config->webRoot . $appName;
         if($config->requestType != 'PATH_INFO')  $link = $config->webRoot . $appName . basename($_SERVER['SCRIPT_NAME']);
         if($config->requestType == 'PATH_INFO2') $link .= '/';
 
         /**
-         * 追加参数到url地址里面。
-         * Append vars to the link.
+         * #1: RequestType为GET。When the requestType is GET. 
+         * Input: moduleName=article&methodName=index&var1=value1. Output: ?m=article&f=index&var1=value1.
+         *
          */
         if($config->requestType == 'GET')
         {
             $link .= "?{$config->moduleVar}=$moduleName&{$config->methodVar}=$methodName";
             if($viewType != 'html') $link .= "&{$config->viewVar}=" . $viewType;
             foreach($vars as $key => $value) $link .= "&$key=$value";
-        }
-        else
-        {
-            /* 如果方法名与默认方法相等，并且参数是空的，转换为友好的链接地址。 */
-            /* If the method equal the default method defined in the config file and the vars is empty, convert the link. */
-            if($methodName == $config->default->method and empty($vars))
-            {
-                /* 如果模块名与默认模块名相等，转换为index.html。*/
-                /* If the module also equal the default module, change index-index to index.html. */
-                if($moduleName == $config->default->module)
-                {
-                    $link .= 'index.' . $viewType;
-                }
-                elseif($viewType == $app->getViewType())
-                {
-                    $link .= $moduleName . '/';
-                }
-                else
-                {
-                    $link .= $moduleName . '.' . $viewType;
-                }
-            }
-            else
-            {
-                $link .= "$moduleName{$config->requestFix}$methodName";
-                foreach($vars as $value) $link .= "{$config->requestFix}$value";
-                $link .= '.' . $viewType;
-            }
+            return self::processOnlyBodyParam($link, $onlyBody);
         }
 
-        /* if page has onlybody param then add this param in all link. the param hide header and footer. */
-        if($onlybody or isonlybody())
+        /**
+         * #2: 方法名不是默认值或者是默认值，但有传参。methodName equals the default method or vars not empty. 
+         * Input: moduleName=article&methodName=view. Output: article-view.html
+         * Input: moduleName=article&methodName=view. Output: article-index-abc.html
+         *
+         */
+        if($methodName != $config->default->method or !empty($vars))
         {
-            $onlybody = $config->requestType != 'GET' ? "?onlybody=yes" : "&onlybody=yes";
-            $link .= $onlybody;
+            $link .= "$moduleName{$config->requestFix}$methodName";
+            foreach($vars as $value) $link .= "{$config->requestFix}$value";
+            $link .= '.' . $viewType;
+
+            return self::processOnlyBodyParam($link, $onlyBody);
         }
-        return $link;
+
+        /**
+         * #3: 方法名为默认值且没有传参且模块名为默认值。methodName is the default and moduleName is default and vars empty. 
+         * Input: moduleName=index&methodName=index. Output: index.html
+         *
+         */
+        if($moduleName == $config->default->module)
+        {
+            $link .= $config->default->method . '.' . $viewType; 
+            return self::processOnlyBodyParam($link, $onlyBody);
+        }
+
+        /**
+         * #4: 方法名为默认值且没有传参且模块名不为默认值，viewType和app指定的相等。methodName is default but moduleName not and viewType equal app's viewType.. 
+         * Input: moduleName=article&methodName=index&viewType=html. Output: /article/
+         *
+         */
+        if($viewType == $app->getViewType())
+        {
+            $link .= $moduleName . '/';
+            return self::processOnlyBodyParam($link, $onlyBody);
+        }
+
+        /**
+         * #5: 方法名为默认值且没有传参且模块名不为默认值，viewType有另外指定。methodName is default but moduleName not and viewType no equls app's viewType. 
+         * Input: moduleName=article&methodName=index&viewType=json. Output: /article.json
+         *
+         */
+        $link .= $moduleName . '.' . $viewType;
+        return self::processOnlyBodyParam($link, $onlyBody);
+    }
+
+    /**
+     * 处理onlyBody 参数。
+     * Process the onlyBody param in url.
+     *
+     * 如果传参的时候设定了$onlyBody为真，或者当前页面请求中包含了onlybody=yes，在生成链接的时候继续追加。
+     * If $onlyBody set to true or onlybody=yes in the url, append onlyBody param to the link.
+     * 
+     * @param  string  $link 
+     * @param  bool    $onlyBody 
+     * @static
+     * @access public
+     * @return string
+     */
+    static public function processOnlyBodyParam($link, $onlyBody)
+    {
+        global $config;
+        if($onlyBody == false or !isset($_GET['onlybody']) or $_GET['onlybody'] != 'yes') return $link;
+        $onlybodyString = $config->requestType != 'GET' ? "?onlybody=yes" : "&onlybody=yes";
+        return $link . $onlybodyString;
     }
 
     /**
@@ -151,6 +169,7 @@ class baseHelper
     static public function import($file)
     {
         if(!is_file($file)) return false;
+
         static $includedFiles = array();
         if(!isset($includedFiles[$file]))
         {
@@ -576,6 +595,7 @@ class baseHelper
      **/
     public static function substr($string, $length, $append = '')
     {
+        // 这一块的长度计算有问题。
         if (strlen($string) <= $length ) $append = '';
         if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
 
@@ -1050,18 +1070,6 @@ function getWebRoot()
     }
 
     return substr($path, 0, (strrpos($path, '/') + 1));
-}
-
-/**
- * 检查是否是onlybody模式。
- * Check exist onlybody param.
- * 
- * @access public
- * @return void
- */
-function isonlybody()
-{
-    return (isset($_GET['onlybody']) and $_GET['onlybody'] == 'yes');
 }
 
 /**
