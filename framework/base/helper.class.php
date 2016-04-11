@@ -459,8 +459,6 @@ class baseHelper
         return $string;
     }
 
-
-
     /**
      *  计算两个日期相差的天数，取整
      *  Compute the diff days of two date.
@@ -603,18 +601,6 @@ class baseHelper
 
         preg_match_all("/./su", $string, $data);
         return join("", array_slice($data[0],  0, $length)) . $append;
-    }
-
-    /**
-     * 检查是否是SEO模式
-     * Check in seo mode or not.
-     *
-     * return bool
-     */
-    public static function inSeoMode()
-    {
-        global $config;
-        return (!empty($config->seoMode) and ($config->requestType != 'GET'));
     }
 
     /**
