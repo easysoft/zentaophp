@@ -885,49 +885,4 @@ function processArrayEvils($params)
     return $params;
 }
 
-/**
- * 获取主机地址。
- * Get host URL.
- * 
- * @access public
- * @return bool
- */
-function getHostURL()
-{
-    return ((isset($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
-}
 
-/**
- * 判断requestType是否是GET类型。
- * Check current request is GET.
- * 
- * @access public
- * @return void
- */
-function isGetUrl()
-{
-    $webRoot = getWebRoot();
-    if(strpos($_SERVER['REQUEST_URI'], "{$webRoot}?") === 0) return true;
-    if(strpos($_SERVER['REQUEST_URI'], "{$webRoot}index.php?") === 0) return true;
-    if(strpos($_SERVER['REQUEST_URI'], "{$webRoot}index.php/?") === 0) return true;
-    return false;
-}
-
-/**
- * 获取文件mime。
- * Get file mime type.
- * 
- * @param  int    $file 
- * @access public
- * @return void
- */
-function getFileMimeType($file)
-{
-    if(function_exists('mime_content_type')) return mime_content_type($file);
-    if(function_exists('finfo_open'))
-    {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        return finfo_file($finfo, $file); 
-    }
-    return false;
-}
