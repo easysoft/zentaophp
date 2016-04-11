@@ -797,50 +797,6 @@ function getWebRoot()
 }
 
 /**
- * 格式化钱。
- * Format money.
- * 
- * @param  float    $money 
- * @access public
- * @return string
- */
-function formatMoney($money)
-{
-    return trim(preg_replace('/\.0*$/', '', number_format($money, 2)));
-}
-
-/**
- * 格式化时间
- * Format time.
- * 
- * @param  int    $time 
- * @param  string $format 
- * @access public
- * @return void
- */
-function formatTime($time, $format = '')
-{
-    $time = str_replace('0000-00-00', '', $time);
-    $time = str_replace('00:00:00', '', $time);
-    if(trim($time) == '') return ;
-    if($format) return date($format, strtotime($time));
-    return trim($time);
-}
-
-/**
- * 检查可用curl ssl。
- * Check curl ssl enabled.
- * 
- * @access public
- * @return void
- */
-function checkCurlSSL()
-{
-    $version = curl_version();
-    return ($version['features'] & CURL_VERSION_SSL);
-}
-
-/**
  * 当数组/对象变量$var存在$key项时，返回存在的对应值或设定值，否则返回$key或不存在的设定值。
  * When the $var has the $key, return it, esle result one default value.
  * 
@@ -863,20 +819,6 @@ function zget($var, $key, $valueWhenNone = false, $valueWhenExists = false)
     }
     if($valueWhenNone !== false) return $valueWhenNone;
     return $key;
-}
-
-/**
- * 301跳转。
- * Header lcoation 301. 
- * 
- * @param  string    $url 
- * @access public
- * @return void
- */
-function header301($url)
-{
-    header('HTTP/1.1 301 Moved Permanently');
-    die(header('Location:' . $url));
 }
 
 /**
