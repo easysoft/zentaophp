@@ -460,6 +460,25 @@ class baseHelper
     }
 
     /**
+     * 增强substr方法：支持多字节语言，比如中文。
+     * Enhanced substr version: support multibyte languages like Chinese.
+     *
+     * @param string $string
+     * @param int $length 
+     * @param string $append 
+     * @return string 
+     **/
+    public static function substr($string, $length, $append = '')
+    {
+        // 这一块的长度计算有问题。
+        if (strlen($string) <= $length ) $append = '';
+        if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
+
+        preg_match_all("/./su", $string, $data);
+        return join("", array_slice($data[0],  0, $length)) . $append;
+    }
+
+    /**
      *  计算两个日期相差的天数，取整
      *  Compute the diff days of two date.
      * 
@@ -582,25 +601,6 @@ class baseHelper
         if(isset($config->domainPostfix) and strpos($config->domainPostfix, "|$postfix|") !== false) return $items[1];
 
         return null;
-    }
-
-    /**
-     * 增强substr方法：支持多字节语言，比如中文。
-     * Enhanced substr version: support multibyte languages like Chinese.
-     *
-     * @param string $string
-     * @param int $length 
-     * @param string $append 
-     * @return string 
-     **/
-    public static function substr($string, $length, $append = '')
-    {
-        // 这一块的长度计算有问题。
-        if (strlen($string) <= $length ) $append = '';
-        if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
-
-        preg_match_all("/./su", $string, $data);
-        return join("", array_slice($data[0],  0, $length)) . $append;
     }
 
     /**
@@ -884,5 +884,3 @@ function processArrayEvils($params)
     }
     return $params;
 }
-
-
