@@ -158,8 +158,8 @@ class baseHelper
     }
 
     /**
-     * 引用一个文件，替换内置的include及require方法
-     * Import a file instend of include or require.
+     * 使用helper::import()来引入文件，不要直接使用include或者require. 
+     * Using helper::import() to import a file, instead of include or require.
      *
      * @param string    $file   the file to be imported.
      * @static
@@ -766,50 +766,6 @@ class baseHelper
         }   
 
         return 'unknown';
-    }
-
-    /**
-     * 设置$viewType，html还是mhtml或其他。
-     * Set viewType.
-     * 
-     * @static
-     * @access public
-     * @return void
-     */
-    public static function setViewType()
-    {
-        global $config, $app;
-        if($config->requestType != 'GET')
-        {
-            $pathInfo = $app->getPathInfo();
-            if(!empty($pathInfo))
-            {
-                $dotPos = strrpos($pathInfo, '.');
-                if($dotPos)
-                {
-                    $viewType = substr($pathInfo, $dotPos + 1);
-                }
-                else
-                {
-                    $config->default->view = $config->default->view == 'mhtml' ? 'html' : $config->default->view;
-                }
-            }
-        }
-        elseif($config->requestType == 'GET')
-        {
-            if(isset($_GET[$config->viewVar]))
-            {
-                $viewType = $_GET[$config->viewVar]; 
-            }
-            else
-            {
-                /* Set default view when url has not module name. such as only domain. */
-                $config->default->view = ($config->default->view == 'mhtml' and isset($_GET[$config->moduleVar])) ? 'html' : $config->default->view;
-            }
-        }
-
-        if(isset($viewType) and strpos($config->views, ',' . $viewType . ',') === false) $viewType = $config->default->view;
-        $app->viewType = isset($viewType) ? $viewType : $config->default->view;
     }
 
     /**
