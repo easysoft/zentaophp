@@ -446,6 +446,22 @@ class baseHelper
     }
 
     /**
+     * 去掉UTF8 Bom头
+     * Remove UTF8 Bom 
+     * 
+     * @param  string    $string
+     * @access public
+     * @return string
+     */
+    public static function removeUTF8Bom($string)
+    {
+        if(substr($string, 0, 3) == pack('CCC', 239, 187, 191)) return substr($string, 3);
+        return $string;
+    }
+
+
+
+    /**
      *  计算两个日期相差的天数，取整
      *  Compute the diff days of two date.
      * 
@@ -538,20 +554,6 @@ class baseHelper
         static $cwd = '';
         if($path) $cwd = getcwd();
         !empty($path) ? chdir($path) : chdir($cwd);
-    }
-
-    /**
-     * 去掉UTF8 Bom头
-     * Remove UTF8 Bom 
-     * 
-     * @param  string    $string
-     * @access public
-     * @return string
-     */
-    public static function removeUTF8Bom($string)
-    {
-        if(substr($string, 0, 3) == pack('CCC', 239, 187, 191)) return substr($string, 3);
-        return $string;
     }
 
     /**
