@@ -634,12 +634,78 @@ class baseRouter
                 }
             }
         }
-        $_POST   = processArrayEvils($_POST);
-        $_GET    = processArrayEvils($_GET);
-        $_COOKIE = processArrayEvils($_COOKIE);
+        $_POST   = self::processArrayEvils($_POST);
+        $_GET    = self::processArrayEvils($_GET);
+        $_COOKIE = self::processArrayEvils($_COOKIE);
         unset($GLOBALS);
         unset($_REQUEST);
     }
+
+    /**
+     * 处理恶意参数.
+     * Process evil params.
+     * 
+     * @param  string    $value 
+     * @access public
+     * @return void
+     */
+    public function processEvil($value)
+    {
+        if(strpos(htmlspecialchars_decode($value), '<?') !== false)
+        {
+            $value       = (string) $value;
+            $evils       = array('eval', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system', '$$', 'include', 'require', 'assert');
+            $gibbedEvils = array('e v a l', 'e x e c', ' p a s s t h r u', ' p r o c _ o p e n', 's h e l l _ e x e c', 's y s t e m', '$ $', 'i n c l u d e', 'r e q u i r e', 'a s s e r t');
+            $value       = str_ireplace($evils, $gibbedEvils, $value);
+        }
+
+        if(isset($this->config->framework->stripXSS) and $this->config->framework->stripXSS)
+        {
+            if(stripos($value, '<script') !== false)
+            {
+                $value       = (string) $value;
+                $evils       = array('appendchild(', 'createElement(', 'xss.re', 'onfocus', 'onclick', 'innerHTML', 'replaceChild(', 'html(', 'append(', 'appendTo(', 'prepend(', 'prependTo(', 'after(', 'before(', 'replaceWith(');
+                $gibbedEvils = array('a p p e n d c h i l d (', 'c r e a t e E l e  m e n t (', 'x s s . r e', 'o n f o c u s', 'o n c l i c k', 'i n n e r H T M L', 'r e p l a c e C h i l d (', 'h t m l (', 'a p p e n d (', 'a p p e n d T o (', 'p r e p e n d (', 'p r e p e n d T o (', 'a f t e r (', 'b e f o r e (', 'r e p l a c e W i t h (');
+                $value       = str_ireplace($evils, $gibbedEvils, $value);
+            }
+
+            /* Process like 'javascript:' */
+            $value = preg_replace('/j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/Ui', 'j a v a s c r i p t :', $value);
+        }
+        return $value;
+    }
+
+    /**
+     * 批量处理恶意参数.
+     * Process array evils.
+     * 
+     * @param  array    $params 
+     * @access public
+     * @return array
+     */
+    public function processArrayEvils($params)
+    {
+        $params = (array) $params;
+        foreach($params as $key => $values)
+        {
+            if(!is_array($values))
+            {
+                $params[$key] = $this->processEvil($values);
+                if($this->processEvil($key) != $key) unset($params[$key]);
+            }
+            else
+            {
+                foreach($values as $key => $value)
+                {
+                    if(is_array($value)) continue;
+                    $params[$key][$key] = $this->processEvil($value);
+                    if($this->processEvil($key) != $key) unset($params[$key][$key]);
+                }
+            }
+        }
+        return $params;
+    }
+
 
     /**
      * 设置超级变量。
