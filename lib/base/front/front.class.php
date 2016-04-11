@@ -110,16 +110,11 @@ class baseHTML
     static public function a($href = '', $title = '', $misc = '', $newline = true)
     {
         global $config;
+
         if(empty($title)) $title = $href;
         $newline = $newline ? "\n" : '';
-
-        /* if page has onlybody param then add this param in all link. the param hide header and footer. */
-        if(strpos($href, 'onlybody=yes') === false and isonlybody())
-        {
-            $onlybody = strpos($link, '?') === false ? "?onlybody=yes" : "&onlybody=yes";
-            $href .= $onlybody;
-        }
-
+        $href = helper::processOnlyBodyParam($href);
+      
         return "<a href='$href' $misc>$title</a>$newline";
     }
 
@@ -491,7 +486,7 @@ class baseHTML
      */
     public static function backButton($label = '', $misc = '')
     {
-        if(isonlybody()) return false;
+        if(helper::inOnlyBodyMode()) return false;
 
         global $lang;
         if(empty($label))
@@ -537,14 +532,9 @@ class baseHTML
     {
         global $config, $lang;
 
-        if(isonlybody() and $lang->goback == $label) return false;
+        if(helper::inOnlyBodyMode() and $lang->goback == $label) return false;
+        $link = helper::processOnlyBodyParam($link);
 
-        /* if page has onlybody param then add this param in all link. the param hide header and footer. */
-        if(strpos($link, 'onlybody=') === false and isonlybody())
-        {
-            $onlybody = strpos($link, '?') === false ? "?onlybody=yes" : "&onlybody=yes";
-            $link .= $onlybody;
-        }
         return " <button type='button' class='$class' $misc onclick='$target.location.href=\"$link\"'>$label</button>";
     }
 

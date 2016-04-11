@@ -65,7 +65,7 @@ class baseHelper
         /* 设置$appName和$moduleName。Set appName and moduleName. */
         global $app, $config;
         if(strpos($moduleName, '.') === true)  list($appName, $moduleName) = explode('.', $moduleName);
-        if(strpos($moduleName, '.') === false) $appName = empty($app->getAppName()) ? '' : $app->getAppName();
+        if(strpos($moduleName, '.') === false) $appName = $app->getAppName();
         if(!empty($appName)) $appName .= '/';
 
         /* 处理$viewType和$vars。Set $viewType and $vars. */
@@ -149,12 +149,24 @@ class baseHelper
      * @access public
      * @return string
      */
-    static public function processOnlyBodyParam($link, $onlyBody)
+    public static function processOnlyBodyParam($link, $onlyBody = true)
     {
         global $config;
-        if($onlyBody == false or !isset($_GET['onlybody']) or $_GET['onlybody'] != 'yes') return $link;
+        if($onlyBody == false or !self::inOnlyBodyMode()) return $link;
         $onlybodyString = $config->requestType != 'GET' ? "?onlybody=yes" : "&onlybody=yes";
         return $link . $onlybodyString;
+    }
+
+    /**
+     * 检查是否是onlybody模式。
+     * Check exist onlybody param.
+     * 
+     * @access public
+     * @return void
+     */
+    public static function inOnlyBodyMode()
+    {
+        return (isset($_GET['onlybody']) and $_GET['onlybody'] == 'yes');
     }
 
     /**
