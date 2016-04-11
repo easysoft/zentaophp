@@ -19,7 +19,6 @@
  */
 class baseRouter
 {
-
     /**
      * ZenTaoPHP的基础目录，一般是程序的根目录。
      * The base path of the ZenTaoPHP framework.
