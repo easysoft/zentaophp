@@ -512,9 +512,11 @@ class baseHelper
     }
 }
 
+//------------------------------- 常用函数。Some tool functions.-------------------------------//
+
 /**
- *  helper::createLink()的别名，方便创建本模块的链接
- *  The short alias of helper::createLink() method. 
+ *  helper::createLink()的别名，方便创建本模块方法的链接。
+ *  The short alias of helper::createLink() method to create link to control method of current module.
  *
  * @param  string        $methodName  the method name
  * @param  string|array  $vars        the params passed to the method, can be array('key' => 'value') or key1=value1&key2=value2)
@@ -528,8 +530,8 @@ function inLink($methodName = 'index', $vars = '', $viewType = '')
 }
 
 /**
- *  通过一个静态游标，可以遍历数组
- *  Static cycle a array
+ *  通过一个静态游标，可以遍历数组。
+ *  Static cycle a array.
  *
  * @param array  $items     the array to be cycled.
  * @return mixed
@@ -543,7 +545,7 @@ function cycle($items)
 }
 
 /**
- * 获取当前时间的Unix时间戳，精确到微妙
+ * 获取当前时间的Unix时间戳，精确到微妙。
  * Get current microtime.
  * 
  * @access public
@@ -595,6 +597,7 @@ function isLocalIP()
 function getWebRoot()
 {
     $path = $_SERVER['SCRIPT_NAME'];
+
     if(PHP_SAPI == 'cli')
     {
         $url  = parse_url($_SERVER['argv'][1]);
@@ -619,13 +622,16 @@ function getWebRoot()
 function zget($var, $key, $valueWhenNone = false, $valueWhenExists = false)
 {
     if(!is_array($var) and !is_object($var)) return false;
+
     $type = is_array($var) ? 'array' : 'object';
     $checkExists = $type == 'array' ? isset($var[$key]) : isset($var->$key);
+
     if($checkExists)
     {
         if($valueWhenExists !== false) return $valueWhenExists;
         return $type == 'array' ? $var[$key] : $var->$key;
     }
+
     if($valueWhenNone !== false) return $valueWhenNone;
     return $key;
 }
