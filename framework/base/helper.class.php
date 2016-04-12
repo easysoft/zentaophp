@@ -158,7 +158,8 @@ class baseHelper
     }
 
     /**
-     * 检查是否是onlybody模式。Check in only body mode or not.
+     * 检查是否是onlybody模式。
+     * Check in only body mode or not.
      * 
      * @access public
      * @return void
@@ -193,31 +194,31 @@ class baseHelper
     }
 
     /**
-     * 将数组转化成 IN( 'a', 'b') 的形式，用于数据库字符串拼接
-     * Create the in('a', 'b') string.
+     * 将数组或者列表转化成 IN( 'a', 'b') 的形式。
+     * Convert a list to  IN('a', 'b') string.
      * 
-     * @param   string|array $ids   the id lists, can be a array or a string with ids joined with comma.
+     * @param   string|array $idList   列表，可以是数组或者用逗号隔开的列表。The id lists, can be a array or a string joined with comma.
      * @static
      * @access  public
      * @return  string  the string like IN('a', 'b').
      */
-    static public function dbIN($ids)
+    static public function dbIN($idList)
     {
-        if(is_array($ids)) 
+        if(is_array($idList)) 
         {
             if(!function_exists('get_magic_quotes_gpc') or !get_magic_quotes_gpc())
             {
-                foreach ($ids as $key=>$value)  $ids[$key] = addslashes($value); 
+                foreach ($idList as $key=>$value)  $idList[$key] = addslashes($value); 
             }
-            return "IN ('" . join("','", $ids) . "')";
+            return "IN ('" . join("','", $idList) . "')";
         }
 
-        if(!function_exists('get_magic_quotes_gpc') or !get_magic_quotes_gpc()) $ids = addslashes($ids);
-        return "IN ('" . str_replace(',', "','", str_replace(' ', '', $ids)) . "')";
+        if(!function_exists('get_magic_quotes_gpc') or !get_magic_quotes_gpc()) $idList = addslashes($idList);
+        return "IN ('" . str_replace(',', "','", str_replace(' ', '', $idList)) . "')";
     }
 
     /**
-     * base64编码，框架对'/'字符比较敏感，转换为'.'
+     * 安全的Base64编码，框架对'/'字符比较敏感，转换为'.'。
      * Create safe base64 encoded string for the framework.
      * 
      * @param   string  $string   the string to encode.
@@ -245,7 +246,8 @@ class baseHelper
     }
 
     /**
-     * Json encode and addslashe if magic_quotes_gpc is on. 
+     * JSON编码，自动处理转义的问题。
+     * JSON encode, process the slashes.
      * 
      * @param   mixed  $data   the object to encode
      * @static
@@ -261,8 +263,8 @@ class baseHelper
      * 判断是否是utf8编码
      * Judge a string is utf-8 or not.
      * 
-     * @param  string    $string 
      * @author hmdker@gmail.com
+     * @param  string    $string 
      * @see    http://php.net/manual/en/function.mb-detect-encoding.php
      * @static
      * @access public
@@ -300,8 +302,8 @@ class baseHelper
     }
 
     /**
-     * 去掉UTF8 Bom头
-     * Remove UTF8 Bom 
+     * 去掉UTF-8 Bom头。
+     * Remove UTF-8 Bom.
      * 
      * @param  string    $string
      * @access public
@@ -317,14 +319,13 @@ class baseHelper
      * 增强substr方法：支持多字节语言，比如中文。
      * Enhanced substr version: support multibyte languages like Chinese.
      *
-     * @param string $string
-     * @param int $length 
-     * @param string $append 
+     * @param string    $string
+     * @param int       $length 
+     * @param string    $append 
      * @return string 
-     **/
+     */
     public static function substr($string, $length, $append = '')
     {
-        // 这一块的长度计算有问题。
         if (strlen($string) <= $length ) $append = '';
         if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
 
@@ -333,11 +334,11 @@ class baseHelper
     }
 
     /**
-     *  计算两个日期相差的天数，取整
+     *  计算两个日期相差的天数，取整。
      *  Compute the diff days of two date.
      * 
      * @param   string $date1   the first date.
-     * @param   string $date2   the sencode date.
+     * @param   string $date2   the sencond date.
      * @access  public
      * @return  int  the diff of the two days.
      */
@@ -347,7 +348,7 @@ class baseHelper
     }
 
     /**
-     *  获取当前时间，使用common语言文件定义的DT_DATETIME1常量
+     *  获取当前时间，使用common语言文件定义的DT_DATETIME1常量。
      *  Get now time use the DT_DATETIME1 constant defined in the lang file.
      * 
      * @access  public
@@ -359,7 +360,7 @@ class baseHelper
     }
 
     /**
-     *  获取当前日期，使用common语言文件定义的DT_DATE1常量
+     *  获取当前日期，使用common语言文件定义的DT_DATE1常量。
      *  Get today according to the  DT_DATE1 constant defined in the lang file.
      *
      * @access  public
@@ -371,7 +372,7 @@ class baseHelper
     }
 
     /**
-     *  获取当前日期，使用common语言文件定义的DT_DATE1常量
+     *  获取当前日期，使用common语言文件定义的DT_TIME1常量。
      *  Get now time use the DT_TIME1 constant defined in the lang file.
      * 
      * @access  public
@@ -383,7 +384,7 @@ class baseHelper
     }
 
     /**
-     *  判断日期是不是零
+     *  判断日期是不是零。
      *  Judge a date is zero or not.
      * 
      * @access  public
@@ -395,8 +396,8 @@ class baseHelper
     }
 
     /**
-     *  列出目录中符合该正则表达式的文件
-     *  Get files match the pattern under one directory.
+     *  列出目录中符合该正则表达式的文件。
+     *  Get files match the pattern under a directory.
      * 
      * @access  public
      * @return  array   the files match the pattern
@@ -412,8 +413,8 @@ class baseHelper
     }
 
     /**
-     * 切换目录
-     * Change directory.
+     * 切换目录。第一次调用的时候记录当前的路径，再次调用的时候切换会之前的路径。
+     * Change directory: firest call, save the $cwd, sencode call, change to $cwd.
      * 
      * @param  string $path 
      * @static
@@ -429,7 +430,8 @@ class baseHelper
 
     /**
      * 通过域名获取站点代号。
-     * Get siteCode from domain.
+     * Get siteCode for a domain.
+     *
      * @param  string $domain
      * @return string $siteCode
      **/ 
@@ -437,28 +439,34 @@ class baseHelper
     {
         global $config;
 
-        if(strpos($domain, ':') !== false) $domain = substr($domain, 0, strpos($domain, ':')); // Remove port from domain.
+        /* 去除域名中的端口部分。Remove the port part of the domain. */
+        if(strpos($domain, ':') !== false) $domain = substr($domain, 0, strpos($domain, ':'));
         $domain = strtolower($domain);
 
+        /* $config里面有定义或者是localhost，直接返回。 Return directly if defined in $config or is localhost. */
         if(isset($config->siteCode[$domain])) return $config->siteCode[$domain];
-
         if($domain == 'localhost') return $domain;
-        if(!preg_match('/^([a-z0-9\-_]+\.)+[a-z0-9\-]+$/', $domain)) die('domain denied');
 
-        $domain  = str_replace('-', '_', $domain);    // Replace '-' by '_'.
-        $items   = explode('.', $domain);
+        /* 域名不合法。The domain is illegal. */
+        if(!preg_match('/^([a-z0-9\-_]+\.)+[a-z0-9\-]+$/', $domain)) return '';
+
+        /* 将域名中的-改为_。Replace '-' with '_' in the domain. */
+        $domain = str_replace('-', '_', $domain);
+        $items  = explode('.', $domain);
+
+        /* 类似a.com的形式。 Domain like a.com. */
         $postfix = str_replace($items[0] . '.', '', $domain);
-        if(isset($config->chanzhi->node->domain) and $postfix == $config->chanzhi->node->domain) return $items[0];
         if(isset($config->domainPostfix) and strpos($config->domainPostfix, "|$postfix|") !== false) return $items[0];
 
+        /* 类似www.a.com的形式。 Domain like www.a.com. */
         $postfix = str_replace($items[0] . '.' . $items[1] . '.', '', $domain);
         if(isset($config->domainPostfix) and strpos($config->domainPostfix, "|$postfix|") !== false) return $items[1];
 
-        return null;
+        return '';
     }
 
     /**
-     * 检查是否是AJAX请求
+     * 检查是否是AJAX请求。
      * Check is ajax request.
      * 
      * @static
@@ -471,7 +479,7 @@ class baseHelper
     }
 
     /**
-     * 301跳转
+     * 301跳转。
      * Header 301 Moved Permanently.
      * 
      * @param  string    $locate 
