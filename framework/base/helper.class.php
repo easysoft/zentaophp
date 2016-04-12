@@ -508,26 +508,6 @@ class baseHelper
 
         return $ip;
     }
-
-    /**
-     * 获取设备类型。
-     * Get device.
-     * 
-     * @access public
-     * @return void
-     */
-    public static function getClientDevice()
-    {
-        global $config;
-
-        if(isset($_COOKIE['visualDevice'])) return $_COOKIE['visualDevice'];
-
-        /* Detect mobile. */
-        $mobile = new mobile();
-        if(!$mobile->isTablet() and $mobile->isMobile()) return 'mobile';
-        return 'desktop';
-    }
-
 }
 
 /**
@@ -647,5 +627,3 @@ function zget($var, $key, $valueWhenNone = false, $valueWhenExists = false)
     if($valueWhenNone !== false) return $valueWhenNone;
     return $key;
 }
-
-

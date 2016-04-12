@@ -752,7 +752,18 @@ class baseRouter
      */
     public function setClientDevice()
     {
-        $this->clientDevice = helper::getClientDevice();
+        $this->clientDevice = 'desktop';
+
+        if($this->cookie->device == 'mobile')  $this->clientDevice = 'mobile';
+        if($this->cookie->device == 'desktop') $this->clientDevice = 'desktop';
+
+        if(!isset($this->cookie->device)) 
+        {
+            $mobile = new mobile();
+            $this->clientDevice = ($mobile->isMobile() and !$mobile->isTablet()) ? 'mobile' : 'desktop';
+        }
+
+        $this->cookie->set('device', $this->clientDevice);
     }
 
     /**
