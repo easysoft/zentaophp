@@ -46,11 +46,11 @@ $config->default->method = 'index';       //默认方法。 Default method.
 /* 数据库设置。Database settings. */
 $config->db = new stdclass();
 $config->slaveDB = new stdClass();
-$config->db->persistant      = false;           // 是否为持续连接。       Pconnect or not.
-$config->db->driver          = 'mysql';         // 目前只支持MySQL数据库。Must be MySQL. Don't support other database server yet.
-$config->db->encoding        = 'UTF8';          // 数据库编码。           Encoding of database.
-$config->db->strictMode      = false;           // 关闭MySQL的严格模式。  Turn off the strict mode of MySQL.
-$config->db->prefix          = '';              // 数据库表名前缀。       The prefix of the table name.
+$config->db->persistant      = false;     // 是否为持续连接。       Pconnect or not.
+$config->db->driver          = 'mysql';   // 目前只支持MySQL数据库。Must be MySQL. Don't support other database server yet.
+$config->db->encoding        = 'UTF8';    // 数据库编码。           Encoding of database.
+$config->db->strictMode      = false;     // 关闭MySQL的严格模式。  Turn off the strict mode of MySQL.
+$config->db->prefix          = '';        // 数据库表名前缀。       The prefix of the table name.
 $config->slaveDB->persistant = false;
 $config->slaveDB->driver     = 'mysql';
 $config->slaveDB->encoding   = 'UTF8';
@@ -58,10 +58,10 @@ $config->slaveDB->strictMode = false;
 
 /* 系统框架配置。Framework settings. */
 $config->framework = new stdclass();
-$config->framework->jsWithPrefix = true;         // js::set()输出的时候是否增加前缀。When us js::set(), add prefix or not.
-$config->framework->logDays      = 14;           // 日志文件保存的天数。             The days to save log files.
-$config->framework->stripXSS     = true;         // 是否过滤XSS攻击代码。            Whether strip xss code or not.
-$config->framework->purifier     = true;         // 是否对数据做purifier处理。       Whether purifier data or not.
+$config->framework->jsWithPrefix = true;  // js::set()输出的时候是否增加前缀。When us js::set(), add prefix or not.
+$config->framework->logDays      = 14;    // 日志文件保存的天数。             The days to save log files.
+$config->framework->stripXSS     = true;  // 是否过滤XSS攻击代码。            Whether strip xss code or not.
+$config->framework->purifier     = true;  // 是否对数据做purifier处理。       Whether purifier data or not.
 
 /* 引用自定义的配置。 Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
