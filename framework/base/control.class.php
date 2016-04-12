@@ -279,7 +279,7 @@ class baseControl
     {
         if(empty($moduleName)) $moduleName = $this->moduleName;
         if(empty($appName))    $appName    = $this->appName;
-        $modelFile = helper::setModelFile($moduleName, $appName);
+        $modelFile = $this->app->setModelFile($moduleName, $appName);
 
         /**
          * 如果没有model文件，尝试加载config配置信息。

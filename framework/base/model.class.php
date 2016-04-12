@@ -213,7 +213,7 @@ class baseModel
     {
         if(empty($moduleName)) return false;
         if(empty($appName)) $appName = $this->appName;
-        $modelFile = helper::setModelFile($moduleName, $appName);
+        $modelFile = $this->app->setModelFile($moduleName, $appName);
 
         if(!helper::import($modelFile)) return false;
         $modelClass = class_exists('ext' . $appName . $moduleName. 'model') ? 'ext' . $appName . $moduleName . 'model' : $appName . $moduleName . 'model';
