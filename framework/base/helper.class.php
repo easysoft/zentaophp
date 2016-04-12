@@ -326,7 +326,7 @@ class baseHelper
      */
     public static function substr($string, $length, $append = '')
     {
-        if (strlen($string) <= $length ) $append = '';
+        if(strlen($string) <= $length ) $append = '';
         if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
 
         preg_match_all("/./su", $string, $data);
