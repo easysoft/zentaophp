@@ -492,42 +492,6 @@ class baseHelper
         die(header('Location:' . $locate));
     }
 
-    /**
-     * 数据配置合并到主配置
-     * Merge config items in database and config files.
-     * 
-     * @param  array  $dbConfig 
-     * @param  string $moduleName 
-     * @static
-     * @access public
-     * @return void
-     */
-    public static function mergeConfig($dbConfig, $moduleName = 'common')
-    {
-        global $config;
-
-        $config2Merge = $config;
-        if($moduleName != 'common') $config2Merge = $config->$moduleName;
-
-        foreach($dbConfig as $item)
-        {
-            foreach($item as $record)
-            {
-                if(!is_object($record))
-                {
-                    if($item->section and !isset($config2Merge->{$item->section})) $config2Merge->{$item->section} = new stdclass();
-                    $configItem = $item->section ? $config2Merge->{$item->section} : $config2Merge;
-                    if($item->key) $configItem->{$item->key} = $item->value;
-                    break;
-                }
-
-                if($record->section and !isset($config2Merge->{$record->section})) $config2Merge->{$record->section} = new stdclass();
-                $configItem = $record->section ? $config2Merge->{$record->section} : $config2Merge;
-                if($record->key) $configItem->{$record->key} = $record->value;
-            }
-        }
-    }
-
     /** 
      * 获取远程IP。
      * Get remote ip. 

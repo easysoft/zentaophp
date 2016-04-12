@@ -1941,12 +1941,46 @@ class baseRouter
         }
 
         /* Merge from the db configs. */
-        if($moduleName != 'common' and isset($config->system->$moduleName)) helper::mergeConfig($config->system->$moduleName, $moduleName);
-        if($moduleName != 'common' and isset($config->personal->$moduleName)) helper::mergeConfig($config->personal->$moduleName, $moduleName);
+        if($moduleName != 'common' and isset($config->system->$moduleName))   $this->mergeConfig($config->system->$moduleName,   $moduleName);
+        if($moduleName != 'common' and isset($config->personal->$moduleName)) $this->mergeConfig($config->personal->$moduleName, $moduleName);
 
         $this->config = $config;
 
         return $config;
+    }
+
+    /**
+     * 数据配置合并到主配置。
+     * Merge config items in database and config files.
+     * 
+     * @param  array  $dbConfig 
+     * @param  string $moduleName 
+     * @static
+     * @access public
+     * @return void
+     */
+    public function mergeConfig($dbConfig, $moduleName = 'common')
+    {
+        $config2Merge = $this->config;
+        if($moduleName != 'common') $config2Merge = $this->config->$moduleName;
+
+        foreach($dbConfig as $item)
+        {
+            foreach($item as $record)
+            {
+                if(!is_object($record))
+                {
+                    if($item->section and !isset($config2Merge->{$item->section})) $config2Merge->{$item->section} = new stdclass();
+                    $configItem = $item->section ? $config2Merge->{$item->section} : $config2Merge;
+                    if($item->key) $configItem->{$item->key} = $item->value;
+                    break;
+                }
+
+                if($record->section and !isset($config2Merge->{$record->section})) $config2Merge->{$record->section} = new stdclass();
+                $configItem = $record->section ? $config2Merge->{$record->section} : $config2Merge;
+                if($record->key) $configItem->{$record->key} = $record->value;
+            }
+        }
     }
 
     /**
