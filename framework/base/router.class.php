@@ -1762,6 +1762,10 @@ class baseRouter
      */
     public function mergeParams($defaultParams, $passedParams)
     {
+        /* Remove these two params. */
+        unset($passedParams['onlybody']);
+        unset($passedParams['HTTP_X_REQUESTED_WITH']);
+
         /* Check params from URL. */
         foreach($passedParams as $param => $value)
         {
@@ -1769,8 +1773,6 @@ class baseRouter
             if(preg_match('/[^a-zA-Z0-9=_,`#+\/\.%\|\x7f-\xff]/', trim($value))) die('Bad Request!');
         }
 
-        unset($passedParams['onlybody']);
-        unset($passedParams['HTTP_X_REQUESTED_WITH']);
         $passedParams = array_values($passedParams);
         $i = 0;
         foreach($defaultParams as $key => $defaultValue)
