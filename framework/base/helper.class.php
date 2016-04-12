@@ -91,7 +91,7 @@ class baseHelper
         }
 
         /**
-         * #2: 方法名不是默认值或者是默认值，但有传参。methodName equals the default method or vars not empty. 
+         * #2: 方法名不是默认值或者是默认值，但有传参。MethodName equals the default method or vars not empty. 
          * Input: moduleName=article&methodName=view. Output: article-view.html
          * Input: moduleName=article&methodName=view. Output: article-index-abc.html
          *
@@ -106,7 +106,7 @@ class baseHelper
         }
 
         /**
-         * #3: 方法名为默认值且没有传参且模块名为默认值。methodName is the default and moduleName is default and vars empty. 
+         * #3: 方法名为默认值且没有传参且模块名为默认值。MethodName is the default and moduleName is default and vars empty. 
          * Input: moduleName=index&methodName=index. Output: index.html
          *
          */
@@ -117,7 +117,7 @@ class baseHelper
         }
 
         /**
-         * #4: 方法名为默认值且没有传参且模块名不为默认值，viewType和app指定的相等。methodName is default but moduleName not and viewType equal app's viewType.. 
+         * #4: 方法名为默认值且没有传参且模块名不为默认值，viewType和app指定的相等。MethodName is default but moduleName not and viewType equal app's viewType.. 
          * Input: moduleName=article&methodName=index&viewType=html. Output: /article/
          *
          */
@@ -128,7 +128,7 @@ class baseHelper
         }
 
         /**
-         * #5: 方法名为默认值且没有传参且模块名不为默认值，viewType有另外指定。methodName is default but moduleName not and viewType no equls app's viewType. 
+         * #5: 方法名为默认值且没有传参且模块名不为默认值，viewType有另外指定。MethodName is default but moduleName not and viewType no equls app's viewType. 
          * Input: moduleName=article&methodName=index&viewType=json. Output: /article.json
          *
          */
@@ -158,8 +158,7 @@ class baseHelper
     }
 
     /**
-     * 检查是否是onlybody模式。
-     * Check exist onlybody param.
+     * 检查是否是onlybody模式。Check in only body mode or not.
      * 
      * @access public
      * @return void
@@ -189,6 +188,7 @@ class baseHelper
             $includedFiles[$file] = true;
             return true;
         }
+
         return true;
     }
 
