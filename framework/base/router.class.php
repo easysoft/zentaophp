@@ -348,9 +348,14 @@ class baseRouter
         $this->setLogRoot();
         $this->setConfigRoot();
         $this->setModuleRoot();
-        $this->setThemeRoot();
         $this->setWwwRoot();
+        $this->setThemeRoot();
         $this->setDataRoot();
+
+        $this->loadClass('front',  $static = true);
+        $this->loadClass('filter', $static = true);
+        $this->loadClass('dao',    $static = true);
+        $this->loadClass('mobile', $static = true);
 
         $this->loadConfig('common');
 
@@ -359,18 +364,13 @@ class baseRouter
         $this->setDebug();
         $this->setErrorHandler();
 
-        $this->connectDB();
-
-        $this->loadClass('front',  $static = true);
-        $this->loadClass('filter', $static = true);
-        $this->loadClass('dao',    $static = true);
-        $this->loadClass('mobile', $static = true);
-
         $this->setTimezone();
         $this->setClientLang();
         $this->loadLang('common');
         $this->setClientTheme();
         $this->setClientDevice();
+
+        $this->connectDB();
     }
 
     /**
@@ -539,18 +539,6 @@ class baseRouter
     }
 
     /**
-     * 设置主题根目录。
-     * Set the theme root.
-     * 
-     * @access public
-     * @return void
-     */
-    public function setThemeRoot()
-    {
-        $this->themeRoot = $this->wwwRoot . 'theme' . DS;
-    }
-
-    /**
      * 设置www的根目录。
      * Set the www root.
      * 
@@ -563,6 +551,18 @@ class baseRouter
     }
 
     /**
+     * 设置主题根目录。
+     * Set the theme root.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setThemeRoot()
+    {
+        $this->themeRoot = $this->wwwRoot . 'theme' . DS;
+    }
+
+   /**
      * 设置data根目录。
      * Set the data root.
      * 
@@ -777,18 +777,6 @@ class baseRouter
     }
 
     /**
-     * 根据配置设置当前时区。
-     * Set the time zone according to the config.
-     * 
-     * @access public
-     * @return void
-     */
-    public function setTimezone()
-    {
-        if(isset($this->config->timezone)) date_default_timezone_set($this->config->timezone);
-    }
-
-    /**
      * 获取应用名称
      * Get app name 
      * 
@@ -923,15 +911,15 @@ class baseRouter
     }
 
     /**
-     * 获取$dataRoot目录
-     * Get the $dataRoot var
+     * 获取$webRoot，即应用的路径。
+     * Get the $webRoot var.
      * 
      * @access public
      * @return string
      */
-    public function getDataRoot()
+    public function getWebRoot()
     {
-        return $this->dataRoot;
+        return $this->config->webRoot;
     }
 
     /**
@@ -946,7 +934,31 @@ class baseRouter
         return $this->themeRoot;
     }
 
-    //------ 客户端环境有关的函数(Client environment related functions) ------//
+    /**
+     * 获取$dataRoot目录
+     * Get the $dataRoot var
+     * 
+     * @access public
+     * @return string
+     */
+    public function getDataRoot()
+    {
+        return $this->dataRoot;
+    }
+
+   //------ 客户端环境有关的函数(Client environment related functions) ------//
+    
+    /**
+     * 根据配置设置当前时区。
+     * Set the time zone according to the config.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setTimezone()
+    {
+        if(isset($this->config->timezone)) date_default_timezone_set($this->config->timezone);
+    }
 
     /**
      * 根据用户浏览器的语言设置和服务器配置，选择显示的语言。
@@ -1087,18 +1099,6 @@ class baseRouter
         $this->cookie->set('device', $this->clientDevice);
     }
 
-    /**
-     * 获取$webRoot，即应用的路径。
-     * Get the $webRoot var.
-     * 
-     * @access public
-     * @return string
-     */
-    public function getWebRoot()
-    {
-        return $this->config->webRoot;
-    }
-
     //-------------------- 请求相关的方法(Request related methods) --------------------//
 
     /**
@@ -1110,7 +1110,7 @@ class baseRouter
      */
     public function parseRequest()
     {
-        //if(isGetUrl())
+        if(isGetUrl())
         {
             if($this->config->requestType == 'PATH_INFO2') define('FIX_PATH_INFO2', true);
             $this->config->requestType = 'GET';
