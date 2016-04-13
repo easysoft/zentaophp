@@ -1272,22 +1272,13 @@ class baseRouter
     {
         $this->setModuleName('common');
         $commonModelFile = $this->setModelFile('common');
-        if(file_exists($commonModelFile))
-        {
-            helper::import($commonModelFile);
-            if(class_exists('extcommonModel'))
-            {
-                return new extcommonModel();
-            }
-            elseif(class_exists('commonModel'))
-            {
-                return new commonModel();
-            }
-            else
-            {
-                return false;
-            }
-        }
+        if(!file_exists($commonModelFile)) return false;
+
+        helper::import($commonModelFile);
+        if(class_exists('extcommonModel')) return new extcommonModel();
+        if(class_exists('commonModel'))    return new commonModel();
+
+        return false;
     }
 
     /**
