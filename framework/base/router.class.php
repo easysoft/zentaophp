@@ -973,33 +973,11 @@ class baseRouter
      */
     public function setClientLang($lang = '')
     {
-        if(!empty($lang))
-        {
-            $this->clientLang = $lang;
-        }
-        elseif(isset($_SESSION['lang']))
-        {
-            $this->clientLang = $_SESSION['lang'];
-        }
-        elseif(isset($_COOKIE['lang']))
-        {
-            $this->clientLang = $_COOKIE['lang'];
-        }
-        elseif(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-        {
-            if(strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ',') === false)
-            {
-                $this->clientLang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-            }
-            else
-            {
-                $this->clientLang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], ','));
-            }
-
-            /* Fix clientLang for ie >= 10. https://www.drupal.org/node/365615. */
-            if(stripos($this->clientLang, 'hans')) $this->clientLang = 'zh-cn';
-            if(stripos($this->clientLang, 'hant')) $this->clientLang = 'zh-tw';
-        }
+        if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) $this->clientLang = $this->parseHttpAcceptLang();
+        if(isset($_COOKIE['lang']))                 $this->clientLang = $_COOKIE['lang'];
+        if(isset($_SESSION['lang']))                $this->clientLang = $_SESSION['lang'];
+        if(!empty($lang))                           $this->clientLang = $lang;
+     
         if(!empty($this->clientLang))
         {
             $this->clientLang = strtolower($this->clientLang);
@@ -1009,8 +987,31 @@ class baseRouter
         {
             $this->clientLang = $this->config->default->lang;
         }
+
         setcookie('lang', $this->clientLang, $this->config->cookieLife, $this->config->webRoot);
         if(!isset($_COOKIE['lang'])) $_COOKIE['lang'] = $this->clientLang;
+    }
+
+    /**
+     * 从HTTP_ACCEPT_LANGUAGE中提出去支持的语言。
+     * Parse the lang str from HTTP_ACCEPT_LANGUAGE header.
+     * 
+     * @access public
+     * @return string
+     */
+    public function parseHttpAcceptLang()
+    {
+        if(empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) return '';
+
+        $raw  = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        $pos  = strpos($raw, ',');
+        $lang = $pos === false ? $raw : substr($raw, 0, $pos);
+
+        /* Fix clientLang for ie >= 10. https://www.drupal.org/node/365615. */
+        if(stripos($lang, 'hans')) $lang = 'zh-cn';
+        if(stripos($lang, 'hant')) $lang = 'zh-tw';
+
+        return $lang;
     }
 
     /**
@@ -1038,18 +1039,9 @@ class baseRouter
      */
     public function setClientTheme($theme = '')
     {
-        if(!empty($theme))
-        {
-            $this->clientTheme = $theme;
-        }
-        elseif(isset($_COOKIE['theme']))
-        {
-            $this->clientTheme = $_COOKIE['theme'];
-        }    
-        elseif(isset($this->config->client->theme))
-        {
-            $this->clientTheme = $this->config->client->theme;
-        }    
+        if(isset($this->config->client->theme)) $this->clientTheme = $this->config->client->theme;
+        if(isset($_COOKIE['theme']))            $this->clientTheme = $_COOKIE['theme'];
+        if(!empty($theme))                      $this->clientTheme = $theme;
 
         if(!empty($this->clientTheme))
         {
@@ -1060,6 +1052,7 @@ class baseRouter
         {
             $this->clientTheme = $this->config->default->theme;
         }
+
         setcookie('theme', $this->clientTheme, $this->config->cookieLife, $this->config->webRoot);
         if(!isset($_COOKIE['theme'])) $_COOKIE['theme'] = $this->clientTheme;
     }
@@ -1096,7 +1089,20 @@ class baseRouter
             $this->clientDevice = ($mobile->isMobile() and !$mobile->isTablet()) ? 'mobile' : 'desktop';
         }
 
-        $this->cookie->set('device', $this->clientDevice);
+        setcookie('device', $this->clientDevice, $this->config->cookieLife, $this->config->webRoot);
+        if(!isset($_COOKIE['device'])) $_COOKIE['device'] = $this->clientDevice;
+    }
+
+    /**
+     * 获得客户端的终端设备。
+     * Get the client device.
+     * 
+     * @access public
+     * @return void
+     */
+    public function getClientDevice()
+    {
+        return $this->clientDevice();
     }
 
     //-------------------- 请求相关的方法(Request related methods) --------------------//
