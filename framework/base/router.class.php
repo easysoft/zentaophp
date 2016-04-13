@@ -361,16 +361,15 @@ class baseRouter
 
         $this->connectDB();
 
-        $this->setTimezone();
-        $this->setClientLang();
-        $this->loadLang('common');
-        $this->setClientTheme();
-
         $this->loadClass('front',  $static = true);
         $this->loadClass('filter', $static = true);
         $this->loadClass('dao',    $static = true);
         $this->loadClass('mobile', $static = true);
 
+        $this->setTimezone();
+        $this->setClientLang();
+        $this->loadLang('common');
+        $this->setClientTheme();
         $this->setClientDevice();
     }
 
@@ -403,7 +402,7 @@ class baseRouter
     //-------------------- 路径相关方法(Path related methods)--------------------//
 
     /**
-     * 设置应用名称
+     * 设置应用名称。
      * Set app name.
      * 
      * @param  string    $appName 
@@ -452,7 +451,7 @@ class baseRouter
     }
 
     /**
-     * 设置应用类库的根目录。
+     * 设置类库的根目录。
      * Set the app lib root.
      * 
      * @access public
@@ -474,14 +473,8 @@ class baseRouter
      */
     public function setAppRoot($appName = 'demo', $appRoot = '')
     {
-        if(empty($appRoot))
-        {
-            $this->appRoot = $this->basePath . 'app' . DS . $appName . DS;
-        }
-        else
-        {
-            $this->appRoot = realpath($appRoot) . DS;
-        }
+        if(empty($appRoot))  $this->appRoot = $this->basePath . 'app' . DS . $appName . DS;
+        if(!empty($appRoot)) $this->appRoot = realpath($appRoot) . DS;
         if(!is_dir($this->appRoot)) $this->triggerError("The app you call not found in {$this->appRoot}", __FILE__, __LINE__, $exit = true);
     }
 
@@ -546,6 +539,7 @@ class baseRouter
     }
 
     /**
+     * 设置www的根目录。
      * Set the www root.
      * 
      * @access public
@@ -557,6 +551,7 @@ class baseRouter
     }
 
     /**
+     * 设置data根目录。
      * Set the data root.
      * 
      * @access public
@@ -580,7 +575,7 @@ class baseRouter
     }
 
     /**
-     * 过滤超级变量数据
+     * 过滤超级变量数据。
      * Filter superVars.
      * 
      * @access public
@@ -727,29 +722,6 @@ class baseRouter
     public function setSiteCode()
     {
         return $this->siteCode = helper::getSiteCode($this->server->http_host);
-    }
-
-    /**
-     * 设置客户端的设备类型
-     * Set client device.
-     * 
-     * @access public
-     * @return void
-     */
-    public function setClientDevice()
-    {
-        $this->clientDevice = 'desktop';
-
-        if($this->cookie->device == 'mobile')  $this->clientDevice = 'mobile';
-        if($this->cookie->device == 'desktop') $this->clientDevice = 'desktop';
-
-        if(!isset($this->cookie->device)) 
-        {
-            $mobile = new mobile();
-            $this->clientDevice = ($mobile->isMobile() and !$mobile->isTablet()) ? 'mobile' : 'desktop';
-        }
-
-        $this->cookie->set('device', $this->clientDevice);
     }
 
     /**
@@ -1063,6 +1035,29 @@ class baseRouter
     public function getClientTheme()
     {
         return $this->config->webRoot . 'theme/' . $this->clientTheme . '/';
+    }
+
+    /**
+     * 设置客户端的设备类型。
+     * Set client device.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setClientDevice()
+    {
+        $this->clientDevice = 'desktop';
+
+        if($this->cookie->device == 'mobile')  $this->clientDevice = 'mobile';
+        if($this->cookie->device == 'desktop') $this->clientDevice = 'desktop';
+
+        if(!isset($this->cookie->device)) 
+        {
+            $mobile = new mobile();
+            $this->clientDevice = ($mobile->isMobile() and !$mobile->isTablet()) ? 'mobile' : 'desktop';
+        }
+
+        $this->cookie->set('device', $this->clientDevice);
     }
 
     /**
