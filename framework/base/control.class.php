@@ -3,19 +3,14 @@
  * ZenTaoPHP的baseControl类。
  * The baseControl class file of ZenTaoPHP framework.
  *
+ * @package framework
+ *
  * The author disclaims copyright to this source code.  In place of
  * a legal notice, here is a blessing:
  *
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
- */
-
-/**
- * baseControl基类.
- * The base class of control.
- *
- * @package framework
  */
 class baseControl
 {
@@ -254,8 +249,8 @@ class baseControl
     }
 
     /**
-     * set the method name.
      * 设置方法名。
+     * Set the method name.
      * 
      * @param   string  $methodName   方法名，如果为空，则从$app中获取。The method name, if empty, get it from $app.   
      * @access  public
@@ -588,7 +583,7 @@ class baseControl
         $output['data']   = json_encode($this->view);
         $output['md5']    = md5(json_encode($this->view));
 
-        $this->output     = json_encode($output);
+        $this->output = json_encode($output);
     }
 
     /**
