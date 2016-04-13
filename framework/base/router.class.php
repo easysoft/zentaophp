@@ -3,19 +3,14 @@
  * 此文件包括ZenTaoPHP框架的三个类：baseRouter, config, lang。
  * The router, config and lang class file of ZenTaoPHP framework.
  *
+ * @package framework
+ *
  * The author disclaims copyright to this source code. In place of 
  * a legal notice, here is a blessing:
  *
  *  May you do good and not evil.
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
- */
-
-/**
- * baseRouter类。
- * The baseRouter class.
- *
- * @package framework
  */
 class baseRouter
 {
@@ -38,13 +33,22 @@ class baseRouter
     public $frameRoot;
 
     /**
-     * 应用类库的根目录($this->appRoot/lib)。
-     * The root directory of the app library($this->appRoot/lib).
+     * 类库的根目录。{$this->basePath/lib}
+     * The root directory of the library($this->basePath/lib).
      * 
      * @var string
      * @access public
      */
     public $coreLibRoot;
+
+    /**
+     * 应用名称
+     * The appName.
+     * 
+     * @var string
+     * @access public
+     */
+    public $appName = '';
 
     /**
      * 应用程序的根目录。
@@ -74,7 +78,7 @@ class baseRouter
     public $cacheRoot;
 
     /**
-     *WWW目录 
+     * WWW目录。
      * The root directory of www.
      * 
      * @var string
@@ -83,7 +87,7 @@ class baseRouter
     public $wwwRoot;
 
     /**
-     * 附件存放目录
+     * 附件存放目录。
      * The root directory of data.
      * 
      * @var string
@@ -144,6 +148,15 @@ class baseRouter
      * @access public
      */
     public $clientTheme;
+
+    /**
+     * 客户端设备类型。
+     * The device type of client.
+     * 
+     * @var string   
+     * @access public
+     */
+    public $clientDevice;
 
     /**
      * 当前模块的control对象。
@@ -299,40 +312,13 @@ class baseRouter
     public $cookie;
 
     /**
-     * $global对象，用于访问$_GLOBAL变量。
-     * The $global object, used to access the $_GLOBAL var.
-     * 
-     * @var ojbect
-     * @access public
-     */
-    public $global;
-
-    /**
-     * 网站代号
+     * 网站代号。
      * The code of current site.
      * 
      * @var string
      * @access public
      */
     public $siteCode;
-
-    /**
-     * 客户端设备类型
-     * The device type of client.
-     * 
-     * @var string   
-     * @access public
-     */
-    public $clientDevice;
-
-    /**
-     * 应用名称
-     * The appName.
-     * 
-     * @var string
-     * @access public
-     */
-    public $appName = '';
 
     /**
      * 构造方法, 设置路径，类，超级变量等。注意：
