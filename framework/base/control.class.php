@@ -322,7 +322,6 @@ class baseControl
         $this->server  = $this->app->server;
         $this->session = $this->app->session;
         $this->cookie  = $this->app->cookie;
-        $this->global  = $this->app->global;
     }
 
     /**

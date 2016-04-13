@@ -191,7 +191,6 @@ class baseModel
         $this->server  = $this->app->server;
         $this->cookie  = $this->app->cookie;
         $this->session = $this->app->session;
-        $this->global  = $this->app->global;
     }
 
     /**
