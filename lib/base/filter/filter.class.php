@@ -481,6 +481,144 @@ class baseValidater
     }
 
     /**
+     * 过滤附件。
+     * Filter files. 
+     * 
+     * @access public
+     * @return array
+     */
+    public static function filterFiles()
+    {
+        global $config;
+        if(empty($_FILES)) return $_FILES;
+
+        foreach($_FILES as $varName => $files)
+        {
+            if(is_array($files['name']))
+            {
+                foreach($files['name'] as $i => $fileName)
+                {
+                    $extension = ltrim(strrchr($fileName, '.'), '.');
+                    if(strrpos(",{$config->file->dangers},", ",{$extension},") !== false)
+                    {
+                        unset($_FILES);
+                        return array();
+                    }
+                }
+            }
+            else
+            {
+                $extension = ltrim(strrchr($files['name'], '.'), '.');
+                if(strrpos(",{$config->file->dangers},", ",{$extension},") !== false)
+                {
+                    unset($_FILES);
+                    return array();
+                }
+            }
+        }
+    }
+
+    /**
+     * 过滤超级变量。
+     * Filter super vars.
+     * 
+     * @param  array    $super 
+     * @access public
+     * @return array
+     */
+    public static function filterSuper($super)
+    {
+        if(!is_array($super)) return $super;
+
+        $super = self::filterBadKeys($super);
+        foreach($super as $key => $item)
+        {
+            if(is_array($item))
+            {
+                $item = self::filterBadKeys($item);
+                foreach($item as $subkey => $subItem)
+                {
+                    if(is_array($subItem)) continue;
+                    $super[$key][$subkey] = self::filterTrojan($subItem);
+                    $super[$key][$subkey] = self::filterXSS($subItem);
+                }
+            }
+            else
+            {
+                $super[$key] = self::filterTrojan($item);
+                $super[$key] = self::filterXSS($item);
+            }
+        }
+
+        return $super;
+    }
+
+    /**
+     * 过滤不符合规则的键值。
+     * Filter bad keys.
+     * 
+     * @param  mix    $var 
+     * @access public
+     * @return mix
+     */
+    public static function filterBadKeys($var)
+    {
+        global $config;
+        if(empty($config->framework->filterBadKeys)) return $var;
+        foreach($var as $key => $value) if(preg_match('/[^a-zA-Z0-9_\.]/', $key)) unset($var[$key]);
+        return $var;
+    }
+
+    /**
+     * 过滤木马代码。
+     * Filter trojan codes.
+     * 
+     * @param  string    $var 
+     * @access public
+     * @return string
+     */
+    public static function filterTrojan($var)
+    {
+        global $config;
+        if(empty($config->framework->filterTrojan)) return $var;
+        if(strpos(htmlspecialchars_decode($var), '<?') === false) return $var;
+
+        $var      = (string) $var;
+        $evils    = array('eval', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system', '$$', 'include', 'require', 'assert');
+        $replaces = array('e v a l', 'e x e c', ' p a s s t h r u', ' p r o c _ o p e n', 's h e l l _ e x e c', 's y s t e m', '$ $', 'i n c l u d e', 'r e q u i r e', 'a s s e r t');
+        $var      = str_ireplace($evils, $replaces, $var);
+
+        return $var;
+    }
+
+    /**
+     * 过滤 XSS代码。
+     * Filter XSS codes.
+     * 
+     * @param  string    $var 
+     * @access public
+     * @return string
+     */
+    public static function filterXSS($var)
+    {
+        global $config;
+        if(empty($config->framework->filterXSS)) return $var;
+
+        if(stripos($var, '<script') !== false)
+        {
+            $var    = (string) $var;
+            $evils    = array('appendchild(', 'createElement(', 'xss.re', 'onfocus', 'onclick', 'innerHTML', 'replaceChild(', 'html(', 'append(', 'appendTo(', 'prepend(', 'prependTo(', 'after(', 'before(', 'replaceWith(');
+            $replaces = array('a p p e n d c h i l d (', 'c r e a t e E l e  m e n t (', 'x s s . r e', 'o n f o c u s', 'o n c l i c k', 'i n n e r H T M L', 'r e p l a c e C h i l d (', 'h t m l (', 'a p p e n d (', 'a p p e n d T o (', 'p r e p e n d (', 'p r e p e n d T o (', 'a f t e r (', 'b e f o r e (', 'r e p l a c e W i t h (');
+            $var    = str_ireplace($evils, $replaces, $var);
+        }
+
+        /* Process like 'javascript:' */
+        $var = preg_replace('/j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/Ui', 'j a v a s c r i p t :', $var);
+
+        return $var;
+    }
+
+    /**
      * 调用一个方法进行检查。
      * Call a function to check it.
      * 
