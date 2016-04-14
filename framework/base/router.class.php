@@ -975,12 +975,6 @@ class baseRouter
      */
     public function parseRequest()
     {
-        if(isGetUrl())
-        {
-            if($this->config->requestType == 'PATH_INFO2') define('FIX_PATH_INFO2', true);
-            $this->config->requestType = 'GET';
-        }
-
         if($this->config->requestType == 'PATH_INFO' or $this->config->requestType == 'PATH_INFO2')
         {
             $this->parsePathInfo();
@@ -1007,7 +1001,6 @@ class baseRouter
     public function parsePathInfo()
     {
         $pathInfo = $this->getPathInfo();
-        if(trim($pathInfo, '/') == trim($this->config->webRoot, '/')) $pathInfo = '';
         if(!empty($pathInfo))
         {
             $dotPos = strrpos($pathInfo, '.');
@@ -1060,6 +1053,7 @@ class baseRouter
         }
 
         if(strpos($value, '?') === false) return trim($value, '/');
+
         $value = parse_url($value);
         return trim($value['path'], '/');
     }
