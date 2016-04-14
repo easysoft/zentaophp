@@ -599,16 +599,9 @@ class baseRouter
     }
 
    /**
-     * 设置站点代号
-     * Set the code of current site. 
+     * 设置站点代号，可以针对不同的站点来加载不同的扩展。
+     * Set the code of current site, thus can load diffrent extension of diffrent site.
      * 
-     * www.xirang.com => xirang
-     * xirang.com     => xirang
-     * xirang.com.cn  => xirang
-     * xirang.cn      => xirang
-     * xirang         => xirang
-     * 192.168.1.1    => 192.168.1.1
-     *
      * @access public
      * @return void
      */
@@ -881,18 +874,6 @@ class baseRouter
     }
 
     /**
-     * 获取$clientLang变量，即客户端的语言。
-     * Get the $clientLang var.
-     * 
-     * @access public
-     * @return string
-     */
-    public function getClientLang()
-    {
-        return $this->clientLang;
-    }
-
-    /**
      * 设置客户端使用的主题，判断逻辑与客户端的语言相同。
      * 主题的css和图片文件应该存放在www/theme/$themeName路径。
      *
@@ -923,19 +904,7 @@ class baseRouter
         if(!isset($_COOKIE['theme'])) $_COOKIE['theme'] = $this->clientTheme;
     }
 
-    /**
-     * 获取$clientTheme变量。
-     * Get the $clientTheme var. 
-     *
-     * @access public
-     * @return string
-     */
-    public function getClientTheme()
-    {
-        return $this->config->webRoot . 'theme/' . $this->clientTheme . '/';
-    }
-
-    /**
+   /**
      * 设置客户端的设备类型。
      * Set client device.
      * 
@@ -957,6 +926,30 @@ class baseRouter
 
         setcookie('device', $this->clientDevice, $this->config->cookieLife, $this->config->webRoot);
         if(!isset($_COOKIE['device'])) $_COOKIE['device'] = $this->clientDevice;
+    }
+
+    /**
+     * 获取$clientLang变量，即客户端的语言。
+     * Get the $clientLang var.
+     * 
+     * @access public
+     * @return string
+     */
+    public function getClientLang()
+    {
+        return $this->clientLang;
+    }
+
+    /**
+     * 获取$clientTheme变量。
+     * Get the $clientTheme var. 
+     *
+     * @access public
+     * @return string
+     */
+    public function getClientTheme()
+    {
+        return $this->config->webRoot . 'theme/' . $this->clientTheme . '/';
     }
 
     /**

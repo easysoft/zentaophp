@@ -432,6 +432,12 @@ class baseHelper
      * 通过域名获取站点代号。
      * Get siteCode for a domain.
      *
+     * www.xirang.com => xirang
+     * xirang.com     => xirang
+     * xirang.com.cn  => xirang
+     * xirang.cn      => xirang
+     * xirang         => xirang
+     *
      * @param  string $domain
      * @return string $siteCode
      **/ 
@@ -446,9 +452,6 @@ class baseHelper
         /* $config里面有定义或者是localhost，直接返回。 Return directly if defined in $config or is localhost. */
         if(isset($config->siteCode[$domain])) return $config->siteCode[$domain];
         if($domain == 'localhost') return $domain;
-
-        /* 域名不合法。The domain is illegal. */
-        if(!preg_match('/^([a-z0-9\-_]+\.)+[a-z0-9\-]+$/', $domain)) return '';
 
         /* 将域名中的-改为_。Replace '-' with '_' in the domain. */
         $domain = str_replace('-', '_', $domain);
