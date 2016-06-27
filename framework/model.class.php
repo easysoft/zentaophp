@@ -15,7 +15,7 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-include dirname(__FILE__) . '/base/model.class.php';
+include FRAME_ROOT . '/base/model.class.php';
 class model extends baseModel
 {
 }

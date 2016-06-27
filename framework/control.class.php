@@ -15,7 +15,7 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-include dirname(__FILE__) . '/base/control.class.php';
+include FRAME_ROOT . '/base/control.class.php';
 class control extends baseControl
 {
 }
