@@ -15,7 +15,7 @@
 /* 先关闭所有的错误输出。Turn off error reporting first. */
 error_reporting(0);
 
-/* 使用ob扑获所有的输出。Use ob to get output. */
+/* 使用ob捕获所有的输出。Use ob to get output. */
 ob_start();
 
 /* 加载框架核心文件。Load the framework. */
