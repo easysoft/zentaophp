@@ -12,7 +12,7 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-define(FRAME_ROOT, dirname(__FILE__));
+define('FRAME_ROOT', dirname(__FILE__));
 include FRAME_ROOT . '/base/router.class.php';
 class router extends baseRouter
 {
