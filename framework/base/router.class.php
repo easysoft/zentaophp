@@ -1112,7 +1112,7 @@ class baseRouter
      *  This method should called manually in the router file(www/index.php) after the $lang, $config, $dbh loaded.
      *
      * @access public
-     * @return object|bool  the common control object or false if not exits.
+     * @return object|bool  the common model object or false if not exits.
      */
     public function loadCommon()
     {
@@ -1121,8 +1121,9 @@ class baseRouter
         if(!file_exists($commonModelFile)) return false;
 
         helper::import($commonModelFile);
-        if(class_exists('extcommonModel')) return new extcommonModel();
-        if(class_exists('commonModel'))    return new commonModel();
+
+        if($this->config->framework->extensionLevel == 0 and class_exists('commonModel'))    return new commonModel();
+        if($this->config->framework->extensionLevel > 0  and class_exists('extCommonModel')) return new extCommonModel();
 
         return false;
     }
@@ -1153,12 +1154,10 @@ class baseRouter
     public function setControlFile($exitIfNone = true)
     {
         $this->controlFile = $this->moduleRoot . $this->moduleName . DS . 'control.php';
-        if(!is_file($this->controlFile))
-        {
-            $this->triggerError("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
-            return false;
-        }
-        return true;
+        if(file_exists($this->controlFile)) return true;
+
+        $this->triggerError("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
+        return false;
     }
 
     /**
