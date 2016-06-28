@@ -373,18 +373,9 @@ class baseRouter
      * 创建一个应用。
      * Create an application.
      * 
-     * <code>
-     * <?php
-     * $demo = router::createApp('demo');
-     * ?>
-     * or specify the root path of the app. Thus the app and framework can be seperated.
-     * <?php
-     * $demo = router::createApp('demo', '/home/app/demo');
-     * ?>
-     * </code>
-     * @param string $appName   the name of the app 
-     * @param string $appRoot   the root path of the app
-     * @param string $className the name of the router class. When extends a child, you should pass in the child router class name.
+     * @param string $appName   应用名称。  The name of the app.
+     * @param string $appRoot   应用根路径。The root path of the app.
+     * @param string $className 应用类名，如果对router类做了扩展，需要指定类名。When extends router class, you should pass in the child router class name.
      * @static
      * @access public
      * @return object   the app object
