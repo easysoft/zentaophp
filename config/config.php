@@ -11,6 +11,7 @@
  *  May you share freely, never taking more than you give.
  */
 
+/* 保证在命令行环境也能运行。Make sure to run in ztcli env. */
 if(!class_exists('config')){class config{}}
 if(!function_exists('getWebRoot')){function getWebRoot(){}}
 
@@ -35,6 +36,9 @@ $config->themes['default'] = 'default';
 $config->langs['zh-cn']    = '简体';
 $config->langs['en']       = 'En';
 
+/* 设备类型视图文件前缀。The prefix for view file for different device. */ 
+$config->devicePrefix['mhtml'] = 'm.';
+
 /* 默认值设置。Default settings. */
 $config->default = new stdclass();
 $config->default->view   = 'html';        //默认视图。 Default view.
@@ -58,12 +62,17 @@ $config->slaveDB->strictMode = false;
 
 /* 系统框架配置。Framework settings. */
 $config->framework = new stdclass();
-$config->framework->jsWithPrefix  = true;  // js::set()输出的时候是否增加前缀。When us js::set(), add prefix or not.
-$config->framework->logDays       = 14;    // 日志文件保存的天数。             The days to save log files.
-$config->framework->filterBadKeys = true;  // 是否过滤不合要求的键值。         Whether filter bad keys or not.
-$config->framework->filterTrojan  = true;  // 是否过滤木马攻击代码。           Whether strip trojan code or not.
-$config->framework->filterXSS     = true;  // 是否过滤XSS攻击代码。            Whether strip xss code or not.
-$config->framework->purifier      = true;  // 是否对数据做purifier处理。       Whether purifier data or not.
+$config->framework->multiLanguage = true;  // 是否启用多语言功能。              Whether enable multi lanuage or not.
+$config->framework->multiTheme    = true;  // 是否启用多风格功能。              Whether enable multi theme or not.
+$config->framework->detectDevice  = true;  // 是否启用设备检测功能。            Whether enable device detect or not.
+$config->framework->autoConnectDB = true;  // 是否自动连接数据库。              Whether auto connect database or not.
+$config->framework->extensionLevel= 0;     // 0=>无扩展,1=>公共扩展,2=>站点扩展 0=>no extension, 1=> common extension, 2=> every site has it's extension.
+$config->framework->jsWithPrefix  = true;  // js::set()输出的时候是否增加前缀。 When us js::set(), add prefix or not.
+$config->framework->logDays       = 14;    // 日志文件保存的天数。              The days to save log files.
+$config->framework->filterBadKeys = true;  // 是否过滤不合要求的键值。          Whether filter bad keys or not.
+$config->framework->filterTrojan  = true;  // 是否过滤木马攻击代码。            Whether strip trojan code or not.
+$config->framework->filterXSS     = true;  // 是否过滤XSS攻击代码。             Whether strip xss code or not.
+$config->framework->purifier      = true;  // 是否对数据做purifier处理。        Whether purifier data or not.
 
 /* 引用自定义的配置。 Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';

@@ -357,20 +357,16 @@ class baseRouter
         $this->loadClass('dao',    $static = true);
         $this->loadClass('mobile', $static = true);
 
-        $this->loadConfig('common');
-
         $this->setSuperVars();
-
+        $this->loadConfig('common');
         $this->setDebug();
         $this->setErrorHandler();
-
         $this->setTimezone();
-        $this->setClientLang();
-        $this->loadLang('common');
-        $this->setClientTheme();
-        $this->setClientDevice();
 
-        $this->connectDB();
+        if($this->config->framework->multiLanguage) $this->setClientLang() && $this->loadLang('common');
+        if($this->config->framework->multiTheme)    $this->setClientTheme();
+        if($this->config->framework->detectDevice)  $this->setClientDevice();
+        if($this->config->framework->autoConnectDB) $this->connectDB();
     }
 
     /**
