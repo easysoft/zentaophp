@@ -1096,7 +1096,7 @@ class baseRouter
         return $this->viewType;
     }
 
-    //-------------------- 路由相关方法(Routing related methods) --------------------//
+    //-------------------- 模块及扩展设置(Module and extension) --------------------//
 
     /**
      * 加载common模块。
@@ -1138,8 +1138,7 @@ class baseRouter
      */
     public function setModuleName($moduleName = '')
     {
-        if(!preg_match('/^[a-zA-Z0-9]+$/', $moduleName)) $this->triggerError("The modulename '$moduleName' illegal. ", __FILE__, __LINE__, $exit = true);
-        $this->moduleName = strip_tags(urldecode(strtolower($moduleName)));
+        if($this->checkAlnum($moduleName)) $this->moduleName = strtolower($moduleName);
     }
 
     /**
@@ -1155,9 +1154,7 @@ class baseRouter
     {
         $this->controlFile = $this->moduleRoot . $this->moduleName . DS . 'control.php';
         if(file_exists($this->controlFile)) return true;
-
         $this->triggerError("the control file $this->controlFile not found.", __FILE__, __LINE__, $exitIfNone);
-        return false;
     }
 
     /**
@@ -1170,8 +1167,7 @@ class baseRouter
      */
     public function setMethodName($methodName = '')
     {
-        if(!preg_match('/^[a-zA-Z0-9]+$/', $methodName)) $this->triggerError("The methodname '$methodName' illegal. ", __FILE__, __LINE__, $exit = true);
-        $this->methodName = strip_tags(urldecode(strtolower($methodName)));
+        if($this->checkAlnum($methodName)) $this->methodName = strtolower($methodName);
     }
 
     /**
@@ -1186,10 +1182,12 @@ class baseRouter
     public function getModulePath($appName = '', $moduleName = '')
     {
         if($moduleName == '') $moduleName = $this->moduleName;
-        if(!preg_match('/^[a-zA-Z0-9]+$/', $moduleName)) $this->triggerError("The modulename '$moduleName' illegal. ", __FILE__, __LINE__, $exit = true);
-        $modulePath = $this->getModuleRoot($appName) . strtolower(trim($moduleName)) . DS;
 
-        return $modulePath;
+        if($this->checkAlnum($moduleName))
+        {
+            $modulePath = $this->getModuleRoot($appName) . strtolower($moduleName) . DS;
+            return $modulePath;
+        }
     }
 
     /**
@@ -1204,11 +1202,27 @@ class baseRouter
      */
     public function getModuleExtPath($appName, $moduleName, $ext)
     {
-        if(!preg_match('/^[a-zA-Z0-9]+$/', $moduleName) or !preg_match('/^[a-zA-Z0-9]+$/', $ext)) $this->triggerError("The modulename '$moduleName' or ext '$ext' illegal. ", __FILE__, __LINE__, $exit = true);
-        $paths = array();
-        $paths['common'] = $this->getModulePath($appName, $moduleName) . 'ext' . DS . $ext . DS;
-        $paths['site']   = empty($this->siteCode) ? '' : $this->getModulePath($appName, $moduleName) . 'ext' . DS . '_' . $this->siteCode . DS . $ext . DS;
-        return $paths;
+        if($this->checkAlnum($moduleName))
+        {
+            $paths = array();
+            $paths['common'] = $this->getModulePath($appName, $moduleName) . 'ext' . DS . $ext . DS;
+            $paths['site']   = empty($this->siteCode) ? '' : $this->getModulePath($appName, $moduleName) . 'ext' . DS . '_' . $this->siteCode . DS . $ext . DS;
+            return $paths;
+        }
+    }
+
+    /**
+     * 检查某一个变量必须为英文字母和数字组合。
+     * Check a variable must be ascii.
+     * 
+     * @param  string    $var 
+     * @access public
+     * @return void
+     */
+    public function checkAlnum($var)
+    {
+        if(preg_match('/^[a-zA-Z0-9]+$/', $var)) return true;
+        $this->triggerError("'$var' illegal. ", __FILE__, __LINE__, $exit = true);
     }
 
     /**
@@ -1386,6 +1400,8 @@ class baseRouter
         return trim($code);
     }
 
+    //-------------------- 路由相关方法(Routing related methods) --------------------//
+   
     /**
      * 设置路由(PATH_INFO 方式)：
      * 1.设置模块名；
