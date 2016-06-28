@@ -585,18 +585,6 @@ class baseRouter
         $_COOKIE = validater::filterSuper($_COOKIE);
     }
 
-   /**
-     * 设置站点代号，可以针对不同的站点来加载不同的扩展。
-     * Set the code of current site, thus can load diffrent extension of diffrent site.
-     * 
-     * @access public
-     * @return void
-     */
-    public function setSiteCode()
-    {
-        return $this->siteCode = helper::getSiteCode($this->server->http_host);
-    }
-
     /**
      * 设置Debug模式。
      * set Debug. 
@@ -913,6 +901,18 @@ class baseRouter
 
         setcookie('device', $this->clientDevice, $this->config->cookieLife, $this->config->webRoot);
         if(!isset($_COOKIE['device'])) $_COOKIE['device'] = $this->clientDevice;
+    }
+
+    /**
+     * 设置站点代号，可以针对不同的站点来加载不同的扩展。
+     * Set the code of current site, thus can load diffrent extension of diffrent site.
+     * 
+     * @access public
+     * @return void
+     */
+    public function setSiteCode()
+    {
+        return $this->siteCode = helper::getSiteCode($this->server->http_host);
     }
 
     /**
