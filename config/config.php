@@ -60,12 +60,35 @@ $config->slaveDB->driver     = 'mysql';
 $config->slaveDB->encoding   = 'UTF8';
 $config->slaveDB->strictMode = false;
 
+/* 可用域名后缀列表。Domain postfix lists. */
+$config->domainPostfix  = "|com|com.cn|com.hk|com.tw|com.vc|edu.cn|es|";
+$config->domainPostfix .= "|eu|fm|gov.cn|gs|hk|im|in|info|jp|kr|la|me|";
+$config->domainPostfix .= "|mobi|my|name|net|net.cn|org|org.cn|pk|pro|";
+$config->domainPostfix .= "|sg|so|tel|tk|to|travel|tv|tw|uk|us|ws|";
+$config->domainPostfix .= "|ac.cn|bj.cn|sh.cn|tj.cn|cq.cn|he.cn|sn.cn|";
+$config->domainPostfix .= "|sx.cn|nm.cn|ln.cn|jl.cn|hl.cn|js.cn|zj.cn|";
+$config->domainPostfix .= "|ah.cn|fj.cn|jx.cn|sd.cn|ha.cn|hb.cn|hn.cn|";
+$config->domainPostfix .= "|gd.cn|gx.cn|hi.cn|sc.cn|gz.cn|yn.cn|gs.cn|pub|pw|";
+$config->domainPostfix .= "|qh.cn|nx.cn|xj.cn|tw.cn|hk.cn|mo.cn|xz.cn|xyz|wang|";
+$config->domainPostfix .= "|ae|asia|biz|cc|cd|cm|cn|co|co.jp|co.kr|co.uk|";
+$config->domainPostfix .= "|top|ren|club|space|tm|website|cool|company|city|email|";
+$config->domainPostfix .= "|market|software|ninja|bike|today|life|co.il|io|";
+$config->domainPostfix .= "|mn|ph|ps|tl|uz|vn|co.nz|cz|gg|gl|gr|je|md|me.uk|org.uk|pl|si|sx|vg|ag|";
+$config->domainPostfix .= "|bz|cl|ec|gd|gy|ht|lc|ms|mx|pe|tc|vc|ac|bi|mg|mu|sc|as|com.sb|cx|ki|nf|sh|";
+$config->domainPostfix .= "|rocks|social|co.com|bio|reviews|link|sexy|us.com|consulting|moda|desi|";
+$config->domainPostfix .= "|menu|info|events|webcam|dating|vacations|flights|cruises|global|ca|guru|";
+$config->domainPostfix .= "|futbol|rentals|dance|lawyer|attorney|democrat|republican|actor|condos|immobilien|";
+$config->domainPostfix .= "|villas|foundation|expert|works|tools|watch|zone|bargains|agency|best|solar|";
+$config->domainPostfix .= "|farm|pics|photo|marketing|holiday|gift|buzz|guitars|trade|construction|"; 
+$config->domainPostfix .= "|international|house|coffee|florist|rich|ceo|camp|education|repair|win|site|";
+
 /* 系统框架配置。Framework settings. */
 $config->framework = new stdclass();
-$config->framework->multiLanguage = true;  // 是否启用多语言功能。              Whether enable multi lanuage or not.
-$config->framework->multiTheme    = true;  // 是否启用多风格功能。              Whether enable multi theme or not.
-$config->framework->detectDevice  = true;  // 是否启用设备检测功能。            Whether enable device detect or not.
+$config->framework->multiLanguage = false;  // 是否启用多语言功能。              Whether enable multi lanuage or not.
+$config->framework->multiTheme    = false;  // 是否启用多风格功能。              Whether enable multi theme or not.
+$config->framework->detectDevice  = false;  // 是否启用设备检测功能。            Whether enable device detect or not.
 $config->framework->autoConnectDB = true;  // 是否自动连接数据库。              Whether auto connect database or not.
+$config->framework->multiSite     = false; // 是否启用多站点模式。              Whether enable multi site mode or not.
 $config->framework->extensionLevel= 0;     // 0=>无扩展,1=>公共扩展,2=>站点扩展 0=>no extension, 1=> common extension, 2=> every site has it's extension.
 $config->framework->jsWithPrefix  = true;  // js::set()输出的时候是否增加前缀。 When us js::set(), add prefix or not.
 $config->framework->logDays       = 14;    // 日志文件保存的天数。              The days to save log files.
