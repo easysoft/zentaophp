@@ -441,7 +441,7 @@ class baseHelper
      * @param  string $domain
      * @return string $siteCode
      **/ 
-    public static function getSiteCode($domain)
+    public static function parseSiteCode($domain)
     {
         global $config;
 
@@ -450,7 +450,7 @@ class baseHelper
         $domain = strtolower($domain);
 
         /* $config里面有定义或者是localhost，直接返回。 Return directly if defined in $config or is localhost. */
-        if(isset($config->siteCode[$domain])) return $config->siteCode[$domain];
+        if(isset($config->siteCodeList[$domain])) return $config->siteCodeList[$domain];
         if($domain == 'localhost') return $domain;
 
         /* 将域名中的-改为_。Replace '-' with '_' in the domain. */
