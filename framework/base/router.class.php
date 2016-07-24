@@ -358,15 +358,16 @@ class baseRouter
         $this->loadClass('mobile', $static = true);
 
         $this->setSuperVars();
-        $this->loadConfig('common');
+        $this->loadMainConfig();
         $this->setDebug();
         $this->setErrorHandler();
         $this->setTimezone();
 
+        if($this->config->framework->autoConnectDB) $this->connectDB();
         if($this->config->framework->multiLanguage) $this->setClientLang() && $this->loadLang('common');
         if($this->config->framework->multiTheme)    $this->setClientTheme();
         if($this->config->framework->detectDevice)  $this->setClientDevice();
-        if($this->config->framework->autoConnectDB) $this->connectDB();
+        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
     }
 
     /**
@@ -824,6 +825,8 @@ class baseRouter
 
         setcookie('lang', $this->clientLang, $this->config->cookieLife, $this->config->webRoot);
         if(!isset($_COOKIE['lang'])) $_COOKIE['lang'] = $this->clientLang;
+
+        return true;
     }
 
     /**
@@ -877,6 +880,8 @@ class baseRouter
 
         setcookie('theme', $this->clientTheme, $this->config->cookieLife, $this->config->webRoot);
         if(!isset($_COOKIE['theme'])) $_COOKIE['theme'] = $this->clientTheme;
+
+        return true;
     }
 
    /**
@@ -912,7 +917,7 @@ class baseRouter
      */
     public function setSiteCode()
     {
-        return $this->siteCode = helper::getSiteCode($this->server->http_host);
+        return $this->siteCode = helper::parseSiteCode($this->server->http_host);
     }
 
     /**
@@ -1730,6 +1735,42 @@ class baseRouter
     }
 
     /**
+     * 加载整个应用公共的配置文件。
+     * Load the common config files for the app.
+     * 
+     * @access public
+     * @return void
+     */
+    public function loadMainConfig()
+    {
+        /* 初始化$config对象。Init the $config object. */
+        global $config;
+        if(!is_object($config)) $config = new config();
+        $this->config = $config;
+
+        /* 加载主配置文件。 Load the main config file. */
+        $mainConfigFile = $this->configRoot . 'config.php';
+        if(!file_exists($mainConfigFile)) $this->triggerError("The main config file $mainConfigFile not found", __FILE__, __LINE__, $exit = true);
+        include $mainConfigFile;
+    }
+
+    /**
+     * 当multiSite功能打开的时候，加载额外的配置文件。
+     * When multiSite feature enabled, load extra config file.
+     * 
+     * @access public
+     * @return void
+     */
+    public function loadExtraConfig()
+    {
+        global $config;
+        $multiConfigFile = $this->configRoot . 'multi.php';
+        $siteConfigFile  = $this->configRoot . "sites/{$this->siteCode}.php";
+        if(file_exists($multiConfigFile)) include $multiConfigFile;
+        if(file_exists($siteConfigFile))  include $siteConfigFile;
+    }
+
+    /**
      * 加载模块的config文件，返回全局$config对象。
      * 如果该模块是common，加载$configRoot的配置文件，其他模块则加载其模块的配置文件。
      *
@@ -1742,115 +1783,34 @@ class baseRouter
      * @access  public
      * @return  object|bool the config object or false.
      */
-    public function loadConfig($moduleName, $appName = '', $exitIfNone = true)
+    public function loadModuleConfig($moduleName, $appName = '')
     {
         global $config;
-        if(!is_object($config)) $config = new config();
-        if(!isset($config->$moduleName)) $config->$moduleName = new stdclass();
 
-        $extConfigFiles = array();
+        /* 初始化数组。Init the variables. */
+        $extConfigFiles       = array();
+        $commonExtConfigFiles = array();
+        $siteExtConfigFiles   = array();
 
-        /*
-         * 设置主配置文件和扩展配置文件。
-         * Set the main config file and extension config file.
-         * */
-        if($moduleName == 'common')
-        {
-            $mainConfigFile = $this->configRoot . 'config.php';
-            $myConfig       = $this->configRoot . 'my.php';
-            if(is_file($myConfig)) $extConfigFiles[] = $myConfig;
-        }
-        else
-        {
-            $mainConfigFile = $this->getModulePath($appName, $moduleName) . 'config.php';
+        /* 先获得模块的主配置文件。Get the main config file for current module first. */
+        $mainConfigFile = $this->getModulePath($appName, $moduleName) . 'config.php';
 
-            /* Get config extension. */
-            $extConfigPath        = $this->getModuleExtPath($appName, $moduleName, 'config');
-            $commonExtConfigFiles = helper::ls($extConfigPath['common'], '.php');
-            $siteExtConfigFiles   = helper::ls($extConfigPath['site'], '.php');
-            $extConfigFiles       = array_merge($commonExtConfigFiles, $siteExtConfigFiles);
-        }
+        /* 查找扩展配置文件。Get extension config files. */
+        if($config->framework->extensionLevel > 0)  $extConfigPath        = $this->getModuleExtPath($appName, $moduleName, 'config');
+        if($config->framework->extensionLevel >= 1) $commonExtConfigFiles = helper::ls($extConfigPath['common'], '.php');
+        if($config->framework->extensionLevel == 2) $siteExtConfigFiles   = helper::ls($extConfigPath['site'], '.php');
+        $extConfigFiles = array_merge($commonExtConfigFiles, $siteExtConfigFiles);
 
-        /* 设置引用的文件(Set the files to include) */
-        if(!is_file($mainConfigFile))
-        {
-            if($exitIfNone) self::triggerError("config file $mainConfigFile not found", __FILE__, __LINE__, true);
-            if(empty($extConfigFiles) and !isset($config->system->$moduleName) and !isset($config->personal->$moduleName)) return false;  //  and no extension file or extension in db, exit.
-            $configFiles = $extConfigFiles;
-        }
-        else
-        {
-            $configFiles = array_merge(array($mainConfigFile), $extConfigFiles);
-        }
+        /* 将主配置文件和扩展配置文件合并在一起。Put the main config file and extension config files together. */
+        $configFiles = array_merge(array($mainConfigFile), $extConfigFiles);
 
+        /* 加载每一个配置文件。Load every config file. */
         static $loadedConfigs = array();
         foreach($configFiles as $configFile)
         {
             if(in_array($configFile, $loadedConfigs)) continue;
-            include $configFile;
+            if(file_exists($configFile)) include $configFile;
             $loadedConfigs[] = $configFile;
-        }
-
-        if($moduleName == 'common')
-        {
-            $this->config = $config;
-            $this->setSiteCode();
-            if(!isset($config->site)) $config->site = new stdclass();
-            $config->site->code = $this->siteCode;
-
-            if(!empty($config->multi))
-            {
-                $multiConfigFile = $this->configRoot . "multi.php";
-                if(is_file($multiConfigFile)) include $multiConfigFile;
-            }
-
-            if(!empty($this->siteCode))
-            {
-                $siteConfigFile = $this->configRoot . "sites/{$this->siteCode}.php";
-                if(is_file($siteConfigFile)) include $siteConfigFile;
-            }
-        }
-
-        /* Merge from the db configs. */
-        if($moduleName != 'common' and isset($config->system->$moduleName))   $this->mergeConfig($config->system->$moduleName,   $moduleName);
-        if($moduleName != 'common' and isset($config->personal->$moduleName)) $this->mergeConfig($config->personal->$moduleName, $moduleName);
-
-        $this->config = $config;
-
-        return $config;
-    }
-
-    /**
-     * 数据配置合并到主配置。
-     * Merge config items in database and config files.
-     * 
-     * @param  array  $dbConfig 
-     * @param  string $moduleName 
-     * @static
-     * @access public
-     * @return void
-     */
-    public function mergeConfig($dbConfig, $moduleName = 'common')
-    {
-        $config2Merge = $this->config;
-        if($moduleName != 'common') $config2Merge = $this->config->$moduleName;
-
-        foreach($dbConfig as $item)
-        {
-            foreach($item as $record)
-            {
-                if(!is_object($record))
-                {
-                    if($item->section and !isset($config2Merge->{$item->section})) $config2Merge->{$item->section} = new stdclass();
-                    $configItem = $item->section ? $config2Merge->{$item->section} : $config2Merge;
-                    if($item->key) $configItem->{$item->key} = $item->value;
-                    break;
-                }
-
-                if($record->section and !isset($config2Merge->{$record->section})) $config2Merge->{$record->section} = new stdclass();
-                $configItem = $record->section ? $config2Merge->{$record->section} : $config2Merge;
-                if($record->key) $configItem->{$record->key} = $record->value;
-            }
         }
     }
 
