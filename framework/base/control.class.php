@@ -282,7 +282,7 @@ class baseControl
          */
         if(!helper::import($modelFile)) 
         {
-            $this->app->loadConfig($moduleName, $appName, false);
+            $this->app->loadModuleConfig($moduleName, $appName, false);
             $this->app->loadLang($moduleName, $appName);
             $this->dao = new dao();
             return false;
