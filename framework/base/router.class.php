@@ -1196,9 +1196,12 @@ class baseRouter
     }
 
     /**
-     * 获取一个模块的扩展路径。
-     * Get extension path of one module.
+     * 获取一个模块的扩展路径。 Get extension path of one module.
      * 
+     * If the extensionLevel == 0, return empty array.
+     * If the extensionLevel == 1, return the common extension directory.
+     * If the extensionLevel == 2, return the common and site extension directories.
+     *
      * @param   string $appName        the app name
      * @param   string $moduleName     the module name
      * @param   string $ext            the extension type, can be control|model|view|lang|config
@@ -1207,13 +1210,18 @@ class baseRouter
      */
     public function getModuleExtPath($appName, $moduleName, $ext)
     {
-        if($this->checkAlnum($moduleName))
-        {
-            $paths = array();
-            $paths['common'] = $this->getModulePath($appName, $moduleName) . 'ext' . DS . $ext . DS;
-            $paths['site']   = empty($this->siteCode) ? '' : $this->getModulePath($appName, $moduleName) . 'ext' . DS . '_' . $this->siteCode . DS . $ext . DS;
-            return $paths;
-        }
+        /* 检查失败或者extensionLevel为0，直接返回空。If check failed or extensionLevel == 0, return empty array. */
+        if(!$this->checkAlnum($moduleName) or $this->config->framework->extensionLevel == 0) return array();
+
+        /* When extensionLevel == 1. */
+        $modulePath = $this->getModulePath($appName, $moduleName);
+        $paths = array();
+        $paths['common'] = $modulePath . 'ext' . DS . $ext . DS;
+        if($this->config->framework->extensionLevel == 1) return $paths;
+
+        /* When extensionLevel == 2. */
+        $paths['site']   = empty($this->siteCode) ? '' : $modulePath . 'ext' . DS . '_' . $this->siteCode . DS . $ext . DS;
+        return $paths;
     }
 
     /**
@@ -1275,7 +1283,7 @@ class baseRouter
             $hookFiles = array_merge($hookFiles, helper::ls($modelExtPath . 'hook/', '.php'));
             $extFiles  = array_merge($extFiles, helper::ls($modelExtPath, '.php'));
         }
-
+ 
         /* Get ext's app name from realname. */
         if($appName) $extAppName = basename(dirname(dirname(dirname($modelExtPath))));
 
