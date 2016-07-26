@@ -1220,7 +1220,7 @@ class baseRouter
         if($this->config->framework->extensionLevel == 1) return $paths;
 
         /* When extensionLevel == 2. */
-        $paths['site']   = empty($this->siteCode) ? '' : $modulePath . 'ext' . DS . '_' . $this->siteCode . DS . $ext . DS;
+        $paths['site'] = empty($this->siteCode) ? '' : $modulePath . 'ext' . DS . '_' . $this->siteCode . DS . $ext . DS;
         return $paths;
     }
 
@@ -1270,8 +1270,7 @@ class baseRouter
     {
         if($appName == '') $appName = $this->getAppName();
 
-        /* 设置主model文件，扩展文件和路径。 */
-        /* Set the main model file, extension path and files. */
+        /* 设置主model文件，扩展文件和路径。 Set the main model file, extension path and files. */
         $mainModelFile = $this->getModulePath($appName, $moduleName) . 'model.php';
         $modelExtPaths = $this->getModuleExtPath($appName, $moduleName, 'model');
 
@@ -1284,9 +1283,6 @@ class baseRouter
             $extFiles  = array_merge($extFiles, helper::ls($modelExtPath, '.php'));
         }
  
-        /* Get ext's app name from realname. */
-        if($appName) $extAppName = basename(dirname(dirname(dirname($modelExtPath))));
-
         /* 如果没有扩展文件，返回主文件目录。 */
         /* If no extension file, return the main file directly. */
         if(empty($extFiles) and empty($hookFiles)) return $mainModelFile;
@@ -1864,46 +1860,42 @@ class baseRouter
      */
     public function loadLang($moduleName, $appName = '')
     {
-        $modulePath   = $this->getModulePath($appName, $moduleName);
+        /* 初始化变量。Init vars. */
+        $modulePath      = $this->getModulePath($appName, $moduleName);
+        $extLangFiles    = array();
+        $langFilesToLoad = array();
+
+        /* 判断主语言文件是否存在。Whether the main lang file exists or not. */
         $mainLangFile = $modulePath . 'lang' . DS . $this->clientLang . '.php';
-        $extLangPath        = $this->getModuleExtPath($appName, $moduleName, 'lang');
-        $commonExtLangFiles = helper::ls($extLangPath['common'] . $this->clientLang, '.php');
-        $siteExtLangFiles   = helper::ls($extLangPath['site'] . $this->clientLang, '.php');
-        $extLangFiles       = array_merge($commonExtLangFiles, $siteExtLangFiles);
+        if(file_exists($mainLangFile)) $langFilesToLoad[] = $mainLangFile;
 
-        /* 设置引用的文件(Set the files to include). */
-        if(!is_file($mainLangFile))
+        /* 获取扩展语言文件。If extensionLevel > 0, get extension lang files. */
+        if($this->config->framework->extensionLevel > 0)
         {
-            if(empty($extLangFiles)) return false;  // 没有扩展文件，返回false(Return false if no extension file).
-            $langFiles = $extLangFiles;
-        }
-        else
-        {
-            $langFiles = array_merge(array($mainLangFile), $extLangFiles);
+            $commonExtLangFiles = array();
+            $siteExtLangFiles   = array();
+
+            $extLangPath = $this->getModuleExtPath($appName, $moduleName, 'lang');
+            if($this->config->framework->extensionLevel == 1) $commonExtLangFiles = helper::ls($extLangPath['common'] . $this->clientLang, '.php');
+            if($this->config->framework->extensionLevel == 2) $siteExtLangFiles   = helper::ls($extLangPath['site'] . $this->clientLang, '.php');
+            $extLangFiles  = array_merge($commonExtLangFiles, $siteExtLangFiles);
         }
 
+        /* 计算最终要加载的语言文件。 Get the lang files to be loaded. */
+        $langFilesToLoad = array_merge($langFilesToLoad, $extLangFiles);
+        if(empty($langFilesToLoad)) return false;
+
+
+        /* 加载语言文件。Load lang files. */
         global $lang;
         if(!is_object($lang)) $lang = new language();
 
         static $loadedLangs = array();
-        foreach($langFiles as $langFile)
+        foreach($langFilesToLoad as $langFile)
         {
             if(in_array($langFile, $loadedLangs)) continue;
             include $langFile;
             $loadedLangs[] = $langFile;
-        }
-
-        /* Merge from the db lang. */
-        if($moduleName != 'common' and isset($lang->db->custom[$moduleName]))
-        {
-            foreach($lang->db->custom[$moduleName] as $section => $fields)
-            {
-                foreach($fields as $key => $value)
-                {
-                    unset($lang->{$moduleName}->{$section}[$key]);
-                    $lang->{$moduleName}->{$section}[$key] = $value;
-                }
-            }
         }
 
         $this->lang = $lang;
