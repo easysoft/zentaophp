@@ -1239,20 +1239,24 @@ class baseRouter
     }
 
     /**
-     * 设置请求方法的扩展文件。
-     * Set the action extension file.
+     * 设置Action的扩展文件。 Set the action extension file.
      * 
      * @access  public
      * @return  bool
      */
     public function setActionExtFile()
     {
-        $moduleExtPaths = $this->getModuleExtPath('', $this->moduleName, 'control');
+        $moduleExtPaths  = $this->getModuleExtPath('', $this->moduleName, 'control');
 
-        $this->extActionFile = '';
-        if($moduleExtPaths['site']) $this->extActionFile = $moduleExtPaths['site'] . $this->methodName . '.php';
-        if(empty($this->extActionFile) or !file_exists($this->extActionFile)) $this->extActionFile = $moduleExtPaths['common'] . $this->methodName . '.php';
+        /* 如果extensionLevel == 2，且扩展文件存在，返回该站点扩展文件。If extensionLevel == 2 and site extensionFile exists, return it. */
+        if($this->config->framework->extensionLevel == 2)
+        {
+            $this->extActionFile = $moduleExtPaths['site'] . $this->methodName . '.php';
+            if(file_exists($this->extActionFile)) return true;
+        }
 
+        /* 然后再尝试寻找公共扩展文件。Then try to find the common extension file. */
+        $this->extActionFile = $moduleExtPaths['common'] . $this->methodName . '.php';
         return file_exists($this->extActionFile);
     }
 
