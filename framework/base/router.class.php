@@ -1225,8 +1225,7 @@ class baseRouter
     }
 
     /**
-     * 检查某一个变量必须为英文字母和数字组合。
-     * Check a variable must be ascii.
+     * 检查某一个变量必须为英文字母和数字组合。Check a variable must be ascii.
      * 
      * @param  string    $var 
      * @access public
@@ -1261,7 +1260,7 @@ class baseRouter
     }
 
     /**
-     * 设置一个模块的model文件，如果存在model扩展，一起合并
+     * 设置一个模块的model文件，如果存在model扩展，一起合并。
      * Set the model file of one module. If there's an extension file, merge it with the main model file.
      * 
      * @param   string $moduleName the module name
@@ -1373,7 +1372,7 @@ class baseRouter
         /* 将扩展文件的代码合并到代码中。Cycle all the extension files and merge them into model lines. */
         foreach($extFiles as $extFile) $modelLines .= self::removePHPTAG($extFile);
 
-        /* 做个标记，方便后面替换代码使用。*/
+        /* 做个标记，方便后面替换代码使用。Make a mark for replacing codes. */
         $replaceMark = '//**//';
         $modelLines .= "\n$replaceMark\n}";
 
