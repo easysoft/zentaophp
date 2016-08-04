@@ -9,9 +9,10 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
-$lang->zentaophp = 'zentaohp framework';
-$lang->welcome   = 'Welcome to use ZenTaoPHP framework.';
-$lang->runInfo   = "<div class='a-center'>Time: %s ms, Memory: %s KB, SQL: %s.  </div>";
+$lang->zentaophp = 'zentaoPHP';
+$lang->welcome   = 'Welcome to use zentaoPHP framework.';
+$lang->intro     = 'zentaoPHP is a light PHP MVC framework.';
+$lang->more      = 'More&raquo;';
 $lang->save      = 'Save';
 $lang->loading   = 'Loading...';
 $lang->goback    = 'Go back';
@@ -20,9 +21,9 @@ $lang->goback    = 'Go back';
 $lang->menu = new stdclass();
 $lang->menu->index = 'Home';
 $lang->menu->blog  = 'Demo';
-//$lang->menu->doc   = 'Doc';
 
 /* Error info. */
+$lang->error = new stdclass();
 $lang->error->companyNotFound = "The domain %s does not exist.";
 $lang->error->length          = array("『%s』length should be『%s』", "『%s』length should between『%s』and 『%s』.");
 $lang->error->reg             = "『%s』should like『%s』";
@@ -39,6 +40,7 @@ $lang->error->passwordsame    = "Two passwords must be the same";
 $lang->error->passwordrule    = "Password should more than six letters.";
 
 /* Pager. */
+$lang->pager = new stdclass();
 $lang->pager->noRecord  = "No records yet.";
 $lang->pager->digest    = "<strong>%s</strong> records, <strong>%s</strong> per page, <strong>%s/%s</strong> ";
 $lang->pager->first     = "First";

@@ -9,5 +9,6 @@
  *  May you find forgiveness for yourself and forgive others.
  *  May you share freely, never taking more than you give.
  */
+$lang->index = new stdclass();
 $lang->index->index = 'Home';
 $lang->index->blog  = 'View the simple blog demo';

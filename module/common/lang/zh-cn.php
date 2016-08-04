@@ -22,7 +22,6 @@ $lang->goback    = '返回';
 $lang->menu = new stdclass();
 $lang->menu->index = '首页';
 $lang->menu->blog  = '演示';
-//$lang->menu->doc   = '文档';
 
 /* Error message. */
 $lang->error = new stdclass();
