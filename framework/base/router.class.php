@@ -1274,127 +1274,170 @@ class baseRouter
     {
         if($appName == '') $appName = $this->getAppName();
 
-        /* 设置主model文件，扩展文件和路径。 Set the main model file, extension path and files. */
+        /* 设置主model文件。 Set the main model file. */
         $mainModelFile = $this->getModulePath($appName, $moduleName) . 'model.php';
-        $modelExtPaths = $this->getModuleExtPath($appName, $moduleName, 'model');
+        if($this->config->framework->extensionLevel == 0) return $mainModelFile;
 
-        $hookFiles = array();
-        $extFiles  = array();
-        foreach($modelExtPaths as $modelExtPath)
+        /* 计算扩展的文件和hook文件。Compute the extension files and hook files. */
+        $hookFiles     = array();
+        $extFiles      = array();
+        $siteExtended  = false; 
+
+        $modelExtPaths = $this->getModuleExtPath($appName, $moduleName, 'model');
+        foreach($modelExtPaths as $extType => $modelExtPath)
         {
-            if(empty($modelExtPath)) continue;
-            $hookFiles = array_merge($hookFiles, helper::ls($modelExtPath . 'hook/', '.php'));
-            $extFiles  = array_merge($extFiles, helper::ls($modelExtPath, '.php'));
+            $tmpHookFiles =  helper::ls($modelExtPath . 'hook/', '.php');
+            $tmpExtFiles  =  helper::ls($modelExtPath, '.php');
+            $hookFiles    = array_merge($hookFiles, $tmpHookFiles);
+            $extFiles     = array_merge($extFiles,  $tmpExtFiles);
+
+            if($extType == 'site' and (!empty($tmpHookFiles) or !empty($tmpExtFiles))) $siteExtended = true;
         }
- 
-        /* 如果没有扩展文件，返回主文件目录。 */
-        /* If no extension file, return the main file directly. */
+
+        /* 如果没有扩展文件，返回主文件。 If no extension or hook files, return the main file directly. */
         if(empty($extFiles) and empty($hookFiles)) return $mainModelFile;
 
-        /* 通过对比合并后的缓存文件和扩展文件的修改时间，确定是否要重新生成缓存 */
-        /* Else, judge whether needed update or not .*/
-        $extModelPrefix  = empty($this->siteCode) ? '' : $this->siteCode{0} . DS . $this->siteCode;
-        $mergedModelDir  = $this->getTmpRoot() . 'model' . DS . $extModelPrefix . DS;
-        $mergedModelFile = $mergedModelDir . (empty($this->siteCode) ? '' : $this->siteCode . '.') . $moduleName . '.php';
-        $needUpdate      = false;
-        $lastTime        = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
+        /* 计算合并之后的modelFile路径。Compute the merged model file path. */
+        $extModelPrefix  = ($siteExtended and !empty($this->siteCode)) ? $this->siteCode{0} . DS . $this->siteCode : '';
+        $mergedModelDir  = $this->getTmpRoot() . 'model' . DS . ($extModelPrefix ? $extModelPrefix . DS : '');
+        $mergedModelFile = $mergedModelDir . $moduleName . '.php';
         if(!is_dir($mergedModelDir)) mkdir($mergedModelDir, 0755, true);
 
-        while(!$needUpdate)
+        /* 判断生成的缓存文件是否需要更新。 Judge whether the merged model file needed update or not. */
+        if(!$this->needModelFileUpdate($mergedModelFile, $extFiles, $hookFiles, $modelExtPaths, $mainModelFile)) return $mergedModelFile;
+
+        /* 合并扩展和hook文件。Merge the extension and hook files. */
+        $modelLines = $this->mergeModelExtFiles($moduleName, $mainModelFile, $extFiles, $mergedModelDir);
+        $this->mergeModelHookFiles($moduleName, $mainModelFile, $modelLines, $hookFiles, $mergedModelDir, $mergedModelFile);
+
+        return $mergedModelFile;
+    }
+
+    /**
+     * 检查合并之后的model文件是否需要更新。Check whether the merged model file need update or not.
+     * 
+     * @param  string    $mainModelFile 
+     * @param  string    $mergedModelFile 
+     * @param  string    $modelExtPaths 
+     * @param  array     $extFiles 
+     * @param  array     $hookFiles 
+     * @access public
+     * @return bool
+     */
+    public function needModelFileUpdate($mergedModelFile, $extFiles, $hookFiles, $modelExtPaths, $mainModelFile)
+    {
+        $lastTime = file_exists($mergedModelFile) ? filemtime($mergedModelFile) : 0;
+
+        foreach($extFiles  as $extFile)  if(filemtime($extFile)  > $lastTime) return true;
+        foreach($hookFiles as $hookFile) if(filemtime($hookFile) > $lastTime) return true;
+
+        $modelExtPath  = $modelExtPaths['common']; 
+        $modelHookPath = $modelExtPaths['common'] . 'hook/';
+        if(is_dir($modelExtPath ) and filemtime($modelExtPath)  > $lastTime) return true;
+        if(is_dir($modelHookPath) and filemtime($modelHookPath) > $lastTime) return true;
+
+        if($modelExtPaths['site'])
         {
-            foreach($extFiles  as $extFile) if(filemtime($extFile)  > $lastTime) break 2;
-            foreach($hookFiles as $hookFile) if(filemtime($hookFile) > $lastTime) break 2;
-
-            $modelExtPath  = $modelExtPaths['common']; 
-            $modelHookPath = $modelExtPaths['common'] . 'hook/';
-            if(is_dir($modelExtPath ) and filemtime($modelExtPath)  > $lastTime) break;
-            if(is_dir($modelHookPath) and filemtime($modelHookPath) > $lastTime) break;
-            if($modelExtPaths['site'])
-            {
-                $modelExtPath  = $modelExtPaths['site']; 
-                $modelHookPath = $modelExtPaths['site'] . 'hook/';
-                if(is_dir($modelExtPath ) and filemtime($modelExtPath)  > $lastTime) break;
-                if(is_dir($modelHookPath) and filemtime($modelHookPath) > $lastTime) break;
-            }
-
-            if(filemtime($mainModelFile) > $lastTime) break;
-
-            return $mergedModelFile;
+            $modelExtPath  = $modelExtPaths['site']; 
+            $modelHookPath = $modelExtPaths['site'] . 'hook/';
+            if(is_dir($modelExtPath ) and filemtime($modelExtPath)  > $lastTime) return true;
+            if(is_dir($modelHookPath) and filemtime($modelHookPath) > $lastTime) return true;
         }
 
-        /* If loaded zend opcache module, turn off cache when create tmp model file to avoid the conflics. */
-        if(extension_loaded('Zend OPcache')) ini_set('opcache.enable', 0);
+        if(filemtime($mainModelFile) > $lastTime) return true;
 
-        /* Update the cache file. */
-        $modelClass       = $moduleName . 'Model';
-        $extModelClass    = 'ext' . $modelClass;
-        $extTmpModelClass = 'tmpExt' . $modelClass;
-        $modelLines       = "<?php\n";
-        $modelLines      .= "helper::import('$mainModelFile');\n";
-        $modelLines      .= "class $extTmpModelClass extends $modelClass \n{\n";
+        return false;
+    }
 
-        /* Cycle all the extension files. */
-        foreach($extFiles as $extFile)
+    /**
+     * 将model的扩展文件合并在一起。Merge model ext files.
+     * 
+     * @param  string    $moduleName 
+     * @param  string    $mainModelFile 
+     * @param  array     $extFiles 
+     * @param  string    $mergedModelDir 
+     * @access public
+     * @return void
+     */
+    public function mergeModelExtFiles($moduleName, $mainModelFile, $extFiles, $mergedModelDir)
+    {
+        /* 设置类名。Set the class names. */
+        $modelClass    = "{$moduleName}Model";
+        $tmpModelClass = "tmpExt$modelClass";
+
+        /* 开始拼装代码。Prepare the codes. */
+        $modelLines  = "<?php\n";
+        $modelLines .= "helper::import('$mainModelFile');\n";
+        $modelLines .= "class $tmpModelClass extends $modelClass \n{\n";
+
+        /* 将扩展文件的代码合并到代码中。Cycle all the extension files and merge them into model lines. */
+        foreach($extFiles as $extFile) $modelLines .= self::removePHPTAG($extFile);
+
+        /* 做个标记，方便后面替换代码使用。*/
+        $replaceMark = '//**//';
+        $modelLines .= "\n$replaceMark\n}";
+
+        /* 生成一个临时的model扩展文件，并加载，用于后续的hook文件加载使用。Create a tmp merged model file and import it for merge hook codes using. */
+        $tmpModelFile = $mergedModelDir . "tmp$moduleName.php";
+        if(@file_put_contents($tmpModelFile, $modelLines)) 
         {
-            $extLines = self::removeTagsOfPHP($extFile);
-            $modelLines .= $extLines . "\n";
+            if(!class_exists($tmpModelClass)) include $tmpModelFile;
+            return $modelLines;
         }
+            
+        $this->triggerError("ERROR: $tmpModelFile not writable.", __FILE__, __LINE__, true);
+    }
 
-        /* Create the merged model file and import it. */
-        $replaceMark = '//**//';    // This mark is for replacing code using.
-        $modelLines .= "$replaceMark\n}";
+    /**
+     * 合并model的hook脚本。Merge hook files for a model.
+     * 
+     * @access public
+     * @return void
+     */
+    public function mergeModelHookFiles($moduleName, $mainModelFile, $modelLines, $hookFiles, $mergedModelDir, $mergedModelFile)
+    {
+        /* 定义相关变量。Init vars. */
+        $modelClass    = $moduleName . 'Model';
+        $extModelClass = 'ext' . $modelClass;
+        $tmpModelClass = 'tmpExt' . $modelClass;
+        $tmpModelFile = $mergedModelDir . "tmp$moduleName.php";
 
-        $tmpMergedModelFile = $mergedModelDir . 'tmp.' . (empty($this->siteCode) ? '' : $this->siteCode . '.') . $moduleName . '.php';
-        if(!@file_put_contents($tmpMergedModelFile, $modelLines))
-        {
-            die("ERROR: $tmpMergedModelFile not writable, please make sure the " . dirname($tmpMergedModelFile) . ' directory exists and writable');
-        }
-        if(!class_exists($extTmpModelClass)) include $tmpMergedModelFile;
-
-        /* Get hook codes need to merge. */
+        /* 读取hook文件。Get hook codes need to merge. */
         $hookCodes = array();
         foreach($hookFiles as $hookFile)
         {
+            /* 通过文件名获得其对应的方法名。Get methods according it's filename. */
             $fileName = baseName($hookFile);
             list($method) = explode('.', $fileName);
-            $hookCodes[$method][] = self::removeTagsOfPHP($hookFile);
+            $hookCodes[$method][] = self::removePHPTAG($hookFile);
         }
 
-        /* Cycle the hook methods and merge hook codes. */
+        /* 合并Hook文件。Cycle the hook methods and merge hook codes. */
         $hookedMethods    = array_keys($hookCodes);
         $mainModelCodes   = file($mainModelFile);
-        $mergedModelCodes = file($tmpMergedModelFile);
+        $mergedModelCodes = file($tmpModelFile);
         foreach($hookedMethods as $method)
         {
-            /* Reflection the hooked method to get it's defined position. */
-            $methodRelfection = new reflectionMethod($extTmpModelClass, $method);
+            /* 通过反射获得hook脚本对应的方法所在的文件和起止行数。Reflection the hooked method to get it's defined position. */
+            $methodRelfection = new reflectionMethod($tmpModelClass, $method);
             $definedFile = $methodRelfection->getFileName();
             $startLine   = $methodRelfection->getStartLine() . ' ';
             $endLine     = $methodRelfection->getEndLine() . ' ';
 
-            /* Merge hook codes. */
-            $oldCodes = $definedFile == $tmpMergedModelFile ? $mergedModelCodes : $mainModelCodes;
-            $oldCodes = join("", array_slice($oldCodes, $startLine - 1, $endLine - $startLine + 1));
+            /* 将Hook脚本和老的代码合并在一起，并替换原来的定义。Merge hook codes with old codes and replace back. */
+            $oldCodes  = $definedFile == $tmpModelFile ? $mergedModelCodes : $mainModelCodes;
+            $oldCodes  = join("", array_slice($oldCodes, $startLine - 1, $endLine - $startLine + 1));
             $openBrace = strpos($oldCodes, '{');
-            $newCodes = substr($oldCodes, 0, $openBrace + 1) . "\n" . join("\n", $hookCodes[$method]) . substr($oldCodes, $openBrace + 1);
+            $newCodes  = substr($oldCodes, 0, $openBrace + 1) . "\n" . join("\n", $hookCodes[$method]) . substr($oldCodes, $openBrace + 1);
 
-            /* Replace it. */
-            if($definedFile == $tmpMergedModelFile)
-            {
-                $modelLines = str_replace($oldCodes, $newCodes, $modelLines);
-            }
-            else
-            {
-                $modelLines = str_replace($replaceMark, $newCodes . "\n$replaceMark", $modelLines);
-            }
+            if($definedFile == $tmpModelFile) $modelLines = str_replace($oldCodes, $newCodes, $modelLines);
+            if($definedFile != $tmpModelFile) $modelLines = str_replace($replaceMark, $newCodes . "\n$replaceMark", $modelLines);
         }
-        unlink($tmpMergedModelFile);
         
-        /* Save it. */
-        $modelLines = str_replace($extTmpModelClass, $extModelClass, $modelLines);
+        /* 保存最终的Model文件。Save the last merged model file. */
+        $modelLines = str_replace($tmpModelClass, $extModelClass, $modelLines);
         file_put_contents($mergedModelFile, $modelLines);
-
-        return $mergedModelFile;
+        unlink($tmpModelFile);
     }
 
     /**
@@ -1405,7 +1448,7 @@ class baseRouter
      * @access public
      * @return string
      */
-    static public function removeTagsOfPHP($fileName)
+    static public function removePHPTAG($fileName)
     {
         $code = trim(file_get_contents($fileName));
         if(strpos($code, '<?php') === 0)     $code = ltrim($code, '<?php');
