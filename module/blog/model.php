@@ -65,11 +65,12 @@ class blogModel extends model
     /**
      * Delete an article.
      * 
-     * @param  int    $id 
+     * @param  int     $id 
+     * @param  null    $table 
      * @access public
      * @return void
      */
-    public function delete($id)
+    public function delete($id, $table = null)
     {
         $this->dao->delete()->from('blog')->where('id')->eq($id)->exec();
     }

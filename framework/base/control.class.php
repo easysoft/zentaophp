@@ -366,19 +366,24 @@ class baseControl
 
         $modulePath  = $this->app->getModulePath($this->appName, $moduleName);
         $viewExtPath = $this->app->getModuleExtPath($this->appName, $moduleName, 'view');
-        $viewType    = $this->viewType == 'mhtml' ? 'html' : $this->viewType;
 
-        $mainViewFile      = $modulePath . 'view' . DS . $this->devicePrefix . $methodName . '.' . $viewType . '.php';
-        $commonExtViewFile = $viewExtPath['common'] . $this->devicePrefix . $methodName . ".{$viewType}.php";
-        $siteExtViewFile   = empty($viewExtPath['site']) ? '' : $viewExtPath['site'] . $this->devicePrefix . $methodName . ".{$viewType}.php";
+        $viewType     = $this->viewType == 'mhtml' ? 'html' : $this->viewType;
+        $mainViewFile = $modulePath . 'view' . DS . $this->devicePrefix . $methodName . '.' . $viewType . '.php';
+        $viewFile     = $mainViewFile;
 
-        $viewFile = file_exists($commonExtViewFile) ? $commonExtViewFile : $mainViewFile;
-        $viewFile = (!empty($siteExtViewFile) and file_exists($siteExtViewFile)) ? $siteExtViewFile : $viewFile;
-        if(!is_file($viewFile)) $this->app->triggerError("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
+        if(!empty($viewExtPath))
+        {
+            $commonExtViewFile = $viewExtPath['common'] . $this->devicePrefix . $methodName . ".{$viewType}.php";
+            $siteExtViewFile   = empty($viewExtPath['site']) ? '' : $viewExtPath['site'] . $this->devicePrefix . $methodName . ".{$viewType}.php";
 
-        $commonExtHookFiles = glob($viewExtPath['common'] . $this->devicePrefix . $methodName . ".*.{$viewType}.hook.php");
-        $siteExtHookFiles   = empty($viewExtPath['site']) ? '' : glob($viewExtPath['site'] . $this->devicePrefix . $methodName . ".*.{$viewType}.hook.php");
-        $extHookFiles       = array_merge((array) $commonExtHookFiles, (array) $siteExtHookFiles);
+            $viewFile = file_exists($commonExtViewFile) ? $commonExtViewFile : $mainViewFile;
+            $viewFile = (!empty($siteExtViewFile) and file_exists($siteExtViewFile)) ? $siteExtViewFile : $viewFile;
+            if(!is_file($viewFile)) $this->app->triggerError("the view file $viewFile not found", __FILE__, __LINE__, $exit = true);
+
+            $commonExtHookFiles = glob($viewExtPath['common'] . $this->devicePrefix . $methodName . ".*.{$viewType}.hook.php");
+            $siteExtHookFiles   = empty($viewExtPath['site']) ? '' : glob($viewExtPath['site'] . $this->devicePrefix . $methodName . ".*.{$viewType}.hook.php");
+            $extHookFiles       = array_merge((array) $commonExtHookFiles, (array) $siteExtHookFiles);
+        }
 
         if(!empty($extHookFiles)) return array('viewFile' => $viewFile, 'hookFiles' => $extHookFiles);
         return $viewFile;
@@ -436,8 +441,12 @@ class baseControl
 
         $modulePath   = $this->app->getModulePath($this->appName, $moduleName);
         $cssExtPath   = $this->app->getModuleExtPath($this->appName, $moduleName, 'css') ;
-        $cssMethodExt = $cssExtPath['common'] . $methodName . DS;
-        $cssCommonExt = $cssExtPath['common'] . 'common' . DS;
+
+        if(!empty($cssExtPath))
+        {
+            $cssMethodExt = $cssExtPath['common'] . $methodName . DS;
+            $cssCommonExt = $cssExtPath['common'] . 'common' . DS;
+        }
 
         $css = '';
         $mainCssFile   = $modulePath . 'css' . DS . $this->devicePrefix . 'common.css';
@@ -445,23 +454,25 @@ class baseControl
         if(file_exists($mainCssFile)) $css .= file_get_contents($mainCssFile);
         if(is_file($methodCssFile))   $css .= file_get_contents($methodCssFile);
 
-        $cssExtFiles = glob($cssCommonExt . $this->devicePrefix . '*.css');
-        if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-
-        $cssExtFiles = glob($cssMethodExt . $this->devicePrefix . '*.css');
-        if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-
-        if(!empty($cssExtPath['site']))
+        if(!empty($cssExtPath))
         {
-            $cssMethodExt = $cssExtPath['site'] . $methodName . DS;
-            $cssCommonExt = $cssExtPath['site'] . 'common' . DS;
             $cssExtFiles = glob($cssCommonExt . $this->devicePrefix . '*.css');
             if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
 
             $cssExtFiles = glob($cssMethodExt . $this->devicePrefix . '*.css');
             if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
-        }
 
+            if(!empty($cssExtPath['site']))
+            {
+                $cssMethodExt = $cssExtPath['site'] . $methodName . DS;
+                $cssCommonExt = $cssExtPath['site'] . 'common' . DS;
+                $cssExtFiles = glob($cssCommonExt . $this->devicePrefix . '*.css');
+                if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
+
+                $cssExtFiles = glob($cssMethodExt . $this->devicePrefix . '*.css');
+                if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
+            }
+        }
         return $css;
     }
 

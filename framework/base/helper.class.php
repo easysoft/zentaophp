@@ -326,11 +326,14 @@ class baseHelper
      */
     public static function substr($string, $length, $append = '')
     {
-        if(strlen($string) <= $length ) $append = '';
-        if(function_exists('mb_substr')) return mb_substr($string, 0, $length, 'utf-8') . $append;
+        $rawString = $string;
+
+        if(function_exists('mb_substr')) $string = mb_substr($string, 0, $length, 'utf-8');
 
         preg_match_all("/./su", $string, $data);
-        return join("", array_slice($data[0],  0, $length)) . $append;
+        $string = join("", array_slice($data[0],  0, $length));
+
+        return ($string != $rawString) ? $string . $append : $string;
     }
 
     /**

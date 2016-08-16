@@ -22,6 +22,7 @@ $jsRoot  = $webRoot . 'js/';
  js::exportConfigVars();
 
  echo html::favicon($webRoot . 'favicon.ico');
+ if(isset($pageCSS)) css::internal($pageCSS);
  ?>
 </head>
 <body><div id='main'>
