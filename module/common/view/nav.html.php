@@ -1,9 +1,9 @@
-<div class='navbar navbar-default' role="navigation">
+<div class='container navbar navbar-default' role="navigation">
   <div class='navbar-header'>
     <?php echo html::a($this->createLink('index'), $lang->zentaophp, "class='navbar-brand'")?>
   </div>
   <div class="collapse navbar-collapse">
-    <ul class='nav navbar-nav'>
+    <ul class='nav navbar-nav .nav-primary'>
       <?php
       foreach($lang->menu as $menuModule => $menuLabel)
       {
