@@ -21,7 +21,7 @@ $config->db->password = '';
 
 /* 框架功能开关参数。Use these params to enable or disable some features of framework. */
 $config->framework->autoConnectDB = true;  // 是否自动连接数据库。              Whether auto connect database or not.
-$config->framework->multiLanguage = false; // 是否启用多语言功能。              Whether enable multi lanuage or not.
+$config->framework->multiLanguage = true;  // 是否启用多语言功能。              Whether enable multi lanuage or not.
 $config->framework->multiTheme    = false; // 是否启用多风格功能。              Whether enable multi theme or not.
 $config->framework->detectDevice  = false; // 是否启用设备检测功能。            Whether enable device detect or not.
 $config->framework->multiSite     = false; // 是否启用多站点模式。              Whether enable multi site mode or not.
