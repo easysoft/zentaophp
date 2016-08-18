@@ -28,6 +28,11 @@ zip:
 	mkdir zentaophp
 	cp -fr {config,db,favicon.ico,framework,index.php,js,lib,module,theme,.htaccess} zentaophp
 	rm -fr zentaophp/config/my.php
+	rm -fr zentaophp/framework/tests
+	rm -fr zentaophp/config/sites/*
+	rm -fr zentaophp/config/domain.php
+	mkdir zentaophp/tmp/log -p
+	chmod 777 -R zentaophp/tmp/log
 	find zentaophp -name .git |xargs rm -fr
 	zip -r -9 zentaoPHP.$(VERSION).zip zentaophp
 	rm -fr zentaophp

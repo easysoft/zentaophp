@@ -435,6 +435,8 @@ class baseControl
      */
     public function getCSS($moduleName, $methodName)
     {
+        if($this->config->framework->extensionLevel == 0) return '';
+
         $moduleName   = strtolower(trim($moduleName));
         $methodName   = strtolower(trim($methodName));
 
@@ -486,6 +488,8 @@ class baseControl
      */
     public function getJS($moduleName, $methodName)
     {
+        if($this->config->framework->extensionLevel == 0) return '';
+
         $moduleName  = strtolower(trim($moduleName));
         $methodName  = strtolower(trim($methodName));
 

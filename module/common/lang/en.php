@@ -10,9 +10,9 @@
  *  May you share freely, never taking more than you give.
  */
 $lang->zentaophp = 'zentaoPHP';
-$lang->welcome   = 'Welcome to use <strong>zentaoPHP</strong> framework.';
-$lang->intro     = '<strong>zentaoPHP</strong> is a light PHP MVC framework.';
-$lang->more      = 'More';
+$lang->welcome   = 'Welcome to use zentaoPHP framework.';
+$lang->intro     = '<strong>zentaoPHP</strong> is a lite PHP framework, simple, fast, structured, friendly and extensible.';
+$lang->more      = 'More &raquo;';
 $lang->save      = 'Save';
 $lang->loading   = 'Loading...';
 $lang->goback    = 'Go back';
