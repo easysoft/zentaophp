@@ -1,9 +1,10 @@
+<div id='header' class='bg-primary with-shadow'>
 <div class='container navbar navbar-default' role="navigation">
   <div class='navbar-header'>
-    <?php echo html::a($this->createLink('index'), $lang->zentaophp, "class='navbar-brand'")?>
+    <?php echo html::a($this->createLink('index'), $lang->zentaophp, "class='navbar-brand' style='font-size:17px'")?>
   </div>
   <div class="collapse navbar-collapse">
-    <ul class='nav navbar-nav .nav-primary'>
+    <ul class='nav navbar-nav nav-reverce'>
       <?php
       foreach($lang->menu as $menuModule => $menuLabel)
       {
@@ -29,3 +30,11 @@
     </ul>
   </div>
 </div>
+</div>
+<style>
+#header{ background:#333;}
+#header .navbar{background:transparent; border:none;}
+#header .navbar-header a{color:#fff;}
+#header .nav > li > a{color:#fff;}
+#header .nav > li.active > a{background:#444;}
+</style>
