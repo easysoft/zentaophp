@@ -30,6 +30,7 @@ zip:
 	rm -fr zentaophp/config/my.php
 	rm -fr zentaophp/framework/tests
 	rm -fr zentaophp/config/sites/*
+	rm -fr zentaophp/config/domain.php
 	mkdir zentaophp/tmp/log -p
 	chmod 777 -R zentaophp/tmp/log
 	find zentaophp -name .git |xargs rm -fr
