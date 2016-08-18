@@ -602,7 +602,7 @@ EOT;
     public function createLink($title)
     {
         global $config; 
-        if(helper::inSeoMode() && method_exists('uri', 'create' . $this->moduleName . $this->methodName)) 
+        if($config->requestType != 'GET' && method_exists('uri', 'create' . $this->moduleName . $this->methodName)) 
         {
             $link  = strip_tags(urldecode($_SERVER['REQUEST_URI']));
 
