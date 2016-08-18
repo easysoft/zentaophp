@@ -684,7 +684,7 @@ class baseDAO
 
             if($this->slaveDBH and $method == 'select')
             {
-                if(isset(dao::$cache[$key])) return dao::$cache[$key];
+                if(isset(dao::$cache['dbh'][$key])) return dao::$cache[$key];
                 $result = $this->slaveDBH->query($sql);
                 dao::$cache[$key] = $result;
                 return $result;
@@ -693,9 +693,9 @@ class baseDAO
             {
                 if($this->method == 'select')
                 {
-                    if(isset(dao::$cache[$key])) return dao::$cache[$key];
+                    if(isset(dao::$cache['dbh'][$key])) return dao::$cache[$key];
                     $result = $this->slaveDBH->query($sql);
-                    dao::$cache[$key] = $result;
+                    dao::$cache['dbh'][$key] = $result;
                     return $result;
                 }
 
@@ -773,10 +773,24 @@ class baseDAO
      */
     public function fetch($field = '')
     {
-        if(empty($field)) return $this->query()->fetch();
+        $sql = $this->processSQL($saveQuery = false);
+        $key = md5($sql);
+        if(isset(dao::$cache['fetch'][$key][$field])) return dao::$cache['fetch'][$key][$field];
+
+        if(empty($field))
+        {
+            $result = $this->query()->fetch();
+            dao::$cache['fetch'][$key][$field] = $result;
+            return $result;
+        }
+
         $this->setFields($field);
         $result = $this->query()->fetch(PDO::FETCH_OBJ);
-        if($result) return $result->$field;
+        if($result)
+        {
+            dao::$cache['fetch'][$key][$field] = $result->$field;
+            return $result->$field;
+        }
     }
 
     /**
