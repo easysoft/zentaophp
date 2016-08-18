@@ -11,9 +11,9 @@
  */
 /* Some global items. */
 $lang->zentaophp = 'zentaoPHP框架';
-$lang->welcome   = '<strong>zentaoPHP</strong>, 做最懂程序员的框架！';
-$lang->intro     = '<strong>zentaoPHP框架</strong> 是一款轻量级的MVC开发框架，代码简单，性能良好，结构清晰，开发友好！';
-$lang->more      = '了解更多';
+$lang->welcome   = 'zentaoPHP, 做最懂程序员的框架！';
+$lang->intro     = '<strong>zentaoPHP框架</strong> 是一款轻量级的MVC开发框架，代码简单，性能良好，结构清晰，开发友好，深度可扩展！';
+$lang->more      = '了解更多 &raquo;';
 $lang->save      = '保存';
 $lang->loading   = '稍后...';
 $lang->goback    = '返回';

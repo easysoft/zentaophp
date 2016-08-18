@@ -14,7 +14,6 @@
 <div class='container'>
   <div class="hero-unit">
     <p>
-      <?php echo $lang->welcome;?><br/>
       <?php echo $lang->intro;?>
     </p>
     <p><?php echo html::a('http://devel.cnezsoft.com/', $lang->more, "target='_blank'");?></p>
@@ -42,7 +41,7 @@
     <div class="col-md-3">
       <div class="panel alert">
       <h4>  <i class='icon icon-thumbs-o-up'> </i> 开发友好</h4>
-      <p>zentaoPHP框架对开发者比较友好，比如完全中性化的命名，配置对象化，相对路径包含。</p>
+      <p>zentaoPHP框架对开发者比较友好，比如完全中性化的命名，配置对象化，相对路径包含，深度扩展机制。</p>
       </div>
     </div>
   </div>
