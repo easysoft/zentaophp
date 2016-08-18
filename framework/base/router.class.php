@@ -364,9 +364,9 @@ class baseRouter
         $this->setTimezone();
 
         if($this->config->framework->autoConnectDB) $this->connectDB();
+        if($this->config->framework->detectDevice)  $this->setClientDevice();
         if($this->config->framework->multiLanguage) $this->setClientLang() && $this->loadLang('common');
         if($this->config->framework->multiTheme)    $this->setClientTheme();
-        if($this->config->framework->detectDevice)  $this->setClientDevice();
         if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
     }
 
@@ -952,7 +952,7 @@ class baseRouter
      */
     public function getClientDevice()
     {
-        return $this->clientDevice();
+        return $this->clientDevice;
     }
 
     //-------------------- 请求相关的方法(Request related methods) --------------------//
@@ -1687,7 +1687,7 @@ class baseRouter
         foreach($passedParams as $param => $value)
         {
             if(preg_match('/[^a-zA-Z0-9_\.]/', $param)) die('Bad Request!');
-            if(preg_match('/[^a-zA-Z0-9=_,`#+\/\.%\|\x7f-\xff]/', trim($value))) die('Bad Request!');
+            if(preg_match('/[^a-zA-Z0-9=_\-]/', trim($value))) die('Bad Request!');
         }
 
         $passedParams = array_values($passedParams);
@@ -1841,6 +1841,8 @@ class baseRouter
     {
         global $config;
 
+        if($config and (!isset($config->$moduleName) or !is_object($config->$moduleName))) $config->$moduleName = new stdclass();
+
         /* 初始化数组。Init the variables. */
         $extConfigFiles       = array();
         $commonExtConfigFiles = array();
@@ -1939,6 +1941,7 @@ class baseRouter
         /* 加载语言文件。Load lang files. */
         global $lang;
         if(!is_object($lang)) $lang = new language();
+        if(!isset($lang->$moduleName)) $lang->$moduleName = new stdclass();
 
         static $loadedLangs = array();
         foreach($langFilesToLoad as $langFile)

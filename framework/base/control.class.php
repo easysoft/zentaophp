@@ -1,5 +1,4 @@
-<?php
-/**
+<?php /**
  * ZenTaoPHP的baseControl类。
  * The baseControl class file of ZenTaoPHP framework.
  *
@@ -403,9 +402,9 @@ class baseControl
          * 首先找sitecode下的扩展文件，如果没有，再找ext下的扩展文件。 
          * Find extViewFile in ext/_$siteCode/view first, then try ext/view/.
          */
-        if($this->config->site->code)
+        if($this->app->siteCode)
         {
-            $extPath     = dirname(dirname(realpath($viewFile))) . "/ext/_{$this->config->site->code}/view";
+            $extPath     = dirname(dirname(realpath($viewFile))) . "/ext/_{$this->app->siteCode}/view";
             $extViewFile = $extPath . basename($viewFile);
 
             if(file_exists($extViewFile))
@@ -673,6 +672,14 @@ class baseControl
             return $this->output;
         }
 
+        $currentModuleName = $this->moduleName;
+        $currentMethodName = $this->methodName;
+
+        $this->app->setModuleName($moduleName);
+        $this->app->setMethodName($methodName);
+
+        $currentPWD = getcwd();
+
         /**
          * 设置引用的文件和路径。
          * Set the pathes and files to included.
@@ -681,22 +688,25 @@ class baseControl
         $moduleControlFile = $modulePath . 'control.php';
         $actionExtPath     = $this->app->getModuleExtPath($appName, $moduleName, 'control');
 
-        $commonActionExtFile = $actionExtPath['common'] . strtolower($methodName) . '.php';
-        $file2Included       = file_exists($commonActionExtFile) ? $commonActionExtFile : $moduleControlFile;
-        if(!empty($actionExtPath['site']))
+        if(!empty($actionExtPath))
         {
-            $siteActionExtFile = $actionExtPath['site'] . strtolower($methodName) . '.php';
-            $file2Included     = file_exists($siteActionExtFile) ? $siteActionExtFile : $file2Included;
-        }
+            $commonActionExtFile = $actionExtPath['common'] . strtolower($methodName) . '.php';
+            $file2Included       = file_exists($commonActionExtFile) ? $commonActionExtFile : $moduleControlFile;
 
-        /**
-         * 加载控制器文件。
-         * Load the control file. 
-         */
-        if(!is_file($file2Included)) $this->app->triggerError("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
-        $currentPWD = getcwd();
-        chdir(dirname($file2Included));
-        if($moduleName != $this->moduleName) helper::import($file2Included);
+            if(!empty($actionExtPath['site']))
+            {
+                $siteActionExtFile = $actionExtPath['site'] . strtolower($methodName) . '.php';
+                $file2Included     = file_exists($siteActionExtFile) ? $siteActionExtFile : $file2Included;
+            }
+
+            /**
+             * 加载控制器文件。
+             * Load the control file. 
+             */
+            if(!is_file($file2Included)) $this->app->triggerError("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
+            chdir(dirname($file2Included));
+            if($moduleName != $this->moduleName) helper::import($file2Included);
+        }
 
         /**
          * 设置调用的类名。
@@ -726,6 +736,10 @@ class baseControl
          * Return the content. 
          */
         unset($module);
+
+        $this->app->setModuleName($currentModuleName);
+        $this->app->setMethodName($currentMethodName);
+
         chdir($currentPWD);
         return $output;
     }
