@@ -78,7 +78,7 @@ class baseDAO
      * @var object
      * @access public
      */
-    public $sqlOBJ;
+    public $sqlobj;
 
     /**
      * 正在使用的表。
@@ -337,7 +337,7 @@ class baseDAO
     {
         $this->setMode('raw');
         $this->setMethod('select');
-        $this->sqlOBJ = sql::select($fields);
+        $this->sqlobj = sql::select($fields);
         return $this;
     }
 
@@ -401,7 +401,7 @@ class baseDAO
     {
         $this->setMode('raw');
         $this->setMethod('update');
-        $this->sqlOBJ = sql::update($table);
+        $this->sqlobj = sql::update($table);
         $this->setTable($table);
         return $this;
     }
@@ -417,7 +417,7 @@ class baseDAO
     {
         $this->setMode('raw');
         $this->setMethod('delete');
-        $this->sqlOBJ = sql::delete();
+        $this->sqlobj = sql::delete();
         return $this;
     }
 
@@ -433,7 +433,7 @@ class baseDAO
     {
         $this->setMode('raw');
         $this->setMethod('insert');
-        $this->sqlOBJ = sql::insert($table);
+        $this->sqlobj = sql::insert($table);
         $this->setTable($table);
         return $this;
     }
@@ -450,7 +450,7 @@ class baseDAO
     {
         $this->setMode('raw');
         $this->setMethod('replace');
-        $this->sqlOBJ = sql::replace($table);
+        $this->sqlobj = sql::replace($table);
         $this->setTable($table);
         return $this;
     }
@@ -466,7 +466,7 @@ class baseDAO
     public function from($table) 
     {
         $this->setTable($table);
-        if($this->mode == 'raw') $this->sqlOBJ->from($table);
+        if($this->mode == 'raw') $this->sqlobj->from($table);
         return $this;
     }
 
@@ -495,7 +495,7 @@ class baseDAO
     public function alias($alias)
     {
         if(empty($this->alias)) $this->setAlias($alias);
-        $this->sqlOBJ->alias($alias);
+        $this->sqlobj->alias($alias);
         return $this;
     }
 
@@ -516,7 +516,7 @@ class baseDAO
             if(defined('RUN_MODE') and RUN_MODE == 'front' and !empty($this->app->config->cn2tw)) $data->lang = str_replace('zh-tw', 'zh-cn', $data->lang);
         }
 
-        $this->sqlOBJ->data($data, $skipFields);
+        $this->sqlobj->data($data, $skipFields);
         return $this;
     }
 
@@ -570,7 +570,7 @@ class baseDAO
      */
     public function processSQL()
     {
-        $sql = $this->sqlOBJ->get();
+        $sql = $this->sqlobj->get();
 
         /** 
          * 如果是magic模式，处理表和字段。
@@ -580,7 +580,7 @@ class baseDAO
         {
             if($this->fields == '') $this->fields = '*';
             if($this->table == '')  $this->app->triggerError('Must set the table name', __FILE__, __LINE__, $exit = true);
-            $sql = sprintf($this->sqlOBJ->get(), $this->fields, $this->table);
+            $sql = sprintf($this->sqlobj->get(), $this->fields, $this->table);
         }
 
         /* If the method if select, update or delete, set the lang condition. */
@@ -673,7 +673,7 @@ class baseDAO
         /* If any error, return an empty statement object to make sure the remain method to execute. */
         if(!empty(dao::$errors)) return new PDOStatement();   
 
-        if($sql) $this->sqlOBJ->sql = $sql;
+        if($sql) $this->sqlobj->sql = $sql;
         $sql = $this->processSQL();
         $key = md5($sql);
 
@@ -730,7 +730,7 @@ class baseDAO
             $pager->setRecTotal($recTotal);
             $pager->setPageTotal();
         }
-        $this->sqlOBJ->limit($pager->limit());
+        $this->sqlobj->limit($pager->limit());
         return $this;
     }
 
@@ -746,7 +746,7 @@ class baseDAO
     {
         if(!empty(dao::$errors)) return new PDOStatement();   // If any error, return an empty statement object to make sure the remain method to execute.
 
-        if($sql) $this->sqlOBJ->sql = $sql;
+        if($sql) $this->sqlobj->sql = $sql;
         $sql = $this->processSQL();
 
         try
@@ -773,22 +773,12 @@ class baseDAO
      */
     public function fetch($field = '')
     {
-        $sql = $this->processSQL($saveQuery = false);
-        $key = md5($sql);
-        if(isset(dao::$cache['fetch'][$key][$field])) return dao::$cache['fetch'][$key][$field];
-
-        if(empty($field))
-        {
-            $result = $this->query()->fetch();
-            dao::$cache['fetch'][$key][$field] = $result;
-            return $result;
-        }
+        if(empty($field)) return $this->query()->fetch();
 
         $this->setFields($field);
         $result = $this->query()->fetch(PDO::FETCH_OBJ);
         if($result)
         {
-            dao::$cache['fetch'][$key][$field] = $result->$field;
             return $result->$field;
         }
     }
@@ -914,7 +904,7 @@ class baseDAO
                 $operator = $funcArgs[0];
                 $value    = $funcArgs[1];
             }
-            $this->sqlOBJ = sql::select('%s')->from('%s')->where($field, $operator, $value);
+            $this->sqlobj = sql::select('%s')->from('%s')->where($field, $operator, $value);
             return $this;
         }
         /* 
@@ -938,7 +928,7 @@ class baseDAO
             return $rows;
         }
         /* 
-         * 其他的方法，转到sqlOBJ对象执行。
+         * 其他的方法，转到sqlobj对象执行。
          * Others, call the method in sql class.
          **/
         else
@@ -951,7 +941,7 @@ class baseDAO
             {
                 ${"arg$i"} = isset($funcArgs[$i]) ? $funcArgs[$i] : null;
             }
-            $this->sqlOBJ->$funcName($arg0, $arg1, $arg2);
+            $this->sqlobj->$funcName($arg0, $arg1, $arg2);
             return $this;
         }
     }
@@ -974,7 +964,7 @@ class baseDAO
          * 如果没数据中没有该字段，直接返回。
          * If no this field in the data, return.
          **/
-        if(!isset($this->sqlOBJ->data->$fieldName)) return $this;
+        if(!isset($this->sqlobj->data->$fieldName)) return $this;
 
         /* 设置字段值。 */
         /* Set the field label and value. */
@@ -993,7 +983,7 @@ class baseDAO
             $table = strtolower($this->table);
         }
         $fieldLabel = isset($lang->$table->$fieldName) ? $lang->$table->$fieldName : $fieldName;
-        $value = isset($this->sqlOBJ->data->$fieldName) ? $this->sqlOBJ->data->$fieldName : null;
+        $value = isset($this->sqlobj->data->$fieldName) ? $this->sqlobj->data->$fieldName : null;
 
         /* 
          * 检查唯一性。
@@ -1002,7 +992,7 @@ class baseDAO
         if($funcName == 'unique')
         {
             $args = func_get_args();
-            $sql  = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->sqlOBJ->quote($value); 
+            $sql  = "SELECT COUNT(*) AS count FROM $this->table WHERE `$fieldName` = " . $this->sqlobj->quote($value); 
             if($condition) $sql .= ' AND ' . $condition;
             try
             {
@@ -1120,7 +1110,7 @@ class baseDAO
         foreach($fields as $fieldName => $validater)
         {
             if(strpos($skipFields, $fieldName) !== false) continue; // skip it.
-            if(!isset($this->sqlOBJ->data->$fieldName)) continue;
+            if(!isset($this->sqlobj->data->$fieldName)) continue;
             if($validater['rule'] == 'skip') continue;
             $options = array();
             if(isset($validater['options'])) $options = array_values($validater['options']);
@@ -1311,7 +1301,7 @@ class baseDAO
             if(isset($config->framework->autoRepairTable) and $config->framework->autoRepairTable) die(js::locate(helper::createLink('misc', 'checkTable')));
             $message .=  ' ' . $this->lang->repairTable;
         }
-        $sql = $this->sqlOBJ->get();
+        $sql = $this->sqlobj->get();
         $this->app->triggerError($message . "<p>The sql is: $sql</p>", __FILE__, __LINE__, $exit = true);
     }
 }
@@ -1441,9 +1431,9 @@ class baseSQL
      */
     public static function select($field = '*')
     {
-        $sqlOBJ = self::factory();
-        $sqlOBJ->sql = "SELECT $field ";
-        return $sqlOBJ;
+        $sqlobj = self::factory();
+        $sqlobj->sql = "SELECT $field ";
+        return $sqlobj;
     }
 
     /**
@@ -1456,9 +1446,9 @@ class baseSQL
      */
     public static function update($table)
     {
-        $sqlOBJ = self::factory();
-        $sqlOBJ->sql = "UPDATE $table SET ";
-        return $sqlOBJ;
+        $sqlobj = self::factory();
+        $sqlobj->sql = "UPDATE $table SET ";
+        return $sqlobj;
     }
 
     /**
@@ -1471,9 +1461,9 @@ class baseSQL
      */
     public static function insert($table)
     {
-        $sqlOBJ = self::factory();
-        $sqlOBJ->sql = "INSERT INTO $table SET ";
-        return $sqlOBJ;
+        $sqlobj = self::factory();
+        $sqlobj->sql = "INSERT INTO $table SET ";
+        return $sqlobj;
     }
 
     /**
@@ -1486,9 +1476,9 @@ class baseSQL
      */
     public static function replace($table)
     {
-        $sqlOBJ = self::factory();
-        $sqlOBJ->sql = "REPLACE $table SET ";
-        return $sqlOBJ;
+        $sqlobj = self::factory();
+        $sqlobj->sql = "REPLACE $table SET ";
+        return $sqlobj;
     }
 
     /**
@@ -1500,9 +1490,9 @@ class baseSQL
      */
     public static function delete()
     {
-        $sqlOBJ = self::factory();
-        $sqlOBJ->sql = "DELETE ";
-        return $sqlOBJ;
+        $sqlobj = self::factory();
+        $sqlobj->sql = "DELETE ";
+        return $sqlobj;
     }
 
     /**
