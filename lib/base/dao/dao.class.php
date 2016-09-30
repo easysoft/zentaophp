@@ -678,6 +678,8 @@ class baseDAO
             $sql       = trim($sql);
             $sqlMethod = strtolower(substr($sql, 0, strpos($sql, ' ')));
             $this->setMethod($sqlMethod);
+
+            $this->sqlobj = new sql();
             $this->sqlobj->sql = $sql;
         }
         else
@@ -757,6 +759,7 @@ class baseDAO
 
         if($sql)
         {
+            $this->sqlobj = new sql();
             $this->sqlobj->sql = $sql;
         }
         else
