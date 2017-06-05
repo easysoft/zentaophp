@@ -435,19 +435,11 @@ class baseControl
      */
     public function getCSS($moduleName, $methodName)
     {
-        if($this->config->framework->extensionLevel == 0) return '';
-
         $moduleName   = strtolower(trim($moduleName));
         $methodName   = strtolower(trim($methodName));
 
         $modulePath   = $this->app->getModulePath($this->appName, $moduleName);
         $cssExtPath   = $this->app->getModuleExtPath($this->appName, $moduleName, 'css') ;
-
-        if(!empty($cssExtPath))
-        {
-            $cssMethodExt = $cssExtPath['common'] . $methodName . DS;
-            $cssCommonExt = $cssExtPath['common'] . 'common' . DS;
-        }
 
         $css = '';
         $mainCssFile   = $modulePath . 'css' . DS . $this->devicePrefix . 'common.css';
@@ -457,6 +449,9 @@ class baseControl
 
         if(!empty($cssExtPath))
         {
+            $cssMethodExt = $cssExtPath['common'] . $methodName . DS;
+            $cssCommonExt = $cssExtPath['common'] . 'common' . DS;
+
             $cssExtFiles = glob($cssCommonExt . $this->devicePrefix . '*.css');
             if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
 
@@ -474,6 +469,7 @@ class baseControl
                 if(!empty($cssExtFiles) and is_array($cssExtFiles)) foreach($cssExtFiles as $cssFile) $css .= file_get_contents($cssFile);
             }
         }
+
         return $css;
     }
 
@@ -488,15 +484,11 @@ class baseControl
      */
     public function getJS($moduleName, $methodName)
     {
-        if($this->config->framework->extensionLevel == 0) return '';
-
         $moduleName  = strtolower(trim($moduleName));
         $methodName  = strtolower(trim($methodName));
 
         $modulePath  = $this->app->getModulePath($this->appName, $moduleName);
         $jsExtPath   = $this->app->getModuleExtPath($this->appName, $moduleName, 'js');
-        $jsMethodExt = $jsExtPath['common'] . $methodName . DS;
-        $jsCommonExt = $jsExtPath['common'] . 'common' . DS;
 
         $js = '';
         $mainJsFile   = $modulePath . 'js' . DS . $this->devicePrefix . 'common.js';
@@ -504,24 +496,30 @@ class baseControl
         if(file_exists($mainJsFile))   $js .= file_get_contents($mainJsFile);
         if(is_file($methodJsFile))     $js .= file_get_contents($methodJsFile);
 
-        $jsExtFiles = glob($jsCommonExt . $this->devicePrefix . '*.js');
-        if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-
-        $jsExtFiles = glob($jsMethodExt . $this->devicePrefix . '*.js');
-        if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-
-        if(!empty($jsExtPath['site']))
+        if(!empty($jsExtPath))
         {
-            $jsMethodExt = $jsExtPath['site'] . $methodName . DS;
-            $jsCommonExt = $jsExtPath['site'] . 'common' . DS;
+            $jsMethodExt = $jsExtPath['common'] . $methodName . DS;
+            $jsCommonExt = $jsExtPath['common'] . 'common' . DS;
 
             $jsExtFiles = glob($jsCommonExt . $this->devicePrefix . '*.js');
             if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
 
             $jsExtFiles = glob($jsMethodExt . $this->devicePrefix . '*.js');
             if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
-        }
 
+            if(!empty($jsExtPath['site']))
+            {
+                $jsMethodExt = $jsExtPath['site'] . $methodName . DS;
+                $jsCommonExt = $jsExtPath['site'] . 'common' . DS;
+
+                $jsExtFiles = glob($jsCommonExt . $this->devicePrefix . '*.js');
+                if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
+
+                $jsExtFiles = glob($jsMethodExt . $this->devicePrefix . '*.js');
+                if(!empty($jsExtFiles) and is_array($jsExtFiles)) foreach($jsExtFiles as $jsFile) $js .= file_get_contents($jsFile);
+            }
+        }
+        
         return $js;
     }
 
