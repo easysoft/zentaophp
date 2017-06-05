@@ -302,7 +302,10 @@ class baseControl
          * 初始化model对象，在control对象中可以通过$this->$moduleName来引用。同时将dao对象赋为control对象的成员变量，方便引用。
          * Init the model object thus you can try $this->$moduleName to access it. Also assign the $dao object as a member of control object.
          */
-        $this->$moduleName = new $modelClass($appName);
+        static $singleModule = array();
+        if(!isset($singleModule["$moduleName"])) $singleModule["$moduleName"] = new $modelClass($appName);
+
+        $this->$moduleName = $singleModule["$moduleName"];
         $this->dao = $this->$moduleName->dao;
         return $this->$moduleName;
     }
