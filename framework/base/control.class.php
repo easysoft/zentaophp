@@ -665,6 +665,10 @@ class baseControl
      */
     public function fetch($moduleName = '', $methodName = '', $params = array(), $appName = '')
     {
+        /**
+         * 如果模块名为空，则调用该模块、该方法。
+         * If the module name is empty, then use the current module and method.
+         */
         if($moduleName == '') $moduleName = $this->moduleName;
         if($methodName == '') $methodName = $this->methodName;
         if($appName == '')    $appName    = $this->appName;
@@ -677,6 +681,10 @@ class baseControl
         $currentModuleName = $this->moduleName;
         $currentMethodName = $this->methodName;
 
+        /**
+         * 设置调用指定模块的指定方法。
+         * chang the dir to the previous.
+         */
         $this->app->setModuleName($moduleName);
         $this->app->setMethodName($methodName);
 
@@ -685,25 +693,33 @@ class baseControl
         /**
          * 设置引用的文件和路径。
          * Set the pathes and files to included.
-         **/
+         */
         $modulePath        = $this->app->getModulePath($appName, $moduleName);
         $moduleControlFile = $modulePath . 'control.php';
         $actionExtPath     = $this->app->getModuleExtPath($appName, $moduleName, 'control');
 
         if(!empty($actionExtPath))
         {
+            /**
+             * 设置公共扩展。
+             * set common extension.
+             */
             $commonActionExtFile = $actionExtPath['common'] . strtolower($methodName) . '.php';
             $file2Included       = file_exists($commonActionExtFile) ? $commonActionExtFile : $moduleControlFile;
 
             if(!empty($actionExtPath['site']))
             {
+                /**
+                 * 设置站点扩展。
+                 * every site has it's extension.
+                 */
                 $siteActionExtFile = $actionExtPath['site'] . strtolower($methodName) . '.php';
                 $file2Included     = file_exists($siteActionExtFile) ? $siteActionExtFile : $file2Included;
             }
 
             /**
-             * 加载控制器文件。
-             * Load the control file. 
+             * 加载扩展的控制器文件。
+             * Load the extend control file. 
              */
             if(!is_file($file2Included)) $this->app->triggerError("The control file $file2Included not found", __FILE__, __LINE__, $exit = true);
             chdir(dirname($file2Included));
@@ -732,17 +748,22 @@ class baseControl
         call_user_func_array(array($module, $methodName), $params);
         $output = ob_get_contents();
         ob_end_clean();
+        
+        unset($module);
+
+        /**
+         * 切换回之前的模块、方法和路径。
+         * Chang the module、method and dir to the previous.
+         */
+        $this->app->setModuleName($currentModuleName);
+        $this->app->setMethodName($currentMethodName);
+
+        chdir($currentPWD);
 
         /**
          * 返回内容。
          * Return the content. 
          */
-        unset($module);
-
-        $this->app->setModuleName($currentModuleName);
-        $this->app->setMethodName($currentMethodName);
-
-        chdir($currentPWD);
         return $output;
     }
 
