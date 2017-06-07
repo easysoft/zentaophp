@@ -386,7 +386,7 @@ class baseDAO
             $this->sqlError($e);
         }
 
-        return $row->recTotal;
+        return is_object($row) ? $row->recTotal : 0;
     }
 
     /**
@@ -513,6 +513,7 @@ class baseDAO
         if($this->autoLang and !isset($data->lang)) 
         {
             $data->lang = $this->app->getClientLang();
+            if(isset($this->app->config->cn2tw) and $this->app->config->cn2tw and $data->lang == 'zh-tw') $data->lang = 'zh-cn';
             if(defined('RUN_MODE') and RUN_MODE == 'front' and !empty($this->app->config->cn2tw)) $data->lang = str_replace('zh-tw', 'zh-cn', $data->lang);
         }
 
@@ -678,7 +679,6 @@ class baseDAO
             $sql       = trim($sql);
             $sqlMethod = strtolower(substr($sql, 0, strpos($sql, ' ')));
             $this->setMethod($sqlMethod);
-
             $this->sqlobj = new sql();
             $this->sqlobj->sql = $sql;
         }
@@ -695,7 +695,7 @@ class baseDAO
 
             if($this->slaveDBH and $method == 'select')
             {
-                if(isset(dao::$cache['dbh'][$key])) return dao::$cache[$key];
+                if(isset(dao::$cache[$key])) return dao::$cache[$key];
                 $result = $this->slaveDBH->query($sql);
                 dao::$cache[$key] = $result;
                 return $result;
@@ -704,9 +704,9 @@ class baseDAO
             {
                 if($this->method == 'select')
                 {
-                    if(isset(dao::$cache['dbh'][$key])) return dao::$cache[$key];
+                    if(isset(dao::$cache[$key])) return dao::$cache[$key];
                     $result = $this->slaveDBH->query($sql);
-                    dao::$cache['dbh'][$key] = $result;
+                    dao::$cache[$key] = $result;
                     return $result;
                 }
 
@@ -792,13 +792,9 @@ class baseDAO
     public function fetch($field = '')
     {
         if(empty($field)) return $this->query()->fetch();
-
         $this->setFields($field);
         $result = $this->query()->fetch(PDO::FETCH_OBJ);
-        if($result)
-        {
-            return $result->$field;
-        }
+        if($result) return $result->$field;
     }
 
     /**
@@ -1921,7 +1917,8 @@ class baseSQL
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
 
-        $order = str_replace(array('|', '', '_'), ' ', $order);
+        $order = str_replace(array('|', '', '_'), ' ', $order);
+        if(!preg_match('/^(`\w+`|\w+)( +(desc|asc))?( *(, *(`\w+`|\w+)( +(desc|asc))?)?)*$/i', $order))die("Order is bad request, The order is $order");
 
         /* Add "`" in order string. */
         /* When order has limit string. */
@@ -1937,17 +1934,17 @@ class baseSQL
             {
                 $value = trim($value);
                 if(empty($value) or strtolower($value) == 'desc' or strtolower($value) == 'asc') continue;
-                $field = trim($value, '`');
 
+                $field = $value;
                 /* such as t1.id field. */
                 if(strpos($value, '.') !== false) list($table, $field) = explode('.', $field);
-                /* Ignore order with function e.g. order by length(tag) asc. */
-                if(strpos($field, '(') === false) $field = "`$field`";
+                if(strpos($field, '`') === false) $field = "`$field`";
 
                 $orderParse[$key] = isset($table) ? $table . '.' . $field :  $field;
                 unset($table);
             }
             $orders[$i] = join(' ', $orderParse);
+            if(empty($orders[$i])) unset($orders[$i]);
         }
         $order = join(',', $orders) . ' ' . $limit;
 
@@ -1967,7 +1964,11 @@ class baseSQL
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
         if(empty($limit)) return $this;
-        stripos($limit, 'limit') !== false ? $this->sql .= " $limit " : $this->sql .= ' ' . DAO::LIMIT . " $limit ";
+
+        /* filter limit. */
+        $limit = trim(str_ireplace('limit', '', $limit));
+        if(!preg_match('/^[0-9]+ *(, *[0-9]+)?$/', $limit)) die("Limit is bad query, The limit is $limit");
+        $this->sql .= ' ' . DAO::LIMIT . " $limit ";
         return $this;
     }
 
