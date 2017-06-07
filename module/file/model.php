@@ -172,7 +172,7 @@ class fileModel extends model
     {
         $sessionID  = session_id();
         $randString = substr($sessionID, mt_rand(0, strlen($sessionID) - 5), 3);
-        return date('Ym/dHis', $this->now) . $fileID . mt_rand(0, 10000) . $randString . '.' . $extension;
+        return date('Ym/dHis', $this->now) . $fileID . mt_rand(0, 10000) . $randString;
     }
 
     /**

@@ -499,7 +499,7 @@ class baseValidater
                 foreach($files['name'] as $i => $fileName)
                 {
                     $extension = ltrim(strrchr($fileName, '.'), '.');
-                    if(strrpos(",{$config->file->dangers},", ",{$extension},") !== false)
+                    if(stripos(",{$config->file->dangers},", ",{$extension},") !== false)
                     {
                         unset($_FILES);
                         return array();
@@ -509,7 +509,7 @@ class baseValidater
             else
             {
                 $extension = ltrim(strrchr($files['name'], '.'), '.');
-                if(strrpos(",{$config->file->dangers},", ",{$extension},") !== false)
+                if(stripos(",{$config->file->dangers},", ",{$extension},") !== false)
                 {
                     unset($_FILES);
                     return array();
