@@ -77,7 +77,6 @@ class baseHTML
     {
         $class = empty($class) ? ('icon-' . $name) : ('icon-' . $name . ' ' . $class);
         return "<i class='$class'></i>";
-
     }
 
     /**
@@ -693,7 +692,7 @@ EOT;
         $string .= "<a id='allchecker' class='btn btn-select-all check-all $appendClass' data-scope='$scope' href='javascript:;' >{$lang->selectAll}</a>";
         $string .= "<a id='reversechecker' class='btn btn-select-reverse check-inverse $appendClass' data-scope='$scope' href='javascript:;'>{$lang->selectReverse}</a>";
         if($asGroup) $string .= "</div>";
-        return  $string;
+        return $string;
     }
 
     /**
