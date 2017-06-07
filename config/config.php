@@ -94,8 +94,25 @@ $config->framework->jsWithPrefix   = true;  // js::set()输出的时候是否增
 $config->framework->filterBadKeys  = true;  // 是否过滤不合要求的键值。          Whether filter bad keys or not.
 $config->framework->filterTrojan   = true;  // 是否过滤木马攻击代码。            Whether strip trojan code or not.
 $config->framework->filterXSS      = true;  // 是否过滤XSS攻击代码。             Whether strip xss code or not.
+$config->framework->filterParam    = 2;     // 是否开启过滤参数功能。            Whether strip param or not.
 $config->framework->purifier       = true;  // 是否对数据做purifier处理。        Whether purifier data or not.
 $config->framework->logDays        = 14;    // 日志文件保存的天数。              The days to save log files.
+
+/* 配置参数过滤。Filter param settings. */
+/* Like $config->filterParam->param[moduleName][methodname][ruleType] = rule. */
+$config->filterParam          = new stdclass();
+$config->filterParam->badKeys = '[^a-zA-Z0-9_\.]'; 
+$config->filterParam->module['reg'] = '/^[a-zA-Z0-9]+$/';
+$config->filterParam->method['common']['reg'] = '/^[a-zA-Z0-9]+$/';
+$config->filterParam->param['common']['name']['reg']  = '/^[a-zA-Z0-9_\.]+$/';
+$config->filterParam->param['common']['value']['reg'] = '/^[a-zA-Z0-9=_\-]+$/';
+
+$config->filterParam->get['common']['hold'] = ',onlybody,HTTP_X_REQUESTED_WITH,';
+$config->filterParam->get['common']['params']['onlybody']['reg'] = '/^yes$|^no$/';
+$config->filterParam->get['common']['params']['HTTP_X_REQUESTED_WITH']['equal'] = 'XMLHttpRequest';
+
+$config->filterParam->cookie['common']['hold']  = '';
+$config->filterParam->session['common']['hold'] = '';
 
 /* 引用自定义的配置。 Include the custom config file. */
 $myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';

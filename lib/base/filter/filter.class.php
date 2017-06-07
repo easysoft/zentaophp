@@ -658,6 +658,73 @@ class baseValidater
     }
 
     /**
+     * Filter param.
+     * 
+     * @param  array    $var 
+     * @param  string   $type 
+     * @static
+     * @access public
+     * @return array
+     */
+    public static function filterParam($var, $type)
+    {
+        global $config, $app;
+
+        if(!isset($config->filterParam->$type)) return array();
+
+        $moduleName   = $app->getModuleName();
+        $methodName   = $app->getMethodName();
+        $params       = $app->getParams();
+        $filterConfig = $config->filterParam->$type;
+
+        $holdVars = '';
+        if(isset($filterConfig['common']['hold'])) $holdVars .= $filterConfig['common']['hold'];
+        if(isset($filterConfig[$moduleName][$methodName]['hold'])) $holdVars .= $filterConfig[$moduleName][$methodName]['hold'];
+        foreach($var as $key => $value)
+        {
+            if($config->requestType == 'GET' and $type == 'get' and isset($params[$key])) continue;
+            if(strpos($holdVars, ",$key,") === false)
+            {
+                unset($var[$key]);
+                continue;
+            }
+
+            $rules = '';
+            if(isset($filterConfig[$moduleName][$methodName]['params'][$key]))
+            {
+                $rules = $filterConfig[$moduleName][$methodName]['params'][$key];
+            }
+            elseif(isset($filterConfig['common']['params'][$key]));
+            {
+                $rules = $filterConfig['common']['params'][$key];
+            }
+            if(!self::checkByRules($value, $rules)) unset($var[$key]);
+        }
+        return $var;
+    }
+
+    /**
+     * Check by rules.
+     * 
+     * @param  string   $var 
+     * @param  array    $rules 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkByRules($var, $rules)
+    {
+        if(empty($rules)) return false;
+        foreach($rules as $type => $rule)
+        {
+            $checkMethod = 'check' . $type;
+            if(!method_exists('baseValidater', $checkMethod)) continue;
+            if(!self::$checkMethod($var, $rule)) return false;
+        }
+        return true;
+    }
+
+    /**
      * 调用一个方法进行检查。
      * Call a function to check it.
      * 
