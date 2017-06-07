@@ -539,13 +539,13 @@ class baseValidater
                 foreach($item as $subkey => $subItem)
                 {
                     if(is_array($subItem)) continue;
-                    $super[$key][$subkey] = self::filterTrojan($subItem);
+                    $subItem = self::filterTrojan($subItem);
                     $super[$key][$subkey] = self::filterXSS($subItem);
                 }
             }
             else
             {
-                $super[$key] = self::filterTrojan($item);
+                $item = self::filterTrojan($item);
                 $super[$key] = self::filterXSS($item);
             }
         }
@@ -565,7 +565,8 @@ class baseValidater
     {
         global $config;
         if(empty($config->framework->filterBadKeys)) return $var;
-        foreach($var as $key => $value) if(preg_match('/[^a-zA-Z0-9_\.]/', $key)) unset($var[$key]);
+        $badKeysRule = empty($config->filterParam->badKeys) ? '[^a-zA-Z0-9_\.]' : $config->filterParam->badKeys;
+        foreach($var as $key => $value) if(preg_match("/$badKeysRule/", $key)) unset($var[$key]);
         return $var;
     }
 
@@ -616,6 +617,73 @@ class baseValidater
         $var = preg_replace('/j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/Ui', 'j a v a s c r i p t :', $var);
 
         return $var;
+    }
+
+    /**
+     * Filter param.
+     * 
+     * @param  array    $var 
+     * @param  string   $type 
+     * @static
+     * @access public
+     * @return array
+     */
+    public static function filterParam($var, $type)
+    {
+        global $config, $app;
+
+        if(!isset($config->filterParam->$type)) return array();
+
+        $moduleName   = $app->getModuleName();
+        $methodName   = $app->getMethodName();
+        $params       = $app->getParams();
+        $filterConfig = $config->filterParam->$type;
+
+        $holdVars = '';
+        if(isset($filterConfig['common']['hold'])) $holdVars .= $filterConfig['common']['hold'];
+        if(isset($filterConfig[$moduleName][$methodName]['hold'])) $holdVars .= $filterConfig[$moduleName][$methodName]['hold'];
+        foreach($var as $key => $value)
+        {
+            if($config->requestType == 'GET' and $type == 'get' and isset($params[$key])) continue;
+            if(strpos($holdVars, ",$key,") === false)
+            {
+                unset($var[$key]);
+                continue;
+            }
+
+            $rules = '';
+            if(isset($filterConfig[$moduleName][$methodName]['params'][$key]))
+            {
+                $rules = $filterConfig[$moduleName][$methodName]['params'][$key];
+            }
+            elseif(isset($filterConfig['common']['params'][$key]));
+            {
+                $rules = $filterConfig['common']['params'][$key];
+            }
+            if(!self::checkByRules($value, $rules)) unset($var[$key]);
+        }
+        return $var;
+    }
+
+    /**
+     * Check by rules.
+     * 
+     * @param  string   $var 
+     * @param  array    $rules 
+     * @static
+     * @access public
+     * @return bool
+     */
+    public static function checkByRules($var, $rules)
+    {
+        if(empty($rules)) return false;
+        foreach($rules as $type => $rule)
+        {
+            $checkMethod = 'check' . $type;
+            if(!method_exists('baseValidater', $checkMethod)) continue;
+            if(!self::$checkMethod($var, $rule)) return false;
+        }
+        return true;
     }
 
     /**

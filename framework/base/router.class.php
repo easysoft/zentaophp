@@ -357,8 +357,8 @@ class baseRouter
         $this->loadClass('dao',    $static = true);
         $this->loadClass('mobile', $static = true);
 
-        $this->setSuperVars();
         $this->loadMainConfig();
+        $this->setSuperVars();
         $this->setDebug();
         $this->setErrorHandler();
         $this->setTimezone();
@@ -1142,7 +1142,7 @@ class baseRouter
      */
     public function setModuleName($moduleName = '')
     {
-        if($this->checkAlnum($moduleName)) $this->moduleName = strtolower($moduleName);
+        if($this->checkAlnum($moduleName, 'module')) $this->moduleName = strtolower($moduleName);
     }
 
     /**
@@ -1171,7 +1171,7 @@ class baseRouter
      */
     public function setMethodName($methodName = '')
     {
-        if($this->checkAlnum($methodName)) $this->methodName = strtolower($methodName);
+        if($this->checkAlnum($methodName, 'method')) $this->methodName = strtolower($methodName);
     }
 
     /**
@@ -1187,7 +1187,7 @@ class baseRouter
     {
         if($moduleName == '') $moduleName = $this->moduleName;
 
-        if($this->checkAlnum($moduleName))
+        if($this->checkAlnum($moduleName, 'module'))
         {
             $modulePath = $this->getModuleRoot($appName) . strtolower($moduleName) . DS;
             return $modulePath;
@@ -1210,7 +1210,7 @@ class baseRouter
     public function getModuleExtPath($appName, $moduleName, $ext)
     {
         /* 检查失败或者extensionLevel为0，直接返回空。If check failed or extensionLevel == 0, return empty array. */
-        if(!$this->checkAlnum($moduleName) or $this->config->framework->extensionLevel == 0) return array();
+        if(!$this->checkAlnum($moduleName, 'module') or $this->config->framework->extensionLevel == 0) return array();
 
         /* When extensionLevel == 1. */
         $modulePath = $this->getModulePath($appName, $moduleName);
@@ -1227,12 +1227,21 @@ class baseRouter
      * 检查某一个变量必须为英文字母和数字组合。Check a variable must be ascii.
      * 
      * @param  string    $var 
+     * @param  string    $type 
      * @access public
      * @return void
      */
-    public function checkAlnum($var)
+    public function checkAlnum($var, $type)
     {
-        if(preg_match('/^[a-zA-Z0-9]+$/', $var)) return true;
+        $filterConfig = $this->config->filterParam;
+        $rules = $filterConfig->module;
+        if($type == 'method')
+        {
+            $rules  = $filterConfig->method['common'];
+            if($this->config->framework->filterParam == 2) $rules = zget($filterConfig->method, $this->moduleName, $rules);
+        }
+
+        if(validater::checkByRules($var, $rules)) return true;
         $this->triggerError("'$var' illegal. ", __FILE__, __LINE__, $exit = true);
     }
 
@@ -1615,6 +1624,13 @@ class baseRouter
             $this->setParamsByGET($defaultParams);
         }
 
+        if($this->config->framework->filterParam == 2)
+        {
+            $_GET     = validater::filterParam($_GET, 'get');
+            $_COOKIE  = validater::filterParam($_COOKIE, 'cookie');
+            $_SESSION = validater::filterParam($_COOKIE, 'session');
+        }
+
         /* 调用该方法   Call the method. */
         call_user_func_array(array($module, $methodName), $this->params);
         return $module;
@@ -1684,10 +1700,12 @@ class baseRouter
         unset($passedParams['HTTP_X_REQUESTED_WITH']);
 
         /* Check params from URL. */
+        $nameRules  = isset($this->config->filterParam->param[$this->moduleName][$this->methodName]['name'])  ? $this->config->filterParam->param[$this->moduleName][$this->methodName]['name']  : $this->config->filterParam->param['common']['name'];
+        $valueRules = isset($this->config->filterParam->param[$this->moduleName][$this->methodName]['value']) ? $this->config->filterParam->param[$this->moduleName][$this->methodName]['value'] : $this->config->filterParam->param['common']['value'];
         foreach($passedParams as $param => $value)
         {
-            if(preg_match('/[^a-zA-Z0-9_\.]/', $param)) die('Bad Request!');
-            if(preg_match('/[^a-zA-Z0-9=_\-]/', trim($value))) die('Bad Request!');
+            if(!validater::checkByRules($param, $nameRules))  die('Bad Request!');
+            if(!validater::checkByRules($param, $valueRules)) die('Bad Request!');
         }
 
         $passedParams = array_values($passedParams);
