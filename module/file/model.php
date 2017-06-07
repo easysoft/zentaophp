@@ -66,7 +66,8 @@ class fileModel extends model
         foreach($files as $id => $file)
         {
             if($file['size'] == 0) continue;
-            move_uploaded_file($file['tmpname'], $this->savePath . $file['pathname']);
+            if(!move_uploaded_file($file['tmpname'], $this->savePath . $file['pathname'])) return false;
+
             $file = $this->compressImage($file);
 
             $file['objectType'] = $objectType;
@@ -118,6 +119,7 @@ class fileModel extends model
             {
                 if(empty($filename)) continue;
                 if(!validater::checkFileName($filename)) continue;
+
                 $title             = isset($_POST[$labelsName][$id]) ? $_POST[$labelsName][$id] : '';
                 $file['extension'] = $this->getExtension($filename);
                 $file['pathname']  = $this->setPathName($id, $file['extension']);
@@ -125,6 +127,12 @@ class fileModel extends model
                 $file['title']     = $purifier->purify($file['title']);
                 $file['size']      = $size[$id];
                 $file['tmpname']   = $tmp_name[$id];
+
+                if(strpos($this->config->file->allowed, ',' . $file['extension'] . ',') === false)
+                {
+                    $file['pathname'] = $file['pathname'] . '.notAllowed';
+                }
+
                 $files[]           = $file;
             }
         }
@@ -140,6 +148,12 @@ class fileModel extends model
             $file['title']     = $purifier->purify($file['title']);
             $file['size']      = $size;
             $file['tmpname']   = $tmp_name;
+
+            if(strpos($this->config->file->allowed, ',' . $file['extension'] . ',') === false)
+            {
+                $file['pathname'] = $file['pathname'] . '.notAllowed';
+            }
+
             return array($file);
         }
         return $files;
