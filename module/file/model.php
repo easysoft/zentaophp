@@ -128,7 +128,7 @@ class fileModel extends model
                 $file['size']      = $size[$id];
                 $file['tmpname']   = $tmp_name[$id];
 
-                if(strpos($this->config->file->allowed, ',' . $file['extension'] . ',') === false)
+                if(stripos($this->config->file->allowed, ',' . $file['extension'] . ',') === false)
                 {
                     $file['pathname'] = $file['pathname'] . '.notAllowed';
                 }
@@ -149,7 +149,7 @@ class fileModel extends model
             $file['size']      = $size;
             $file['tmpname']   = $tmp_name;
 
-            if(strpos($this->config->file->allowed, ',' . $file['extension'] . ',') === false)
+            if(stripos($this->config->file->allowed, ',' . $file['extension'] . ',') === false)
             {
                 $file['pathname'] = $file['pathname'] . '.notAllowed';
             }
@@ -169,7 +169,7 @@ class fileModel extends model
     public function getExtension($filename)
     {
         $extension = trim(strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
-        if(empty($extension) or strpos(",{$this->config->file->dangers},", ",{$extension},") !== false) return 'txt';
+        if(empty($extension) or stripos(",{$this->config->file->dangers},", ",{$extension},") !== false) return 'txt';
         if($extension == 'php') return 'txt';
         return $extension;
     }

@@ -2159,7 +2159,8 @@ class baseRouter
     public function triggerError($message, $file, $line, $exit = false)
     {
         /* 设置错误信息(Set the error info) */
-        $log = "ERROR: $message in $file on line $line";
+        $message = htmlspecialchars($message);
+        $log     = "ERROR: $message in $file on line $line";
         if(isset($_SERVER['SCRIPT_URI'])) $log .= ", request: $_SERVER[SCRIPT_URI]";; 
         $trace = debug_backtrace();
         extract($trace[0]);
