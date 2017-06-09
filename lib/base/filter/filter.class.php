@@ -678,12 +678,14 @@ class baseValidater
         $filterConfig = $config->filterParam->$type;
 
         $holdVars = '';
-        if(isset($filterConfig['common']['hold'])) $holdVars .= $filterConfig['common']['hold'];
-        if(isset($filterConfig[$moduleName][$methodName]['hold'])) $holdVars .= $filterConfig[$moduleName][$methodName]['hold'];
+        if(isset($filterConfig['common']['hold'])) $holdVars .= $filterConfig['common']['hold'] . ',';
+        if(isset($filterConfig[$moduleName]['common']['hold'])) $holdVars .= $filterConfig[$moduleName]['common']['hold'] . ',';
+        if(isset($filterConfig[$moduleName][$methodName]['hold'])) $holdVars .= $filterConfig[$moduleName][$methodName]['hold'] . ',';
+        if($type == 'cookie') $holdVars .= 'pager' . ucfirst($moduleName) . ucfirst($methodName) . ',';
         foreach($var as $key => $value)
         {
             if($config->requestType == 'GET' and $type == 'get' and isset($params[$key])) continue;
-            if(strpos($holdVars, ",$key,") === false)
+            if(strpos(",$holdVars", ",$key,") === false)
             {
                 unset($var[$key]);
                 continue;
@@ -694,7 +696,11 @@ class baseValidater
             {
                 $rules = $filterConfig[$moduleName][$methodName]['params'][$key];
             }
-            elseif(isset($filterConfig['common']['params'][$key]));
+            elseif(isset($filterConfig[$moduleName]['common']['params'][$key]))
+            {
+                $rules = $filterConfig[$moduleName]['common']['params'][$key];
+            }
+            elseif(isset($filterConfig['common']['params'][$key]))
             {
                 $rules = $filterConfig['common']['params'][$key];
             }
@@ -718,8 +724,16 @@ class baseValidater
         foreach($rules as $type => $rule)
         {
             $checkMethod = 'check' . $type;
-            if(!method_exists('baseValidater', $checkMethod)) continue;
-            if(!self::$checkMethod($var, $rule)) return false;
+            if(method_exists('baseValidater', $checkMethod))
+            {
+                if(empty($rule)  and self::$checkMethod($var) === false) return false;
+                if(!empty($rule) and self::$checkMethod($var, $rule) === false) return false;
+            }
+            elseif(function_exists('is_' . $type))
+            {
+                $checkFunction = 'is_' . $type;
+                if(!$checkFunction($var)) return false;
+            }
         }
         return true;
     }
@@ -972,6 +986,8 @@ class baseFixer
                      * purifier会把&nbsp;替换空格，kindeditor在会吧行首的空格去掉。
                      * purifier will change &nbsp; to ' ', and edit it will no space in line head use kindeditor. 
                      **/
+                    $this->data->$fieldName = preg_replace('/<[^>]+</', '<', $this->data->$fieldName);
+                    $this->data->$fieldName = preg_replace('/>[^<]+>/', '>', $this->data->$fieldName);
                     if($usePurifier) $this->data->$fieldName = str_replace('&nbsp;', '&spnb;', $this->data->$fieldName);
                     $this->data->$fieldName = $usePurifier ? $purifier->purify($this->data->$fieldName) : strip_tags($this->data->$fieldName, $allowedTags);
                     if($usePurifier) $this->data->$fieldName = str_replace('&amp;spnb;', '&nbsp;', $this->data->$fieldName);

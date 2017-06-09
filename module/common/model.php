@@ -22,7 +22,7 @@ class commonModel extends model
         parent::__construct();
         if(!defined('FIRST_RUN'))
         {
-            $this->startSession();
+            if(!defined('SESSION_STARTED')) $this->startSession();
             $this->sendHeader();
             define('FIRST_RUN', true);
         }

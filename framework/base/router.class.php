@@ -1013,6 +1013,7 @@ class baseRouter
     public function parsePathInfo()
     {
         $pathInfo = $this->getPathInfo();
+        if(trim($pathInfo, '/') == trim($this->config->webRoot, '/')) $pathInfo = '';
         if(!empty($pathInfo))
         {
             $dotPos = strrpos($pathInfo, '.');
@@ -1069,7 +1070,7 @@ class baseRouter
 
         $subpath = str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME']));
         if($subpath != '' and $subpath != '/' and strpos($value, $subpath) === 0) $value = substr($value, strlen($subpath));
-        if(RUN_MODE == 'front' and strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
+        if(defined('RUN_MODE') and RUN_MODE == 'front' and strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
 
         if(strpos($value, '?') === false) return trim($value, '/');
 
@@ -1281,7 +1282,7 @@ class baseRouter
      */
     public function setActionExtFile()
     {
-        $moduleExtPaths  = $this->getModuleExtPath('', $this->moduleName, 'control');
+        $moduleExtPaths = $this->getModuleExtPath('', $this->moduleName, 'control');
         
         /* 如果扩展目录为空，不包含任何扩展文件。If there's no ext pathes return false.*/
         if(empty($moduleExtPaths)) return false;
@@ -1407,7 +1408,10 @@ class baseRouter
 
         /* 开始拼装代码。Prepare the codes. */
         $modelLines  = "<?php\n";
+        $modelLines .= "global \$app;\n";
+        $modelLines .= "helper::cd(\$app->getBasePath());\n";
         $modelLines .= "helper::import('$mainModelFile');\n";
+        $modelLines .= "helper::cd();\n";
         $modelLines .= "class $tmpModelClass extends $modelClass \n{\n";
 
         /* 将扩展文件的代码合并到代码中。Cycle all the extension files and merge them into model lines. */
@@ -1662,7 +1666,6 @@ class baseRouter
         {
             $_GET     = validater::filterParam($_GET, 'get');
             $_COOKIE  = validater::filterParam($_COOKIE, 'cookie');
-            $_SESSION = validater::filterParam($_COOKIE, 'session');
         }
 
         /* 调用该方法   Call the method. */
@@ -1744,8 +1747,8 @@ class baseRouter
         $valueRules = isset($this->config->filterParam->param[$this->moduleName][$this->methodName]['value']) ? $this->config->filterParam->param[$this->moduleName][$this->methodName]['value'] : $this->config->filterParam->param['common']['value'];
         foreach($passedParams as $param => $value)
         {
-            if(!validater::checkByRules($param, $nameRules))  die('Bad Request!');
-            if(!validater::checkByRules($param, $valueRules)) die('Bad Request!');
+            if(!validater::checkByRules($param, $nameRules)) die('Bad Request!');
+            if($value and !validater::checkByRules($value, $valueRules)) die('Bad Request!');
         }
 
         $passedParams = array_values($passedParams);
@@ -1929,25 +1932,44 @@ class baseRouter
         }
 
         /* 加载数据库中与本模块相关的配置项。Merge from the db configs. */
-        if($moduleName != 'common' and isset($config->system->$moduleName))
-        {   
-            /* 如果没有设置本模块配置，则首先进行初始化。Init the $config->$moduleName if not set.*/
-            if(!isset($config->$moduleName)) $config->$moduleName = new stdclass();
+        if($moduleName != 'common')
+        {
+            if(isset($config->system->$moduleName))   $this->mergeConfig($config->system->$moduleName, $moduleName);
+            if(isset($config->personal->$moduleName)) $this->mergeConfig($config->personal->$moduleName, $moduleName);
+        }
+    }
 
-            foreach($config->system->$moduleName as $item)
+    /**
+     * Merge db config.
+     * 
+     * @param  array  $dbConfig 
+     * @param  string $moduleName 
+     * @access public
+     * @return void
+     */
+    public  function mergeConfig($dbConfig, $moduleName = 'common')
+    {
+        global $config;
+
+        /* 如果没有设置本模块配置，则首先进行初始化。Init the $config->$moduleName if not set.*/
+        if($moduleName != 'common' and !isset($config->$moduleName)) $config->$moduleName = new stdclass();
+
+        $config2Merge = $config;
+        if($moduleName != 'common') $config2Merge = $config->$moduleName;
+
+        foreach($dbConfig as $item)
+        {
+            if($item->section)
             {
-                if($item->section)
+                if(!isset($config2Merge->{$item->section})) $config2Merge->{$item->section} = new stdclass();
+                if(is_object($config2Merge->{$item->section}))
                 {
-                    if(!isset($config->{$moduleName}->{$item->section})) $config->{$moduleName}->{$item->section} = new stdclass();
-                    if(is_object($config->{$moduleName}->{$item->section}))
-                    {
-                        $config->{$moduleName}->{$item->section}->{$item->key} = $item->value;
-                    }
+                    $config2Merge->{$item->section}->{$item->key} = $item->value;
                 }
-                else
-                {
-                    $config->{$moduleName}->{$item->key} = $item->value;
-                }
+            }
+            else
+            {
+                $config2Merge->{$item->key} = $item->value;
             }
         }
     }

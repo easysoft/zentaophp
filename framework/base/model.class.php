@@ -145,8 +145,8 @@ class baseModel
         $this->appName = empty($appName) ? $this->app->getAppName() : $appName;
 
         $moduleName = $this->getModuleName();
-        if($moduleName != 'common') $this->app->loadModuleConfig($moduleName, $this->appName, $exitIfNone = false);
         if($this->config->framework->multiLanguage) $this->app->loadLang($moduleName, $this->appName);
+        if($moduleName != 'common') $this->app->loadModuleConfig($moduleName, $this->appName, $exitIfNone = false);
 
         $this->loadDAO();
         $this->setSuperVars();

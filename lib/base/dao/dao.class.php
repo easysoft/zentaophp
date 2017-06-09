@@ -19,7 +19,7 @@
  */
 class baseDAO
 {
-    /* Use these strange strings to avoid conflicting with these keywords in the sql body. */
+    /* Use these strang strings to avoid conflicting with these keywords in the sql body. */
     const WHERE   = 'wHeRe';
     const GROUPBY = 'gRoUp bY';
     const HAVING  = 'hAvInG';
@@ -1309,10 +1309,10 @@ class baseDAO
         $errorCode = $errorInfo[1];
         $errorMsg  = $errorInfo[2];
         $message   = $exception->getMessage();
-        if(strpos($this->repairCode, "|$errorCode|") !== false or ($errorCode == '1016' and strpos($errorMsg, 'errno: 145') !== false))
+        if(strpos($this->repairCode, "|$errorCode|") !== false or ($errorCode == '1016' and strpos($errorMsg, 'errno: 145') !== false) or strpos($message, 'repair') !== false)
         {
             global $config;
-            if(isset($config->framework->autoRepairTable) and $config->framework->autoRepairTable) die(js::locate(helper::createLink('misc', 'checkTable')));
+            if(isset($config->framework->autoRepairTable) and $config->framework->autoRepairTable) die(js::locate($config->webRoot . 'checktable.php', 'top'));
             $message .=  ' ' . $this->lang->repairTable;
         }
         $sql = $this->sqlobj->get();
@@ -1917,14 +1917,16 @@ class baseSQL
     {
         if($this->inCondition and !$this->conditionIsTrue) return $this;
 
-        $order = str_replace(array('|', '', '_'), ' ', $order);
-        if(!preg_match('/^(`\w+`|\w+)( +(desc|asc))?( *(, *(`\w+`|\w+)( +(desc|asc))?)?)*$/i', $order))die("Order is bad request, The order is $order");
+        $order = str_replace(array('|', '', '_'), ' ', $order);
 
         /* Add "`" in order string. */
         /* When order has limit string. */
         $pos    = stripos($order, 'limit');
         $orders = $pos ? substr($order, 0, $pos) : $order;
         $limit  = $pos ? substr($order, $pos) : '';
+        $orders = trim($orders);
+        if(empty($orders)) return $this;
+        if(!preg_match('/^(\w+\.)?(`\w+`|\w+)( +(desc|asc))?( *(, *(\w+\.)?(`\w+`|\w+)( +(desc|asc))?)?)*$/i', $orders)) die("Order is bad request, The order is $orders");
 
         $orders = explode(',', $orders);
         foreach($orders as $i => $order)

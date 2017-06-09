@@ -483,7 +483,7 @@ class baseHTML
      * @access public
      * @return string the back button tag.
      */
-    public static function backButton($label = '', $misc = '')
+    public static function backButton($label = '', $misc = '', $class = '')
     {
         if(helper::inOnlyBodyMode()) return false;
 
@@ -493,7 +493,7 @@ class baseHTML
             global $lang;
             $label = $lang->goback;
         }
-        return  "<a href='javascript:history.go(-1);' class='btn btn-back' $misc>{$label}</a>";
+        return  "<a href='javascript:history.go(-1);' class='btn btn-back $class' $misc>{$label}</a>";
     }
 
     /**
@@ -792,13 +792,14 @@ class baseJS
      * Show a alert box. 
      * 
      * @param  string $message 
+     * @param  bool   $full 
      * @static
      * @access public
      * @return string
      */
-    static public function alert($message = '')
+    static public function alert($message = '', $full = true)
     {
-        return self::start() . "alert('" . $message . "')" . self::end() . self::resetForm();
+        return self::start($full) . "alert('" . $message . "')" . self::end() . self::resetForm();
     }
 
     /**
@@ -819,11 +820,12 @@ class baseJS
      * Show error info.
      * 
      * @param  string|array $message 
+     * @param  bool         $full 
      * @static
      * @access public
      * @return string
      */
-    static public function error($message)
+    static public function error($message, $full = true)
     {
         $alertMessage = '';
         if(is_array($message))
@@ -837,7 +839,7 @@ class baseJS
         {
             $alertMessage = $message;
         }
-        return self::alert($alertMessage);
+        return self::alert($alertMessage, $full);
     }
 
     /**

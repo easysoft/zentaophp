@@ -693,15 +693,6 @@ class baseControl
         $this->app->setMethodName($methodName);
 
         if(!is_array($params)) parse_str($params, $params);
-        if($this->config->requestType != 'GET')
-        {
-            $this->app->setParamsByPathInfo($params, $type = 'fetch');
-        }
-        else
-        {
-            $this->app->setParamsByGET($params, $type = 'fetch');
-        }
-        
         $currentPWD = getcwd();
 
         /**
