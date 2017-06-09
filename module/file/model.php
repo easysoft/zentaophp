@@ -133,7 +133,7 @@ class fileModel extends model
                     $file['pathname'] = $file['pathname'] . '.notAllowed';
                 }
 
-                $files[]           = $file;
+                $files[] = $file;
             }
         }
         else

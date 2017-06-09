@@ -101,6 +101,10 @@ $config->framework->detectDevice['zh-cn'] = false; // 在zh-cn语言情况下，
 $config->framework->detectDevice['zh-tw'] = false; // 在zh-tw语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
 $config->framework->detectDevice['en']    = false; // 在en语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
 
+/* 引用自定义的配置。 Include the custom config file. */
+$myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
+if(file_exists($myConfig)) include $myConfig;
+
 /* 文件上传设置。 Upload settings. */
 $config->file = new stdclass();    
 // 危险文件类型。 Dangerous file types.
@@ -122,8 +126,4 @@ $config->filterParam->get['common']['params']['onlybody']['reg'] = '/^yes$|^no$/
 $config->filterParam->get['common']['params']['HTTP_X_REQUESTED_WITH']['equal'] = 'XMLHttpRequest';
 
 $config->filterParam->cookie['common']['hold']  = '';
-$config->filterParam->session['common']['hold'] = '';
 
-/* 引用自定义的配置。 Include the custom config file. */
-$myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
-if(file_exists($myConfig)) include $myConfig;
