@@ -87,7 +87,6 @@ $config->framework = new stdclass();
 $config->framework->autoConnectDB  = true;  // 是否自动连接数据库。              Whether auto connect database or not.
 $config->framework->multiLanguage  = false; // 是否启用多语言功能。              Whether enable multi lanuage or not.
 $config->framework->multiTheme     = false; // 是否启用多风格功能。              Whether enable multi theme or not.
-$config->framework->detectDevice   = false; // 是否启用设备检测功能。            Whether enable device detect or not.
 $config->framework->multiSite      = false; // 是否启用多站点模式。              Whether enable multi site mode or not.
 $config->framework->extensionLevel = 0;     // 0=>无扩展,1=>公共扩展,2=>站点扩展 0=>no extension, 1=> common extension, 2=> every site has it's extension.
 $config->framework->jsWithPrefix   = true;  // js::set()输出的时候是否增加前缀。 When us js::set(), add prefix or not.
@@ -97,6 +96,10 @@ $config->framework->filterXSS      = true;  // 是否过滤XSS攻击代码。   
 $config->framework->filterParam    = 2;     // 是否开启过滤参数功能。            Whether strip param or not.
 $config->framework->purifier       = true;  // 是否对数据做purifier处理。        Whether purifier data or not.
 $config->framework->logDays        = 14;    // 日志文件保存的天数。              The days to save log files.
+
+$config->framework->detectDevice['zh-cn'] = false; // 在zh-cn语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
+$config->framework->detectDevice['zh-tw'] = false; // 在zh-tw语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
+$config->framework->detectDevice['en']    = false; // 在en语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
 
 /* 文件上传设置。 Upload settings. */
 $config->file = new stdclass();    
