@@ -170,7 +170,6 @@ class fileModel extends model
     {
         $extension = trim(strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
         if(empty($extension) or stripos(",{$this->config->file->dangers},", ",{$extension},") !== false) return 'txt';
-        if($extension == 'php') return 'txt';
         return $extension;
     }
 
@@ -186,7 +185,7 @@ class fileModel extends model
     {
         $sessionID  = session_id();
         $randString = substr($sessionID, mt_rand(0, strlen($sessionID) - 5), 3);
-        return date('Ym/dHis', $this->now) . $fileID . mt_rand(0, 10000) . $randString;
+        return date('Ym/dHis', $this->now) . $fileID . mt_rand(0, 10000) . $randString . '.' . $extension;;
     }
 
     /**
@@ -433,6 +432,5 @@ class fileModel extends model
             $data->$field = preg_replace('/ src="{([0-9]+)}" /', ' src="' . helper::createLink('file', 'read', "fileID=$1")  . '" ', $data->$field);
         }
         return $data;
-
     }
 }
