@@ -1064,7 +1064,8 @@ class baseRouter
         elseif(isset($_SERVER['REQUEST_URI']))
         {
             $value = $_SERVER['REQUEST_URI'];
-            $subpath = '/' . str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME']));
+            $subpath = str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME']));
+            if($subpath != '/') $subpath = '/' . $subpath;
             if($subpath != '' and $subpath != '/' and strpos($value, $subpath) === 0) $value = substr($value, strlen($subpath));
         }
         else
