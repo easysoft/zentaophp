@@ -606,6 +606,7 @@ EOT;
         if($config->requestType != 'GET' && method_exists('uri', 'create' . $this->moduleName . $this->methodName)) 
         {
             $link  = strip_tags(urldecode($_SERVER['REQUEST_URI']));
+            $link = htmlspecialchars($link,ENT_QUOTES);
 
             if($this->params['pageID'] == 1) return html::a(preg_replace('/\/p\d+\./', '.', $link), $title);
 

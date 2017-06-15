@@ -2010,10 +2010,6 @@ class baseRouter
         $view->expiredTime = ini_get('session.gc_maxlifetime');
         $view->serverTime  = time();
 
-        $ip         = gethostbyname($_SERVER['HTTP_HOST']);
-        $view->ip   = strpos($ip, ':') === false ? $ip : substr($ip, 0, strpos($ip, ':'));
-        $view->name = isset($this->config->socket->name) ? $this->config->socket->name : '';
-        $view->port        = isset($this->config->socket->port) ? $this->config->socket->port : '';
         echo json_encode($view);
     }
 
