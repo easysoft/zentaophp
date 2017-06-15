@@ -108,12 +108,11 @@ if(file_exists($myConfig)) include $myConfig;
 /* 文件上传设置。 Upload settings. */
 $config->file = new stdclass();    
 // 危险文件类型。 Dangerous file types.
-$config->file->dangers = ',php,php3,php4,phtml,php5,jsp,py,rb,asp,aspx,ashx,asa,cer,cdx,aspl,shtm,shtml,html,htm,';
+$config->file->dangers = 'php,php3,php4,phtml,php5,jsp,py,rb,asp,aspx,ashx,asa,cer,cdx,aspl,shtm,shtml,html,htm';
 // 允许上传的文件类型。 Allowed file types.
-$config->file->allowed = ',txt,doc,docx,dot,wps,wri,pdf,ppt,xls,xlsx,ett,xlt,xlsm,csv,jpg,jpeg,png,psd,gif,ico,bmp,swf,avi,rmvb,rm,mp3,mp4,3gp,flv,mov,movie,rar,zip,bz,bz2,tar,gz,';
+$config->file->allowed = 'txt,doc,docx,dot,wps,wri,pdf,ppt,xls,xlsx,ett,xlt,xlsm,csv,jpg,jpeg,png,psd,gif,ico,bmp,swf,avi,rmvb,rm,mp3,mp4,3gp,flv,mov,movie,rar,zip,bz,bz2,tar,gz';
 
 /* 配置参数过滤。Filter param settings. */
-/* Like $config->filterParam->param[moduleName][methodname][ruleType] = rule. */
 $config->filterParam          = new stdclass();
 $config->filterParam->badKeys = '[^a-zA-Z0-9_\.]'; 
 $config->filterParam->module['reg'] = '/^[a-zA-Z0-9]+$/';
@@ -121,9 +120,5 @@ $config->filterParam->method['common']['reg'] = '/^[a-zA-Z0-9]+$/';
 $config->filterParam->param['common']['name']['reg']  = '/^[a-zA-Z0-9_\.]+$/';
 $config->filterParam->param['common']['value']['reg'] = '/^[a-zA-Z0-9=_\-]+$/';
 
-$config->filterParam->get['common']['hold'] = ',onlybody,HTTP_X_REQUESTED_WITH,';
-$config->filterParam->get['common']['params']['onlybody']['reg'] = '/^yes$|^no$/';
-$config->filterParam->get['common']['params']['HTTP_X_REQUESTED_WITH']['equal'] = 'XMLHttpRequest';
-
-$config->filterParam->cookie['common']['hold']  = '';
-
+$config->filterParam->get['common']['onlybody']['reg'] = '/^yes$|^no$/';
+$config->filterParam->get['common']['HTTP_X_REQUESTED_WITH']['equal'] = 'XMLHttpRequest';
