@@ -93,17 +93,13 @@ $config->framework->jsWithPrefix   = true;  // js::set()输出的时候是否增
 $config->framework->filterBadKeys  = true;  // 是否过滤不合要求的键值。          Whether filter bad keys or not.
 $config->framework->filterTrojan   = true;  // 是否过滤木马攻击代码。            Whether strip trojan code or not.
 $config->framework->filterXSS      = true;  // 是否过滤XSS攻击代码。             Whether strip xss code or not.
-$config->framework->filterParam    = 2;     // 是否开启过滤参数功能。            Whether strip param or not.
+$config->framework->filterParam    = 2;     // 1=>默认过滤，2=>开启过滤参数功能。0=>default filter 2=>Whether strip param.
 $config->framework->purifier       = true;  // 是否对数据做purifier处理。        Whether purifier data or not.
 $config->framework->logDays        = 14;    // 日志文件保存的天数。              The days to save log files.
 
 $config->framework->detectDevice['zh-cn'] = false; // 在zh-cn语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
 $config->framework->detectDevice['zh-tw'] = false; // 在zh-tw语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
 $config->framework->detectDevice['en']    = false; // 在en语言情况下，是否启用设备检测功能。 Whether enable device detect or not.
-
-/* 引用自定义的配置。 Include the custom config file. */
-$myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
-if(file_exists($myConfig)) include $myConfig;
 
 /* 文件上传设置。 Upload settings. */
 $config->file = new stdclass();    
@@ -122,3 +118,7 @@ $config->filterParam->param['common']['value']['reg'] = '/^[a-zA-Z0-9=_\-]+$/';
 
 $config->filterParam->get['common']['onlybody']['reg'] = '/^yes$|^no$/';
 $config->filterParam->get['common']['HTTP_X_REQUESTED_WITH']['equal'] = 'XMLHttpRequest';
+
+/* 引用自定义的配置。 Include the custom config file. */
+$myConfig = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'my.php';
+if(file_exists($myConfig)) include $myConfig;
