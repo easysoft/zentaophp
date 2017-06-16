@@ -364,15 +364,14 @@ class baseRouter
         $this->setTimezone();
         $this->startSession();
 
-        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
         if($this->config->framework->autoConnectDB) $this->connectDB();
-        if($this->config->framework->multiLanguage) $this->setClientLang();
+        if($this->config->framework->multiLanguage) $this->setClientLang() && $this->loadLang('common');
 
-        $isDetectDevice     = zget($this->config->framework->detectDevice, $this->clientLang, false);
-        $this->clientDevice = $isDetectDevice ? $this->setClientDevice() : 'desktop';
+        $needDetectDevice     = zget($this->config->framework->detectDevice, $this->clientLang, false);
+        $this->clientDevice = $needDetectDevice ? $this->setClientDevice() : 'desktop';
 
-        if($this->config->framework->multiLanguage) $this->loadLang('common');
         if($this->config->framework->multiTheme)    $this->setClientTheme();
+        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
     }
 
     /**
@@ -518,25 +517,6 @@ class baseRouter
     {
         $this->configRoot = $this->basePath . 'config' . DS;
     }
-
-    /**
-     * Start the session.
-     *
-     * @access public
-     * @return void
-     */
-    public function startSession()
-    {
-        if(!defined('SESSION_STARTED'))
-        {
-            $sessionName = $this->config->sessionVar;
-            session_name($sessionName);
-            if(isset($_GET[$this->config->sessionVar])) session_id($_GET[$this->config->sessionVar]);
-            session_start();
-            define('SESSION_STARTED', true);
-        }
-    }
-
 
     /**
      * 设置模块的根目录。
@@ -820,6 +800,25 @@ class baseRouter
     }
 
     /**
+     * 开启 session
+     * Start the session.
+     *
+     * @access public
+     * @return void
+     */
+    public function startSession()
+    {
+        if(!defined('SESSION_STARTED'))
+        {
+            $sessionName = $this->config->sessionVar;
+            session_name($sessionName);
+            if(isset($_GET[$this->config->sessionVar])) session_id($_GET[$this->config->sessionVar]);
+            session_start();
+            define('SESSION_STARTED', true);
+        }
+    }
+
+    /**
      * 根据用户浏览器的语言设置和服务器配置，选择显示的语言。
      * 优先级：$lang参数 > session > cookie > 浏览器 > 配置文件。
      *
@@ -1018,7 +1017,6 @@ class baseRouter
     public function parsePathInfo()
     {
         $pathInfo = $this->getPathInfo();
-        if(trim($pathInfo, '/') == trim($this->config->webRoot, '/')) $pathInfo = '';
         if(!empty($pathInfo))
         {
             $dotPos = strrpos($pathInfo, '.');
@@ -1074,14 +1072,18 @@ class baseRouter
         {
             $value = @getenv('PATH_INFO');
             if(empty($value)) $value = @getenv('ORIG_PATH_INFO');
+            if(strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
         }
 
         if(defined('RUN_MODE') and RUN_MODE == 'front' and strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
 
         if(strpos($value, '?') === false) return trim($value, '/');
 
-        $value = parse_url($value);
-        return trim(zget($value, 'path', ''), '/');
+        $value    = parse_url($value);
+        $pathInfo = trim(zget($value, 'path', ''), '/');
+        if(trim($pathInfo, '/') == trim($this->config->webRoot, '/')) $pathInfo = '';
+
+        return $pathInfo;
     }
 
     /**
@@ -1161,6 +1163,7 @@ class baseRouter
 
         helper::import($commonModelFile);
 
+        if($this->config->framework->extensionLevel == 0 and class_exists('commonModel'))    return new commonModel();
         if($this->config->framework->extensionLevel > 0  and class_exists('extCommonModel')) return new extCommonModel();
 
         if(class_exists('commonModel')) return new commonModel();
@@ -2019,11 +2022,9 @@ class baseRouter
         $view->viewVar     = $this->config->viewVar;
         $view->sessionVar  = $this->config->sessionVar;
 
-        $this->session->set('rand', mt_rand(0, 10000));
-        $this->session->set('random', $this->session->rand);
+        $this->session->set('random', mt_rand(0, 10000));
         $view->sessionName = session_name();
         $view->sessionID   = session_id();
-        $view->rand        = $this->session->rand;
         $view->random      = $this->session->random;
         $view->expiredTime = ini_get('session.gc_maxlifetime');
         $view->serverTime  = time();

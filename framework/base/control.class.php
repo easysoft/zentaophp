@@ -274,10 +274,10 @@ class baseControl
         if(empty($moduleName)) $moduleName = $this->moduleName;
         if(empty($appName))    $appName    = $this->appName;
 
-        global $singleModule;
-        if(isset($singleModule[$appName][$moduleName]))
+        global $loadModules;
+        if(isset($loadModules[$appName][$moduleName]))
         {
-            $this->$moduleName = $singleModule[$appName][$moduleName];
+            $this->$moduleName = $loadModules[$appName][$moduleName];
             $this->dao = $this->$moduleName->dao;
             return $this->$moduleName;
         }
@@ -290,7 +290,7 @@ class baseControl
          */
         if(!helper::import($modelFile)) 
         {
-            $this->app->loadModuleConfig($moduleName, $appName, false);
+            $this->app->loadModuleConfig($moduleName, $appName);
             $this->app->loadLang($moduleName, $appName);
             $this->dao = new dao();
             return false;
@@ -311,8 +311,8 @@ class baseControl
          * 初始化model对象，在control对象中可以通过$this->$moduleName来引用。同时将dao对象赋为control对象的成员变量，方便引用。
          * Init the model object thus you can try $this->$moduleName to access it. Also assign the $dao object as a member of control object.
          */
-        $singleModule[$appName][$moduleName] = new $modelClass($appName);
-        $this->$moduleName = $singleModule[$appName][$moduleName];
+        $loadModules[$appName][$moduleName] = new $modelClass($appName);
+        $this->$moduleName = $loadModules[$appName][$moduleName];
         $this->dao = $this->$moduleName->dao;
         return $this->$moduleName;
     }
