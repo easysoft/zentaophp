@@ -208,10 +208,10 @@ class baseModel
         if(empty($moduleName)) return false;
         if(empty($appName)) $appName = $this->appName;
 
-        global $loadModules;
-        if(isset($loadModules[$appName][$moduleName]))
+        global $loadedModels;
+        if(isset($loadedModels[$appName][$moduleName]))
         {
-            $this->$moduleName = $loadModules[$appName][$moduleName];
+            $this->$moduleName = $loadedModels[$appName][$moduleName];
             return $this->$moduleName;
         }
 
@@ -225,8 +225,8 @@ class baseModel
             if(!class_exists($modelClass)) $this->app->triggerError(" The model $modelClass not found", __FILE__, __LINE__, $exit = true);
         }
 
-        $loadModules[$appName][$moduleName] = new $modelClass($appName);
-        $this->$moduleName = $loadModules[$appName][$moduleName];
+        $loadedModels[$appName][$moduleName] = new $modelClass($appName);
+        $this->$moduleName = $loadedModels[$appName][$moduleName];
         return $this->$moduleName;
     }
 
