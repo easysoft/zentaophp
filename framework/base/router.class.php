@@ -1063,7 +1063,7 @@ class baseRouter
         }
         elseif(isset($_SERVER['REQUEST_URI']))
         {
-            $value = $_SERVER['REQUEST_URI'];
+            $value = htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES);
             $subpath = str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME']));
             if($subpath != '/') $subpath = '/' . $subpath;
             if($subpath != '' and $subpath != '/' and strpos($value, $subpath) === 0) $value = substr($value, strlen($subpath));
@@ -1072,11 +1072,9 @@ class baseRouter
         {
             $value = @getenv('PATH_INFO');
             if(empty($value)) $value = @getenv('ORIG_PATH_INFO');
-            if(strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
         }
 
-        if(defined('RUN_MODE') and RUN_MODE == 'front' and strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
-
+        if(strpos($value, $_SERVER['SCRIPT_NAME']) !== false) $value = str_replace($_SERVER['SCRIPT_NAME'], '', $value);
         if(strpos($value, '?') === false) return trim($value, '/');
 
         $value    = parse_url($value);
@@ -1262,7 +1260,7 @@ class baseRouter
     }
 
     /**
-     * Check module name.
+     * 检查模块中某一个变量必须为英文字母和数字组合。Check module a variable must be ascii.
      * 
      * @param  string    $var 
      * @access public
@@ -1277,7 +1275,7 @@ class baseRouter
     }
 
     /**
-     * Check method name.
+     * 检查方法中某一个变量必须为英文字母和数字组合。Check method a variable must be ascii.
      * 
      * @param  string    $var 
      * @access public
