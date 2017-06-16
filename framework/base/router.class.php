@@ -1269,8 +1269,8 @@ class baseRouter
     public function checkModuleName($var)
     {
         global $filter;
-        $rules = $filter->default->moduleName;
-        if(validater::checkByRules($var, $rules)) return true;
+        $rule = $filter->default->moduleName;
+        if(validater::checkByRule($var, $rule)) return true;
         $this->triggerError("'$var' illegal. ", __FILE__, __LINE__, $exit = true);
     }
 
@@ -1284,10 +1284,10 @@ class baseRouter
     public function checkMethodName($var)
     {
         global $filter;
-        $rules  = $filter->default->methodName;
-        if($this->config->framework->filterParam == 2 and isset($filter->{$this->moduleName}->methodName)) $rules = $filter->{$this->moduleName}->methodName;
+        $rule = $filter->default->methodName;
+        if($this->config->framework->filterParam == 2 and isset($filter->{$this->moduleName}->methodName)) $rule = $filter->{$this->moduleName}->methodName;
 
-        if(validater::checkByRules($var, $rules)) return true;
+        if(validater::checkByRule($var, $rule)) return true;
         $this->triggerError("'$var' illegal. ", __FILE__, __LINE__, $exit = true);
     }
 
@@ -1767,16 +1767,16 @@ class baseRouter
         unset($passedParams['HTTP_X_REQUESTED_WITH']);
 
         /* Check params from URL. */
-        $nameRules  = isset($filter->{$this->moduleName}->{$this->methodName}->paramName)  ? $filter->{$this->moduleName}->{$this->methodName}->paramName  : $filter->default->paramName;
+        $nameRule = isset($filter->{$this->moduleName}->{$this->methodName}->paramName)  ? $filter->{$this->moduleName}->{$this->methodName}->paramName  : $filter->default->paramName;
         foreach($passedParams as $param => $value)
         {
-            if(!validater::checkByRules($param, $nameRules)) die('Bad Request!');
-            $valueRules = $filter->default->paramValue;
+            if(!validater::checkByRule($param, $nameRule)) die('Bad Request!');
+            $valueRule = $filter->default->paramValue;
             if(isset($filter->{$this->moduleName}->{$this->methodName}->paramValue[$param]))
             {
-                $valueRules = $filter->{$this->moduleName}->{$this->methodName}->paramValue[$param];
+                $valueRule = $filter->{$this->moduleName}->{$this->methodName}->paramValue[$param];
             }
-            if($value and !validater::checkByRules($value, $valueRules)) die('Bad Request!');
+            if($value and !validater::checkByRule($value, $valueRule)) die('Bad Request!');
         }
 
         $passedParams = array_values($passedParams);
