@@ -13,7 +13,7 @@
  *  May you share freely, never taking more than you give.
  */
 /* 先关闭所有的错误输出。Turn off error reporting first. */
-error_reporting(0);
+error_reporting(E_ALL);
 
 /* 使用ob捕获所有的输出。Use ob to get output. */
 ob_start();

@@ -1177,7 +1177,7 @@ class baseRouter
      */
     public function setModuleName($moduleName = '')
     {
-        if($this->checkAlnum($moduleName, 'module')) $this->moduleName = strtolower($moduleName);
+        if($this->checkModuleName($moduleName)) $this->moduleName = strtolower($moduleName);
     }
 
     /**
@@ -1206,7 +1206,7 @@ class baseRouter
      */
     public function setMethodName($methodName = '')
     {
-        if($this->checkAlnum($methodName, 'method')) $this->methodName = strtolower($methodName);
+        if($this->checkMethodName($methodName)) $this->methodName = strtolower($methodName);
     }
 
     /**
@@ -1222,7 +1222,7 @@ class baseRouter
     {
         if($moduleName == '') $moduleName = $this->moduleName;
 
-        if($this->checkAlnum($moduleName, 'module'))
+        if($this->checkModuleName($moduleName))
         {
             $modulePath = $this->getModuleRoot($appName) . strtolower($moduleName) . DS;
             return $modulePath;
@@ -1245,7 +1245,7 @@ class baseRouter
     public function getModuleExtPath($appName, $moduleName, $ext)
     {
         /* 检查失败或者extensionLevel为0，直接返回空。If check failed or extensionLevel == 0, return empty array. */
-        if(!$this->checkAlnum($moduleName, 'module') or $this->config->framework->extensionLevel == 0) return array();
+        if(!$this->checkModuleName($moduleName) or $this->config->framework->extensionLevel == 0) return array();
 
         /* When extensionLevel == 1. */
         $modulePath = $this->getModulePath($appName, $moduleName);
@@ -1259,22 +1259,32 @@ class baseRouter
     }
 
     /**
-     * 检查某一个变量必须为英文字母和数字组合。Check a variable must be ascii.
+     * Check module name.
      * 
      * @param  string    $var 
-     * @param  string    $type 
      * @access public
-     * @return void
+     * @return bool
      */
-    public function checkAlnum($var, $type)
+    public function checkModuleName($var)
     {
-        $filterConfig = $this->config->filterParam;
-        $rules = $filterConfig->module;
-        if($type == 'method')
-        {
-            $rules  = $filterConfig->method['common'];
-            if($this->config->framework->filterParam == 2) $rules = zget($filterConfig->method, $this->moduleName, $rules);
-        }
+        global $filter;
+        $rules = $filter->default->moduleName;
+        if(validater::checkByRules($var, $rules)) return true;
+        $this->triggerError("'$var' illegal. ", __FILE__, __LINE__, $exit = true);
+    }
+
+    /**
+     * Check method name.
+     * 
+     * @param  string    $var 
+     * @access public
+     * @return bool
+     */
+    public function checkMethodName($var)
+    {
+        global $filter;
+        $rules  = $filter->default->methodName;
+        if($this->config->framework->filterParam == 2 and isset($filter->{$this->moduleName}->methodName)) $rules = $filter->{$this->moduleName}->methodName;
 
         if(validater::checkByRules($var, $rules)) return true;
         $this->triggerError("'$var' illegal. ", __FILE__, __LINE__, $exit = true);
@@ -1749,16 +1759,22 @@ class baseRouter
      */
     public function mergeParams($defaultParams, $passedParams)
     {
+        global $filter;
+
         /* Remove these two params. */
         unset($passedParams['onlybody']);
         unset($passedParams['HTTP_X_REQUESTED_WITH']);
 
         /* Check params from URL. */
-        $nameRules  = isset($this->config->filterParam->param[$this->moduleName][$this->methodName]['name'])  ? $this->config->filterParam->param[$this->moduleName][$this->methodName]['name']  : $this->config->filterParam->param['common']['name'];
-        $valueRules = isset($this->config->filterParam->param[$this->moduleName][$this->methodName]['value']) ? $this->config->filterParam->param[$this->moduleName][$this->methodName]['value'] : $this->config->filterParam->param['common']['value'];
+        $nameRules  = isset($filter->{$this->moduleName}->{$this->methodName}->paramName)  ? $filter->{$this->moduleName}->{$this->methodName}->paramName  : $filter->default->paramName;
         foreach($passedParams as $param => $value)
         {
             if(!validater::checkByRules($param, $nameRules)) die('Bad Request!');
+            $valueRules = $filter->default->paramValue;
+            if(isset($filter->{$this->moduleName}->{$this->methodName}->paramValue[$param]))
+            {
+                $valueRules = $filter->{$this->moduleName}->{$this->methodName}->paramValue[$param];
+            }
             if($value and !validater::checkByRules($value, $valueRules)) die('Bad Request!');
         }
 
@@ -1870,7 +1886,7 @@ class baseRouter
     public function loadMainConfig()
     {
         /* 初始化$config对象。Init the $config object. */
-        global $config;
+        global $config, $filter;
         if(!is_object($config)) $config = new config();
         $this->config = $config;
 

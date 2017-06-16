@@ -668,36 +668,33 @@ class baseValidater
      */
     public static function filterParam($var, $type)
     {
-        global $config, $app;
-
-        if(!isset($config->filterParam->$type)) return array();
+        global $config, $filter, $app;
 
         $moduleName   = $app->getModuleName();
         $methodName   = $app->getMethodName();
         $params       = $app->getParams();
-        $filterConfig = $config->filterParam->$type;
 
         if($type == 'cookie')
         {
             $pagerCookie = 'pager' . ucfirst($moduleName) . ucfirst($methodName);
-            $filterConfig['common'][$pagerCookie]['int'] = '';
+            $filter->default->cookie[$pagerCookie] = 'int';
         }
         foreach($var as $key => $value)
         {
             if($config->requestType == 'GET' and $type == 'get' and isset($params[$key])) continue;
 
             $rules = '';
-            if(isset($filterConfig[$moduleName][$methodName][$key]))
+            if(isset($filter->{$moduleName}->{$methodName}->$type[$key]))
             {
-                $rules = $filterConfig[$moduleName][$methodName][$key];
+                $rules = $filter->{$moduleName}->{$methodName}->$type[$key];
             }
-            elseif(isset($filterConfig[$moduleName]['common'][$key]))
+            elseif(isset($filter->{$moduleName}->default->$type[$key]))
             {
-                $rules = $filterConfig[$moduleName]['common'][$key];
+                $rules = $filter->{$moduleName}->default->$type[$key];
             }
-            elseif(isset($filterConfig['common'][$key]))
+            elseif(isset($filter->default->$type[$key]))
             {
-                $rules = $filterConfig['common'][$key];
+                $rules = $filter->default->$type[$key];
             }
 
             if(!self::checkByRules($value, $rules)) unset($var[$key]);
@@ -716,20 +713,23 @@ class baseValidater
      */
     public static function checkByRules($var, $rules)
     {
+        global $filter;
+
         if(empty($rules)) return false;
-        foreach($rules as $type => $rule)
+        $rule = '';
+        $type = $rules;
+        if(strpos($rules, '::'))list($type, $rule) = explode('::', $rules);
+        if($type == 'reg' and isset($filter->rules->$rule)) $rule = $filter->rules->$rule;
+        $checkMethod = 'check' . $type;
+        if(method_exists('baseValidater', $checkMethod))
         {
-            $checkMethod = 'check' . $type;
-            if(method_exists('baseValidater', $checkMethod))
-            {
-                if(empty($rule)  and self::$checkMethod($var) === false) return false;
-                if(!empty($rule) and self::$checkMethod($var, $rule) === false) return false;
-            }
-            elseif(function_exists('is_' . $type))
-            {
-                $checkFunction = 'is_' . $type;
-                if(!$checkFunction($var)) return false;
-            }
+            if(empty($rule)  and self::$checkMethod($var) === false) return false;
+            if(!empty($rule) and self::$checkMethod($var, $rule) === false) return false;
+        }
+        elseif(function_exists('is_' . $type))
+        {
+            $checkFunction = 'is_' . $type;
+            if(!$checkFunction($var)) return false;
         }
         return true;
     }
