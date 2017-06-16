@@ -93,7 +93,7 @@ $config->framework->jsWithPrefix   = true;  // js::set()输出的时候是否增
 $config->framework->filterBadKeys  = true;  // 是否过滤不合要求的键值。          Whether filter bad keys or not.
 $config->framework->filterTrojan   = true;  // 是否过滤木马攻击代码。            Whether strip trojan code or not.
 $config->framework->filterXSS      = true;  // 是否过滤XSS攻击代码。             Whether strip xss code or not.
-$config->framework->filterParam    = 2;     // 是否开启过滤参数功能。            Whether strip param or not.
+$config->framework->filterParam    = 2;     // 1=>默认过滤，2=>开启过滤参数功能。0=>default filter 2=>Whether strip param.
 $config->framework->purifier       = true;  // 是否对数据做purifier处理。        Whether purifier data or not.
 $config->framework->logDays        = 14;    // 日志文件保存的天数。              The days to save log files.
 
