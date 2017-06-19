@@ -365,11 +365,12 @@ class baseRouter
         $this->startSession();
 
         if($this->config->framework->autoConnectDB) $this->connectDB();
-        if($this->config->framework->multiLanguage) $this->setClientLang() && $this->loadLang('common');
+        if($this->config->framework->multiLanguage) $this->setClientLang();
 
         $needDetectDevice   = zget($this->config->framework->detectDevice, $this->clientLang, false);
         $this->clientDevice = $needDetectDevice ? $this->setClientDevice() : 'desktop';
 
+        if($this->config->framework->multiLanguage)$this->loadLang('common');
         if($this->config->framework->multiTheme) $this->setClientTheme();
         if($this->config->framework->multiSite)  $this->setSiteCode() && $this->loadExtraConfig();
     }
