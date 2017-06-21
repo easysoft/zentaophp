@@ -17,7 +17,7 @@ class myrouter extends router
         $type = 'html';
         if((strpos($_SERVER['REQUEST_URI'], '.xml') !== false) or (isset($_GET['t']) and $_GET['t'] == 'xml')) $type = 'xml'; 
 
-        header("Content-Type: text/{$type}; charset={$this->config->encoding}");
+        header("Content-Type: text/{$type}; charset={$this->config->charset}");
         header("Cache-control: private");
     }
     public function setTplRoot()
