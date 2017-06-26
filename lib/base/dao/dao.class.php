@@ -19,7 +19,7 @@
  */
 class baseDAO
 {
-    /* Use these strang strings to avoid conflicting with these keywords in the sql body. */
+    /* Use these strange strings to avoid conflicting with these keywords in the sql body. */
     const WHERE   = 'wHeRe';
     const GROUPBY = 'gRoUp bY';
     const HAVING  = 'hAvInG';

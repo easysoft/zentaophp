@@ -362,11 +362,11 @@ class baseHelper
         if(strpos($agent, 'Safari') !== false)  $browser['name'] = 'safari';
         if(strpos($agent, 'Chrome') !== false)  $browser['name'] = "chrome";
 
-        // Check the name of browser
+        /* Check the name of browser */
         if(strpos($agent, 'MSIE') !== false || strpos($agent, 'rv:11.0')) $browser['name'] = 'ie';
         if(strpos($agent, 'Edge') !== false) $browser['name'] = 'edge';
 
-        // Check the version of browser
+        /* Check the version of browser */
         if(preg_match('/MSIE\s(\d+)\..*/i', $agent, $regs))       $browser['version'] = $regs[1];
         if(preg_match('/FireFox\/(\d+)\..*/i', $agent, $regs))    $browser['version'] = $regs[1];
         if(preg_match('/Opera[\s|\/](\d+)\..*/i', $agent, $regs)) $browser['version'] = $regs[1];

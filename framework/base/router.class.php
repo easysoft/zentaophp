@@ -370,9 +370,9 @@ class baseRouter
         $needDetectDevice   = zget($this->config->framework->detectDevice, $this->clientLang, false);
         $this->clientDevice = $needDetectDevice ? $this->setClientDevice() : 'desktop';
 
-        if($this->config->framework->multiLanguage)$this->loadLang('common');
-        if($this->config->framework->multiTheme) $this->setClientTheme();
-        if($this->config->framework->multiSite)  $this->setSiteCode() && $this->loadExtraConfig();
+        if($this->config->framework->multiLanguage) $this->loadLang('common');
+        if($this->config->framework->multiTheme)    $this->setClientTheme();
+        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
     }
 
     /**

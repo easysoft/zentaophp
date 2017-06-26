@@ -295,7 +295,7 @@ class baseModel
      * @access public
      * @return void
      */
-    public function delete($table, $id)
+    public function delete($table, $id = 0)
     {
         $this->dao->delete()->from($table)->where('id')->eq($id)->exec();
     }
