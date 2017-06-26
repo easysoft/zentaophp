@@ -244,6 +244,7 @@ class fileModel extends model
     {
         if(empty($data)) return '';
         $data = str_replace('\"', '"', $data);
+        if(!$this->checkSavePath()) return false;
 
         $dataLength = strlen($data);
         if(ini_get('pcre.backtrack_limit') < $dataLength) ini_set('pcre.backtrack_limit', $dataLength);
@@ -269,29 +270,6 @@ class fileModel extends model
             $data = str_replace($out[1][$key], helper::createLink('file', 'read', "fileID=$fileID", $file['extension']), $data);
         }
 
-        return $data;
-    }
-
-    /**
-     * Process editor.
-     * 
-     * @param  object    $data 
-     * @param  string    $editorList 
-     * @access public
-     * @return object
-     */
-    public function processEditor($data, $editorList, $uid = '')
-    {
-        if(is_string($editorList)) $editorList = explode(',', str_replace(' ', '', $editorList));
-        $readLinkReg = basename(helper::createLink('file', 'read', 'fileID=(%fileID%)', '\w+'));
-        $readLinkReg = str_replace(array('%fileID%', '?'), array('[0-9]+', '\?'), $readLinkReg);
-        foreach($editorList as $editorID)
-        {
-            if(empty($editorID) or empty($data->$editorID)) continue;
-            $data->$editorID = $this->pasteImage($data->$editorID, $uid);
-            $data->$editorID = preg_replace("/ src=\"$readLinkReg\" /", ' src="{$1}" ', $data->$editorID);
-            $data->$editorID = preg_replace("/ src=\"" . htmlspecialchars($readLinkReg) . "\" /", ' src="{$1}" ', $data->$editorID);
-        }
         return $data;
     }
 
@@ -390,6 +368,17 @@ class fileModel extends model
     }
 
     /**
+     * Check save path is writeable.
+     * 
+     * @access public
+     * @return void
+     */
+    public function checkSavePath()
+    {
+        return is_writable($this->savePath);
+    }
+
+    /**
      * Update objectID.
      * 
      * @param  int    $uid 
@@ -416,14 +405,37 @@ class fileModel extends model
     }
 
     /**
-     * Revert real src. 
+     * Process image rul.
+     * 
+     * @param  object    $data 
+     * @param  string    $editorList 
+     * @access public
+     * @return object
+     */
+    public function processImgURL($data, $editorList, $uid = '')
+    {
+        if(is_string($editorList)) $editorList = explode(',', str_replace(' ', '', $editorList));
+        $readLinkReg = basename(helper::createLink('file', 'read', 'fileID=(%fileID%)', '\w+'));
+        $readLinkReg = str_replace(array('%fileID%', '?'), array('[0-9]+', '\?'), $readLinkReg);
+        foreach($editorList as $editorID)
+        {
+            if(empty($editorID) or empty($data->$editorID)) continue;
+            $data->$editorID = $this->pasteImage($data->$editorID, $uid);
+            $data->$editorID = preg_replace("/ src=\"$readLinkReg\" /", ' src="{$1}" ', $data->$editorID);
+            $data->$editorID = preg_replace("/ src=\"" . htmlspecialchars($readLinkReg) . "\" /", ' src="{$1}" ', $data->$editorID);
+        }
+        return $data;
+    }
+
+    /**
+     * Replace image url. 
      * 
      * @param  object    $data 
      * @param  string    $fields 
      * @access public
      * @return object
      */
-    public function revertRealSRC($data, $fields)
+    public function replaceImgURL($data, $fields)
     {
         if(is_string($fields)) $fields = explode(',', str_replace(' ', '', $fields));
         foreach($fields as $field)
