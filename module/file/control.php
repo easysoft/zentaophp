@@ -24,7 +24,7 @@ class file extends control
         if($file)
         {
             if($file['size'] == 0) die(json_encode(array('error' => 1, 'message' => $this->lang->file->errorFileUpload)));
-            if(@move_uploaded_file($file['tmpname'], $this->file->savePath . $file['pathname']))
+            if(@move_uploaded_file($file['tmpname'], $this->file->savePath . $this->file->getSaveName($file['pathname'])))
             {
                 /* Compress image for jpg and bmp. */
                 $file = $this->file->compressImage($file);
