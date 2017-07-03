@@ -364,6 +364,7 @@ class baseRouter
         $this->setTimezone();
         $this->startSession();
 
+        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
         if($this->config->framework->autoConnectDB) $this->connectDB();
         if($this->config->framework->multiLanguage) $this->setClientLang();
 
@@ -372,7 +373,6 @@ class baseRouter
 
         if($this->config->framework->multiLanguage) $this->loadLang('common');
         if($this->config->framework->multiTheme)    $this->setClientTheme();
-        if($this->config->framework->multiSite)     $this->setSiteCode() && $this->loadExtraConfig();
     }
 
     /**
@@ -1779,6 +1779,7 @@ class baseRouter
             {
                 $valueRule = $filter->{$this->moduleName}->{$this->methodName}->paramValue[$param];
             }
+
             if($value and !validater::checkByRule($value, $valueRule)) die('Bad Request!');
         }
 
