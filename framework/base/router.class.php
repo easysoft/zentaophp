@@ -1428,7 +1428,7 @@ class baseRouter
         $modelLines  = "<?php\n";
         $modelLines .= "global \$app;\n";
         $modelLines .= "helper::cd(\$app->getBasePath());\n";
-        $modelLines .= "helper::import('$mainModelFile');\n";
+        $modelLines .= "helper::import('" . str_replace($this->getBasePath(), '', $mainModelFile) . "');\n";
         $modelLines .= "helper::cd();\n";
         $modelLines .= "class $tmpModelClass extends $modelClass \n{\n";
 
@@ -1482,6 +1482,7 @@ class baseRouter
         foreach($hookedMethods as $method)
         {
             /* 通过反射获得hook脚本对应的方法所在的文件和起止行数。Reflection the hooked method to get it's defined position. */
+            if(!method_exists($tmpModelClass, $method)) continue;
             $methodRelfection = new reflectionMethod($tmpModelClass, $method);
             $definedFile = $methodRelfection->getFileName();
             $startLine   = $methodRelfection->getStartLine() . ' ';
@@ -2236,7 +2237,7 @@ class baseRouter
          * Set the error info.
          **/
         $errorLog  = "\n" . date('H:i:s') . " $message in <strong>$file</strong> on line <strong>$line</strong> ";
-        $errorLog .= "when visiting <strong>" . $this->getURI() . "</strong>\n";
+        $errorLog .= "when visiting <strong>" . htmlspecialchars($this->getURI()) . "</strong>\n";
 
         /* 
          * 为了安全起见，对公网环境隐藏脚本路径。
