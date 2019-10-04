@@ -1784,19 +1784,16 @@ class baseRouter
             if($value and !validater::checkByRule($value, $valueRule)) die('Bad Request!');
         }
 
-        $passedParams = array_values($passedParams);
-        $i = 0;
         foreach($defaultParams as $key => $defaultValue)
         {
-            if(isset($passedParams[$i]))
+            if(in_array($key, array_keys($passedParams)))
             {
-                $defaultParams[$key] = strip_tags($passedParams[$i]);
+                $defaultParams[$key] = strip_tags($passedParams[$key]);
             }
             else
             {
                 if($defaultValue === '_NOT_SET') $this->triggerError("The param '$key' should pass value. ", __FILE__, __LINE__, $exit = true);
             }
-            $i ++;
         }
 
         return $defaultParams;
